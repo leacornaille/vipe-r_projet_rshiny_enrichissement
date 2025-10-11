@@ -1,0 +1,41 @@
+/* applique Arial à tout le dashboard */
+body, .main-header, .main-sidebar, .content-wrapper, .box {
+  font-family: Roboto, sans-serif;
+}
+
+/* permet de changer la police du titre de l'appli */
+.main-header .logo div {
+  font-family: "Roboto Slab", Times, serif;
+  font-weight: bold;
+  font-size: 24px;
+  color: white;
+  line-height: 50px;
+}
+
+
+.btn, .btn-default {
+  background-color: #2a9d8f !important;
+  color: #ffffff !important;
+  border-radius: 5px;
+  border: none;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background-color: #264653 !important;
+  color: #ffffff !important;
+}
+
+/* Onglets de tabsetPanel */
+.nav.nav-tabs > li > a {
+  color: #264653 !important;
+  font-weight: bold !important;
+  background-color: #e9f5f2 !important;
+}
+
+/* Onglet actif de tabsetPanel */
+.nav.nav-tabs > li.active > a {
+  color: #ffffff !important;
+  background-color: #2a9d8f !important;
+}
+
