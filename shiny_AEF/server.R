@@ -74,9 +74,9 @@ function(input, output, session) {
     df_deg <- deg_data()
     req(df_deg)
     # Filtrage (2 critères: padj et log2fc)
-    df_filtered <- df_deg[(padj <= input$slider_pval) &
-                        (log2FC >= input$slider_fc |
-                         log2FC <= -input$slider_fc)]
+    df_filtered <- df_deg[(df_deg$padj <= input$slider_pval) &
+                        (df_deg$log2FC >= input$slider_fc |
+                         df_deg$log2FC <= -input$slider_fc)]
     # Ajouter la colonne "Regulation" (en fonction du seuil log2fc)
     df_filtered$Regulation <- ifelse(
       df_filtered$log2FC >= input$slider_fc, "Up", "Down"
@@ -84,7 +84,6 @@ function(input, output, session) {
     # Retourner le data.frame filtré
     df_filtered
   })
-  
   
   
   # les gènes à afficher selon les case cochées (up et down)

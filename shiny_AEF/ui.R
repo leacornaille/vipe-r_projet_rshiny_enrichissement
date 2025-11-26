@@ -183,7 +183,6 @@ body <- dashboardBody(
               # Summary box pour le total de gènes filtrés
               valueBoxOutput("nb_filtered_genes_box", width = 4),
               
-              
               # box avec les sliders
               box(
                 title = "Valeur seuil", solidHeader = TRUE,
