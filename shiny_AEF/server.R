@@ -14,17 +14,18 @@
 # Date: 10-2025
 
 # Description: Ce script permet de créer une interface en Rshiny. 
-# Il contient pour l'instant uniquement la mise en forme de l'application
+# Il contient pour l'instant la mise en forme de l'application 
+# et le premier volet qui permet de visualiser et télécharger les données de DEG
 # Il intégrera par la suite des fonctions permettant l'analyse d'enrichissement
 # ce script server.R correspond au côté serveur et ne fonctionne que si il y a 
 # également un script ui.R
 #--------------------------------------------------------------------------
 
-
-library(shiny)
-
 # Define server
 function(input, output, session) {
+  
+  #------Données DEG--------------------------------------------------------------
+  
   
   # Affiche les informations sur le fichier uploadé
   output$file1_contents <- renderPrint({
@@ -32,27 +33,207 @@ function(input, output, session) {
     print(input$file)
   })
   
-  # Lecture du fichier CSV (tout le code dans les accolades)
-  data <- reactive({
+  # Lecture du fichier avec fread (format accepté: csv, tsv et txt)
+  deg_data <- reactive({
     req(input$file)
-    read.csv(input$file$datapath)
+    
+    # Vérification extension (et pop-up en cas de mauvais fichier)
+    ext <- tools::file_ext(input$file$name)
+    if (!ext %in% c("csv","tsv","txt")) {
+      showModal(modalDialog(
+        title = "Format de fichier incorrect",
+        paste("Format :", ext, "Formats acceptés : .csv, .tsv, .txt"),
+        easyClose = TRUE,
+        footer = modalButton("Fermer")
+      ))
+      return(NULL)
+    }
+    
+    # Lecture avec fread pour détecter automatiquement le separateur
+    isolate({df_deg <- fread(input$file$datapath)
+    
+    # Vérification colonnes obligatoires (et pop-up si elles manquent)
+    required_cols <- c("GeneName","ID","baseMean","log2FC","pval","padj")
+    missing <- setdiff(required_cols, colnames(df_deg))
+    if (length(missing) > 0) {
+      showModal(modalDialog(
+        title = "Colonnes manquantes",
+        HTML(paste0("Votre fichier doit contenir :", paste(required_cols, collapse=", "),
+              "<br>Colonnes absentes :", paste(missing, collapse=", "))),
+        easyClose = TRUE,
+        footer = modalButton("Fermer")
+      ))
+      return(NULL)
+    }
+    return(df_deg)
+    })
   })
   
-  # Affiche la table sous forme de datatable
+  # gènes filtrés en fonction des sliders 
+  filtered_genes <- reactive({
+    df_deg <- deg_data()
+    req(df_deg)
+    # Filtrage (2 critères: padj et log2fc)
+    df_filtered <- df_deg[(padj <= input$slider_pval) &
+                        (log2FC >= input$slider_fc |
+                         log2FC <= -input$slider_fc)]
+    # Ajouter la colonne "Regulation" (en fonction du seuil log2fc)
+    df_filtered$Regulation <- ifelse(
+      df_filtered$log2FC >= input$slider_fc, "Up", "Down"
+    )
+    # Retourner le data.frame filtré
+    df_filtered
+  })
+  
+  
+  
+  # les gènes à afficher selon les case cochées (up et down)
+  filtered_genes_display <- reactive({
+    df_filtre_updown <- filtered_genes()
+    req(df_filtre_updown)
+    
+    # Si aucune case n'est cochée: tableau vide
+    if (is.null(input$regulation_choice) || length(input$regulation_choice) == 0) {
+      return(df_filtre_updown[0, ])  # renvoie un data.frame vide
+    }
+    
+    # Filtrage selon Up / Down sélectionnés
+    df_filtre_updown[df_filtre_updown$Regulation %in% input$regulation_choice, ]
+  })
+  
+  # nombre de gènes filtrés
+  output$nb_filtered_genes_box <- renderValueBox({
+    df <- filtered_genes()
+    req(df)
+    # somme des gènes up et/ou down 
+    n_up   <- sum(df$Regulation == "Up", na.rm = TRUE)
+    n_down <- sum(df$Regulation == "Down", na.rm = TRUE)
+    n_total <- nrow(df)
+    
+    valueBox(
+      value = paste0(n_total," gènes DEG"),
+      subtitle = paste0("Up: ", n_up, " | Down: ", n_down),
+      icon = icon("dna"),
+      color = "light-blue"
+    )
+  })
+  
+  # Affiche la table non filtré sous forme de datatable
   output$table <- renderDataTable({
-    req(data())
-    datatable(data())
+    req(deg_data())
+    datatable(deg_data(), options = list(scrollX=T))
   })
   
-  # permet le téléchargement 
+  # Affiche la table filtré sous forme de datatable
+  output$table_filtered <- renderDataTable({
+    req(filtered_genes_display())
+    datatable(filtered_genes_display(), options = list(scrollX=T))
+  })
+  
+  
+  # slider en fonction du log2FC
+  output$slider_fc <- renderUI({ 
+    df_deg <- deg_data()
+    sliderInput("slider_fc", "Log2FC", min=0, max= round(max(abs(df_deg$log2FC)), 2), value=0.5) 
+  })
+  
+  # slider en fonction de la p-value
+  output$slider_pval <- renderUI({ 
+    df_deg <- deg_data()
+    sliderInput("slider_pval", "P-value ajustée", min=0, max=1, value=0.1) 
+  })
+  
+  ### volcano plot 
+  output$plotly <- renderPlotly({
+    input$reset_all
+    
+    df_deg <-deg_data()
+    req(df_deg)
+    log2fc_deg <- df_deg$log2FC
+    padj_deg <- -log10(df_deg$padj)
+    # colore en rouge les gènes sur-régulés et en vert les sous-régulés significatif
+    colors <- ifelse(padj_deg >= -log10(input$slider_pval) & log2fc_deg >= input$slider_fc, "#FF6B6B",
+      ifelse(padj_deg >= -log10(input$slider_pval) & log2fc_deg <= -input$slider_fc,"#74c69d","lightgrey")
+      )
+    
+    # texte affiché au survol d'un point
+    hover_text <- paste(
+      "Gène :", df_deg$GeneName, "<br>",
+      "log2FC :", round(df_deg$log2FC, 3), "<br>",
+      "padj :", signif(df_deg$padj, 3), "<br>",
+      "-log10(padj) :", round(padj_deg, 3)
+    )
+    
+    # apparence du volcano plot
+    plot_ly(df_deg, x = ~log2fc_deg, y = ~padj_deg, type = "scatter", mode = "markers",
+            marker = list(color = colors),
+            text = hover_text,
+            hoverinfo = "text") %>%
+      layout(title = "Volcano plot",
+             xaxis = list(title = "Log2FC"),
+             yaxis = list(title = "-log10(padj)")) 
+  })
+  
+  # permet de garder en mémoire les points selectionné sur le volcano plot
+  selected_point_volcano <- reactiveVal(NULL)
+  
+  # récupère les points selectionnés et renvoie les indices
+  observeEvent(event_data("plotly_selected"), {
+    s <- event_data("plotly_selected")
+    if (!is.null(s)) {
+      df_deg <- deg_data()
+      selected_point_volcano(df_deg[s$pointNumber + 1, ])
+    }
+  })
+  
+  # Réinitialise la selection quand appuie sur "reset"
+  observeEvent(input$reset_all, {
+    selected_point_volcano(NULL)
+  })
+  
+  # Affiche le tableau avec les points sélectionnés
+  output$selected_points_table <- renderDataTable({
+    req(selected_point_volcano())
+    datatable(selected_point_volcano(), options = list(scrollX=T))
+  })
+  
+  # permet le téléchargement du tableau filtré (up ou down ou les deux)
   output$downloadData <- downloadHandler(
-    filename = function() { "data.csv" },
+    filename = function() { "filtered_genes.csv" },
     content = function(file) {
-      req(data())                  
-      write.csv(data(), file, row.names = FALSE)
+      req(filtered_genes())                  
+      write.csv(filtered_genes_display(), file, row.names = FALSE)
     }
   )
   
+  # téléchargement du tableau avec les points selectionnées par l'utilisateur
+  output$downloadSelected <- downloadHandler(
+    filename = function() { "selected_genes.csv" },
+    content = function(file) {
+      req(selected_point_volcano())  # assure qu'il y a des points sélectionnés
+      write.csv(selected_point_volcano(), file, row.names = FALSE)
+    }
+  )
+  
+  # version des packages utilisés
+  get_package_versions <- function() {
+    pkgs <- c(
+      "DT",
+      "data.table",
+      "fresh",
+      "plotly",
+      "shiny",
+      "shinyBS",
+      "shinyWidgets",
+      "shinydashboard",
+      "shinydashboardPlus",
+      "waiter"
+    )
+    versions <- sapply(pkgs, function(p) as.character(packageVersion(p)))
+    data.frame(Package = pkgs, Version = versions, row.names = NULL)
+  }
+  
+  # Affiche les informations sur l'application
   observeEvent(input$info_btn, {
     showModal(
       modalDialog(
@@ -62,11 +243,17 @@ function(input, output, session) {
          <p><b>Email :</b> lea.cornaille@hotmail.com</p>
          <p><b>Affiliation :</b> Université de Rouen</p>
          <p><b>Projet :</b> Analyse d'enrichissement fonctionnel</p>
-         <p><b>Date :</b> 10-2025</p>"
+         <p><b>Date :</b> 11-2025</p>
+         <p><b>Version de VIPE-R :</b> 0.2 </p>"
         ),
+        DT::renderDataTable({
+          datatable(get_package_versions(), options = list(dom='t', paging=FALSE))
+        }),
         easyClose = TRUE,
         footer = modalButton("Fermer")
       )
     )
   })
+  
+  
 }

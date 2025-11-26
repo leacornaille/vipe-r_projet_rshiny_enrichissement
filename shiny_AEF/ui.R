@@ -23,9 +23,15 @@
 # chargement des packages
 library(shiny)
 library(shinydashboard)
+library(shinyBS)
 library(fresh)
 library(DT)
 library(shinyWidgets)
+library(shinydashboardPlus)
+library(plotly)
+library(waiter)
+library(data.table)
+
 
 # thème permettant de changer les couleurs de base
 mytheme <- create_theme(
@@ -38,7 +44,7 @@ mytheme <- create_theme(
 
 ### Construction du Dashboard ###
 
-# En tête
+#------ En tête ----------------------------------------------------------------
 header <- dashboardHeader(title = tags$div(
   tags$img(src = "logo.png", height = "40px", style = "margin-right:10px;"),
   "VIPE-R"),
@@ -50,7 +56,7 @@ header <- dashboardHeader(title = tags$div(
   )
 )
 
-# Barre de gauche
+#------ Barre de gauche --------------------------------------------------------
 sidebar <-dashboardSidebar(
   # menuItem = création d'une case clicable au niveau de la sidebar
   sidebarMenu(
@@ -61,23 +67,23 @@ sidebar <-dashboardSidebar(
   fileInput("file", "Choisissez un fichier csv"),
   
   # permet de sélectionner une espèce
-  
-  
   selectInput( 
     "select", 
-    "Sélectionné un organisme:", 
+    "Sélectionner un organisme:", 
     list("homo sapiens" = "humain", "mus musculus" = "souris", "gallus gallus" = "poulet")),
   
   # créer les onglets dans sidebar
   sidebarMenu(
     menuItem("Visualisation des données", tabName = "inspection", icon = icon("eye")),
-    menuItem("Enrichissement (GO term)", icon = icon("sitemap"), tabName = "enrichissement")
+    menuItem("Enrichissement (GO term)", icon = icon("sitemap"), tabName = "enrichissement"),
+    menuItem("Enrichissement (Pathway)", icon = icon("chart-pie"),tabName = "pathway")
   )
 )
 
-# Corps
+#------ Corps --------------------------------------------------------------------
 body <- dashboardBody(
   tags$head(
+    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
   ),
   
   # utilisation du thème personnalisé
@@ -95,22 +101,69 @@ body <- dashboardBody(
       ),
       h3("Interface pour l'analyse d'enrichissement fonctionnel."),
       p("Cette interface a été créee dans le cadre de l'UE analyse en 
-    sciences omiques du master de bioinformatique de L'université de Rouen Normandie"),
+        sciences omiques du master de bioinformatique de L'université de Rouen Normandie"),
       
-      # 
       # Tabset interactif pour faciliter la lisibilité du guide d'utilisation
       tabsetPanel(
         id = "guide_tabs",
-        tabPanel("Introduction", 
-                 p("Bienvenue sur VIPE-R ! Cette section explique comment utiliser l'application.")),
+        tabPanel(
+          "Introduction",
+          
+          h3("Bienvenue sur VIPE-R !"),
+          
+          p("VIPE-R est une application interactive conçue pour faciliter l'analyse et la visualisation des données de gènes différentiellement exprimés (DEG)."),
+          
+          p("L'objectif de VIPE-R est de :"),
+          
+          tags$ul(
+            tags$li("Permettre l'exploration interactive des résultats d'analyses transcriptomiques."),
+            tags$li("Visualiser facilement les gènes régulés positivement ou négativement grâce à des volcano plots."),
+            tags$li("Identifier rapidement les gènes d'intérêt et générer des tables filtrées selon vos critères."),
+            tags$li("Télécharger les visualisations et les données pour un usage dans des publications ou des analyses complémentaires."),
+            tags$li("Faciliter la comparaison entre différents groupes ou conditions expérimentales.")
+          ),
+          
+          p("Cette application est particulièrement adaptée pour les biologistes et bioinformaticiens souhaitant :"),
+          tags$ul(
+            tags$li("Explorer leurs données de manière intuitive et interactive."),
+            tags$li("Gagner du temps dans l'analyse et l'interprétation des résultats."),
+            tags$li("Communiquer leurs résultats via des graphiques et tableaux prêts à l'emploi.")
+          ),
+          
+          p("Prenez le temps de parcourir les différentes sections pour découvrir toutes les fonctionnalités et tirer le meilleur parti de VIPE-R !")
+        ),
         tabPanel("Importation des données", 
-                 p("Vous pouvez importer vos fichiers CSV via le menu à gauche.")),
-        tabPanel("Visualisation", 
-                 p("Ajustez les seuils de Log2FC et p-value et explorez vos graphiques interactifs.")),
-        tabPanel("Téléchargement", 
-                 p("Téléchargez vos résultats filtrés via le bouton 'Télécharger'.")),
+                 h3("Importer vos fichiers"),
+                 p("Vous pouvez importer vos fichiers CSV via le menu à gauche."),
+                 tags$ul(
+                   tags$li("Les colonnes obligatoires sont : GeneName, ID, baseMean, log2FC, pval, padj"),
+                   tags$li("Formats acceptés : CSV, TSV, TXT"),
+                   tags$li("En cas d'erreur, un message s'affichera automatiquement")
+                 )),
+        tabPanel(
+          "Visualisation données DEG",
+          h3("Analyse et exploration des gènes différentiellement exprimés"),
+          p("Ajustez les seuils de Log2FC et p-value pour faire varier le volcano plot."),
+          
+          p("Un volcano plot permet de visualiser les gènes différentiellement exprimés :"),
+          tags$ul(
+            tags$li("L'axe X représente le Log2 fold change (Log2FC)."),
+            tags$li("L'axe Y représente le -log10(p-value)."),
+            tags$li("Les gènes significativement régulés vers le haut ou vers le bas apparaissent généralement en rouge ou bleu.")
+          ),
+          
+          p("Seuils par défaut : Log2FC = 1 et p-value = 0.05. Vous pouvez ajuster ces valeurs pour filtrer les gènes."),
+          p("Les gènes colorés sont significatifs."),
+          
+          p("Fonctionnalités interactives disponibles :"),
+          tags$ul(
+            tags$li("Vous pouvez sélectionner des gènes directement sur le volcano plot et les afficher dans un tableau."),
+            tags$li("Il est possible de télécharger le volcano plot en image."),
+            tags$li("Vous pouvez également télécharger les tables de gènes filtrés selon les seuils choisis et le sens de régulation.")
+          )
+        ),
         tabPanel("Enrichissement", 
-                 p("Explorez les GO terms pour identifier les processus biologiques associés.")),
+                 p("Explorez les GO terms pour identifier les processus biologiques associés."))
       )
     ),
     
@@ -123,50 +176,76 @@ body <- dashboardBody(
               box(
                 title = "Volcano plot", status = "primary", solidHeader = TRUE,
                 width = 6,  
-                plotOutput("plot", height = 250),
+                plotlyOutput("plotly", height = 350),
                 collapsible = T  
               ),
-              # box pour une autre figure ou autre
-              box(
-                title = "Autres visualisation", status = "primary", solidHeader = TRUE,
-                width = 6,  
-                plotOutput("plot", height = 250),
-                collapsible = T  
-              )
-            ),
-            
-            fluidRow(
+              
+              # Summary box pour le total de gènes filtrés
+              valueBoxOutput("nb_filtered_genes_box", width = 4),
+              
+              
               # box avec les sliders
               box(
                 title = "Valeur seuil", solidHeader = TRUE,
                 width = 6,
                 chooseSliderSkin(skin= "Flat", color ="#264653"),
-                sliderInput("sliderfc", "Log2FC:", 1, 100, 50),
-                sliderInput("sliderpval", "p-value:", 0, 1, 0.01),
-                collapsible = T
-              ),
-              
-              # box contenant le tableau donné en entrée
-              box(
-                title = "Tableau", status = "info", solidHeader = TRUE,
-                width = 6,
-                dataTableOutput("table"),
-                collapsible = T
+                uiOutput("slider_fc"),
+                uiOutput("slider_pval"),
+                bsTooltip("slider_fc", "Seuil de log2FC pour filtrer les gènes", placement = "top"),
+                bsTooltip("slider_pval", "Seuil de p-value ajustée", placement = "top"),
+                collapsible = T,
+                actionButton("reset_all", "Réinitialiser")
               )
             ),
-            # bouton download 
-              downloadButton("downloadData", "Télécharger")
+            
+            # box contenant les tableaux de DEG (initial, filtré et sélectionné manuellement)
+            box(
+              title = "Tableaux", status = "info", solidHeader = TRUE,
+              collapsible = TRUE,
+              width = 12,
+              
+              tabsetPanel(
+                # tableau des données DEG brutes
+                tabPanel(
+                  "Données DEG brutes",
+                  dataTableOutput("table")
+                ),
+                # tableau des données DEG filtré
+                tabPanel(
+                  "Données DEG filtrées (Up/Down)",
+                  prettyCheckboxGroup(
+                    inputId = "regulation_choice",
+                    label = "Choix d'affichage",
+                    choices = c("Up", "Down"),
+                    status = "danger",
+                    shape = "curve",
+                    outline = TRUE,
+                    inline = TRUE
+                  ),
+                  DTOutput("table_filtered"),
+                  downloadButton("downloadData", "Télécharger")
+                ),
+                # tableau des données DEG selectionné par l'utilisateur
+                tabPanel(
+                  "Données sélectionnées",
+                  DTOutput("selected_points_table"),
+                  downloadButton("downloadSelected", "Télécharger")
+                )
+              )
+            ),
     ),
-
-    # Onglet Enrichissement
+    
+    # Onglet Enrichissement GO term
     tabItem(tabName = "enrichissement",
             h2("Enrichissement (GO term)")
+    ),
+    
+    # Onglet Enrichissement Pathway
+    tabItem(tabName = "pathway",
+            h2("Enrichissement (Pathway)")
     )
   )
 )
 
 # construire l’interface utilisateur complète du tableau de bord Shiny
-ui <-  dashboardPage(header,sidebar, body,
-                     tags$head(
-                       tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
-                     ))
+ui <-  dashboardPage(header,sidebar, body)
