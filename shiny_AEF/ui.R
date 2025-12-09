@@ -10,8 +10,8 @@
 #----------------------------------------------------------------
 # auteur: Léa Cornaille
 # mail: lea.cornaille@hotmail.com
-# Affiliation: Université de Rouen
-# Date: 10-2025
+# Affiliation: INSERM Unité ADEN
+# Date: 11-2025
 
 # Description: Ce script permet de créer une interface en Rshiny. 
 # Il contient pour l'instant uniquement la mise en forme de l'application
@@ -38,7 +38,8 @@ mytheme <- create_theme(
   adminlte_color(
     light_blue = "#2a9d8f",
     blue = "#264653",
-    aqua= "#74c69d"
+    aqua= "#74c69d",
+    yellow = "#669bbc"
   )
 )
 
@@ -75,8 +76,12 @@ sidebar <-dashboardSidebar(
   # créer les onglets dans sidebar
   sidebarMenu(
     menuItem("Visualisation des données", tabName = "inspection", icon = icon("eye")),
-    menuItem("Enrichissement (GO term)", icon = icon("sitemap"), tabName = "enrichissement"),
-    menuItem("Enrichissement (Pathway)", icon = icon("chart-pie"),tabName = "pathway")
+    menuItem("Enrichissement (GO term)", icon = icon("sitemap"), tabName = "enrichissement", startExpanded = TRUE,
+             menuSubItem("ORA", tabName = "ora_go"),
+             menuSubItem("GSEA", tabName = "gsea_go")),
+    menuItem("Enrichissement (Pathway)", icon = icon("chart-pie"),tabName = "pathway", startExpanded = TRUE,
+             menuSubItem("ORA", tabName = "ora_path"),
+             menuSubItem("GSEA", tabName = "gsea_path"))
   )
 )
 
@@ -91,7 +96,7 @@ body <- dashboardBody(
   # tabItems : regroupe ensuite tout mes tabItem correspondant aux menuItem  
   tabItems(
     
-    # Onglet Accueil
+    # ------ Onglet Accueil ------------------------------------------------------
     tabItem(
       tabName = "home",
       tags$div(
@@ -167,7 +172,7 @@ body <- dashboardBody(
       )
     ),
     
-    # Onglet Visualisation
+    # ------ Onglet Visualisation ----------------------------------------------
     tabItem(tabName = "inspection",
             h2("Visualisation des données de DEG"),
             
@@ -234,14 +239,179 @@ body <- dashboardBody(
             ),
     ),
     
-    # Onglet Enrichissement GO term
-    tabItem(tabName = "enrichissement",
-            h2("Enrichissement (GO term)")
+    # ------ Onglet ORA GO term -----------------------------------------------
+    tabItem(tabName = "ora_go",
+            h2("Enrichissement (GO term)"),
+            h3("Méthode ORA"),
+            
+            fluidRow(
+              box(title = "Paramètre ORA", 
+                  width = 12, 
+                  collapsible = TRUE
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Figure", 
+                  width = 6,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_ora_go", "ridge_plot" = "ridge_ora_go", "fig3" = "fig3"))
+              ),
+              box(title = "Figure",
+                  width = 6,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_ora_go", "ridge_plot" = "ridge_ora_go", "fig3" = "fig3"))
+                  )
+            ),
+            
+            fluidRow(
+              box(title = "Tableau résultats ORA",
+                  width = 12,
+                  collapsible = TRUE
+              )
+            )
     ),
     
-    # Onglet Enrichissement Pathway
-    tabItem(tabName = "pathway",
-            h2("Enrichissement (Pathway)")
+    # ------ Onglet GSEA GO term ----------------------------------------------
+    tabItem(tabName = "gsea_go",
+            h2("Enrichissement (GO term)"),
+            h3("Méthode GSEA"),
+            
+            fluidRow(
+              box(title = "Paramètre GSEA", 
+                  width = 12, 
+                  collapsible = TRUE
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Figure", 
+                  width = 6,
+                  status = "warning",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_gsea_go", "ridge_plot" = "ridge_gsea_go", "fig3" = "fig3"))
+              ),
+              box(title = "Figure",
+                  width = 6,
+                  status = "warning",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_gsea_go", "ridge_plot" = "ridge_gsea_go", "fig3" = "fig3"))
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Tableau résultats GSEA",
+                  width = 12,
+                  collapsible = TRUE
+              )
+            )
+    ) ,
+    # ------ Onglet ORA Pathway -----------------------------------------------
+    tabItem(tabName = "ora_path",
+            h2("Enrichissement (Pathway)"),
+            h3("Méthode ORA"),
+            
+            fluidRow(
+              box(title = "Paramètre ORA", 
+                  width = 12, 
+                  collapsible = TRUE
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Figure", 
+                  width = 6,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_ora_path", "ridge_plot" = "ridge_ora_path", "fig3" = "fig3"))
+              ),
+              box(title = "Figure",
+                  width = 6,
+                  status = "primary",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_oea_path", "ridge_plot" = "ridge_ora_path", "fig3" = "fig3"))
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Tableau résultats ORA",
+                  width = 12,
+                  collapsible = TRUE
+              )
+            )
+    ),
+    
+    # ------ Onglet GSEA Pathway ----------------------------------------------
+    tabItem(tabName = "gsea_path",
+            h2("Enrichissement (Pathway)"),
+            h3("Méthode GSEA"),
+            
+            fluidRow(
+              box(title = "Paramètre GSEA", 
+                  width = 12, 
+                  collapsible = TRUE
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Figure", 
+                  width = 6,
+                  status = "warning",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_gsea_path", "ridge_plot" = "ridge_gsea_path", "fig3" = "fig3"))
+              ),
+              box(title = "Figure",
+                  width = 6,
+                  status = "warning",
+                  solidHeader = TRUE,
+                  collapsible = TRUE,
+                  
+                  selectInput( 
+                    "select_graph", 
+                    "Sélectionner le type de graphique:", 
+                    list("dotplot" = "dotplot_gsea_path", "ridge_plot" = "ridge_gsea_path", "fig3" = "fig3"))
+              )
+            ),
+            
+            fluidRow(
+              box(title = "Tableau résultats GSEA",
+                  width = 12,
+                  collapsible = TRUE
+              )
+            )
     )
   )
 )

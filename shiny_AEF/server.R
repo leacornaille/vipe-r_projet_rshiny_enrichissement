@@ -1,12 +1,3 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    https://shiny.posit.co/
-#
-
 #----------------------------------------------------------------
 # auteur: Léa Cornaille
 # mail: lea.cornaille@hotmail.com
@@ -50,37 +41,55 @@ function(input, output, session) {
     }
     
     # Lecture avec fread pour détecter automatiquement le separateur
-    isolate({df_deg <- fread(input$file$datapath)
-    
-    # Vérification colonnes obligatoires (et pop-up si elles manquent)
-    required_cols <- c("GeneName","ID","baseMean","log2FC","pval","padj")
-    missing <- setdiff(required_cols, colnames(df_deg))
-    if (length(missing) > 0) {
-      showModal(modalDialog(
-        title = "Colonnes manquantes",
-        HTML(paste0("Votre fichier doit contenir :", paste(required_cols, collapse=", "),
-              "<br>Colonnes absentes :", paste(missing, collapse=", "))),
-        easyClose = TRUE,
-        footer = modalButton("Fermer")
-      ))
-      return(NULL)
-    }
-    return(df_deg)
+    isolate({
+      df_deg <- fread(input$file$datapath)
+      
+      # Vérification colonnes obligatoires (et pop-up si elles manquent)
+      required_cols <- c("GeneName","ID","baseMean","log2FC","pval","padj")
+      missing <- setdiff(required_cols, colnames(df_deg))
+      if (length(missing) > 0) {
+        showModal(modalDialog(
+          title = "Colonnes manquantes",
+          HTML(paste0("Votre fichier doit contenir :", paste(required_cols, collapse=", "),
+                      "<br>Colonnes absentes :", paste(missing, collapse=", "))),
+          easyClose = TRUE,
+          footer = modalButton("Fermer")
+        ))
+        return(NULL)
+      }
+      
+      # Conversion en numérique des colonnes critiques
+      df_deg$log2FC <- as.numeric(df_deg$log2FC)
+      df_deg$padj <- as.numeric(df_deg$padj)
+      df_deg$baseMean <- as.numeric(df_deg$baseMean)
+      df_deg$pval <- as.numeric(df_deg$pval)
+      
+      return(df_deg)
     })
   })
   
   # gènes filtrés en fonction des sliders 
   filtered_genes <- reactive({
     df_deg <- deg_data()
-    req(df_deg)
-    # Filtrage (2 critères: padj et log2fc)
-    df_filtered <- df_deg[(df_deg$padj <= input$slider_pval) &
-                        (df_deg$log2FC >= input$slider_fc |
-                         df_deg$log2FC <= -input$slider_fc)]
+    req(df_deg, input$slider_pval, input$slider_fc)
+    
+    # Conversion en data.frame pour éviter les problèmes avec data.table
+    df_deg <- as.data.frame(df_deg)
+    
+    # Créer un vecteur logique pour le filtrage
+    keep <- !is.na(df_deg$log2FC) & 
+      !is.na(df_deg$padj) &
+      (df_deg$padj <= input$slider_pval) &
+      (abs(df_deg$log2FC) >= input$slider_fc)
+    
+    # Appliquer le filtre
+    df_filtered <- df_deg[keep, ]
+    
     # Ajouter la colonne "Regulation" (en fonction du seuil log2fc)
     df_filtered$Regulation <- ifelse(
       df_filtered$log2FC >= input$slider_fc, "Up", "Down"
     )
+    
     # Retourner le data.frame filtré
     df_filtered
   })
@@ -133,12 +142,16 @@ function(input, output, session) {
   # slider en fonction du log2FC
   output$slider_fc <- renderUI({ 
     df_deg <- deg_data()
-    sliderInput("slider_fc", "Log2FC", min=0, max= round(max(abs(df_deg$log2FC)), 2), value=0.5) 
+    req(df_deg)
+    log2fc_vals <- as.numeric(df_deg$log2FC)
+    log2fc_vals <- log2fc_vals[!is.na(log2fc_vals)]
+    sliderInput("slider_fc", "Log2FC", min = 0, max = round(max(abs(log2fc_vals)), 2), value = 0.5)
   })
   
   # slider en fonction de la p-value
   output$slider_pval <- renderUI({ 
     df_deg <- deg_data()
+    req(df_deg)
     sliderInput("slider_pval", "P-value ajustée", min=0, max=1, value=0.1) 
   })
   
@@ -146,43 +159,71 @@ function(input, output, session) {
   output$plotly <- renderPlotly({
     input$reset_all
     
-    df_deg <-deg_data()
+    df_deg <- deg_data()
     req(df_deg)
-    log2fc_deg <- df_deg$log2FC
-    padj_deg <- -log10(df_deg$padj)
-    # colore en rouge les gènes sur-régulés et en vert les sous-régulés significatif
-    colors <- ifelse(padj_deg >= -log10(input$slider_pval) & log2fc_deg >= input$slider_fc, "#FF6B6B",
-      ifelse(padj_deg >= -log10(input$slider_pval) & log2fc_deg <= -input$slider_fc,"#74c69d","lightgrey")
+    req(input$slider_pval, input$slider_fc)
+    
+    # S'assurer que les valeurs sont numériques
+    log2fc_deg <- as.numeric(df_deg$log2FC)
+    padj_deg <- as.numeric(df_deg$padj)
+    
+    # Calculer -log10(padj) avec protection contre valeurs nulles
+    padj_log <- -log10(padj_deg)
+    
+    # Colore en rouge les gènes sur-régulés et en vert les sous-régulés significatif
+    colors <- ifelse(
+      padj_log >= -log10(input$slider_pval) & log2fc_deg >= input$slider_fc, 
+      "#FF6B6B",
+      ifelse(
+        padj_log >= -log10(input$slider_pval) & log2fc_deg <= -input$slider_fc,
+        "#74c69d",
+        "lightgrey"
       )
+    )
     
     # texte affiché au survol d'un point
     hover_text <- paste(
       "Gène :", df_deg$GeneName, "<br>",
-      "log2FC :", round(df_deg$log2FC, 3), "<br>",
-      "padj :", signif(df_deg$padj, 3), "<br>",
-      "-log10(padj) :", round(padj_deg, 3)
+      "log2FC :", round(log2fc_deg, 3), "<br>",
+      "padj :", signif(padj_deg, 3), "<br>",
+      "-log10(padj) :", round(padj_log, 3)
     )
     
     # apparence du volcano plot
-    plot_ly(df_deg, x = ~log2fc_deg, y = ~padj_deg, type = "scatter", mode = "markers",
-            marker = list(color = colors),
-            text = hover_text,
-            hoverinfo = "text") %>%
-      layout(title = "Volcano plot",
-             xaxis = list(title = "Log2FC"),
-             yaxis = list(title = "-log10(padj)")) 
+    p <- plot_ly(
+      x = ~log2fc_deg, 
+      y = ~padj_log, 
+      type = "scatter",
+      mode = "markers", 
+      marker = list(color = colors),
+      text = hover_text, 
+      hoverinfo = "text",
+      source = "volcano"
+    ) %>%
+      event_register("plotly_selected") %>%
+      layout(
+        title = "Volcano plot",
+        xaxis = list(title = "Log2FC"),
+        yaxis = list(title = "-log10(padj)")
+      )
+    
+    p
   })
   
   # permet de garder en mémoire les points selectionné sur le volcano plot
   selected_point_volcano <- reactiveVal(NULL)
   
   # récupère les points selectionnés et renvoie les indices
-  observeEvent(event_data("plotly_selected"), {
-    s <- event_data("plotly_selected")
-    if (!is.null(s)) {
-      df_deg <- deg_data()
-      selected_point_volcano(df_deg[s$pointNumber + 1, ])
-    }
+  observe({
+    s <- tryCatch(
+      plotly::event_data("plotly_selected", source = "volcano"),
+      error = function(e) NULL
+    )
+    
+    if (is.null(s)) return()   # rien à faire si aucun point sélectionné
+    
+    df_deg <- deg_data()
+    selected_point_volcano(df_deg[s$pointNumber + 1, ])
   })
   
   # Réinitialise la selection quand appuie sur "reset"
