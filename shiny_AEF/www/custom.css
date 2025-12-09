@@ -12,6 +12,18 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
   line-height: 50px;
 }
 
+/* Onglets de tabsetPanel */
+.nav.nav-tabs > li > a {
+  color: #264653 !important;
+  font-weight: bold !important;
+  background-color: #e9f5f2 !important;
+}
+
+/* Onglet actif de tabsetPanel */
+.nav.nav-tabs > li.active > a {
+  color: #ffffff !important;
+  background-color: #2a9d8f !important;
+}
 
 .btn, .btn-default {
   background-color: #2a9d8f !important;
@@ -26,15 +38,63 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
   color: #ffffff !important;
 }
 
-/* Onglets de tabsetPanel */
-.nav.nav-tabs > li > a {
-  color: #264653 !important;
-  font-weight: bold !important;
-  background-color: #e9f5f2 !important;
+/* ===========================================================
+   BOUTON COLLAPSE SHINYDASHBOARD – COULEUR SELON STATUS
+   =========================================================== */
+
+/* Style général du bouton */
+.box .box-header .box-tools .btn-box-tool {
+  border-radius: 6px;
+  padding: 4px 8px;
+  background: transparent;
 }
 
-/* Onglet actif de tabsetPanel */
-.nav.nav-tabs > li.active > a {
-  color: #ffffff !important;
-  background-color: #2a9d8f !important;
+/* Icône */
+.box .box-header .box-tools .btn-box-tool i {
+  font-size: 16px;
+  color: white !important;
+}
+
+/* -------- PRIMARY -------- */
+.box.box-primary .box-header {
+  background: #2a9d8f !important;
+}
+.box.box-primary .box-header .btn-box-tool {
+  background: #2a9d8f !important;
+}
+.box.box-primary .box-header .btn-box-tool:hover {
+  background: #264653 !important;
+}
+
+/* -------- INFO -------- */
+.box.box-info .box-header {
+  background: #74c69d !important;
+}
+.box.box-info .box-header .btn-box-tool {
+  background: #74c69d !important;
+}
+.box.box-info .box-header .btn-box-tool:hover {
+  background: #52b788 !important;
+}
+
+/* -------- WARNING -------- */
+.box.box-warning .box-header {
+  background: #669bbc !important;
+}
+.box.box-warning .box-header .btn-box-tool {
+  background: #669bbc !important;
+}
+.box.box-warning .box-header .btn-box-tool:hover {
+  background: #457b9d !important;
+}
+
+/* -------- DANGER (si utilisées plus tard) -------- */
+.box.box-danger .box-header {
+  background: #e63946 !important;
+}
+.box.box-danger .box-header .btn-box-tool {
+  background: #e63946 !important;
+}
+.box.box-danger .box-header .btn-box-tool:hover {
+  background: #b02a37 !important;
 }

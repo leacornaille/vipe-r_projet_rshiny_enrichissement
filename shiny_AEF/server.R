@@ -15,8 +15,7 @@
 # Define server
 function(input, output, session) {
   
-  #------Données DEG--------------------------------------------------------------
-  
+  #------Données DEG (onglet Whole data Inspection)-----------------------------
   
   # Affiche les informations sur le fichier uploadé
   output$file1_contents <- renderPrint({
@@ -206,7 +205,6 @@ function(input, output, session) {
         xaxis = list(title = "Log2FC"),
         yaxis = list(title = "-log10(padj)")
       )
-    
     p
   })
   
@@ -254,6 +252,8 @@ function(input, output, session) {
       write.csv(selected_point_volcano(), file, row.names = FALSE)
     }
   )
+  
+  # ------ session à propos ---------------------------------------------------
   
   # version des packages utilisés
   get_package_versions <- function() {

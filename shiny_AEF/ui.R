@@ -32,7 +32,6 @@ library(plotly)
 library(waiter)
 library(data.table)
 
-
 # thème permettant de changer les couleurs de base
 mytheme <- create_theme(
   adminlte_color(
