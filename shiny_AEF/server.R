@@ -301,9 +301,9 @@ function(input, output, session) {
     req(df)
     
     if(input$reg_type == "overexpress"){
-      df <- df[df$Regulation == "Up ", ]
+      df <- df[df$Regulation == "Up", ]
     } else if(input$reg_type == "underexpress"){
-      df <- df[df$Regulation == "Down ", ]
+      df <- df[df$Regulation == "Down", ]
     }
     df
   })
