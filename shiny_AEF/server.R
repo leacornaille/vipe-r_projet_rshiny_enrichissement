@@ -15,7 +15,8 @@
 # Define server
 function(input, output, session) {
   
-  #------Données DEG (onglet Whole data Inspection)-----------------------------
+  #------Données DEG--------------------------------------------------------------
+  
   
   # Affiche les informations sur le fichier uploadé
   output$file1_contents <- renderPrint({
@@ -205,6 +206,7 @@ function(input, output, session) {
         xaxis = list(title = "Log2FC"),
         yaxis = list(title = "-log10(padj)")
       )
+    
     p
   })
   
@@ -253,8 +255,6 @@ function(input, output, session) {
     }
   )
   
-  # ------ session à propos ---------------------------------------------------
-  
   # version des packages utilisés
   get_package_versions <- function() {
     pkgs <- c(
@@ -294,6 +294,76 @@ function(input, output, session) {
       )
     )
   })
+  
+  
+  genes_filtered_type <- reactive({
+    df <- filtered_genes_display()
+    req(df)
+    
+    if(input$reg_type == "overexpress"){
+      df <- df[df$Regulation == "Up ", ]
+    } else if(input$reg_type == "underexpress"){
+      df <- df[df$Regulation == "Down ", ]
+    }
+    df
+  })
+  
+  
+  enrich_res <- eventReactive(input$runGO, {
+    df <- genes_filtered_type()
+    
+    validate(
+      need(nrow(df) > 0, "Aucun gène ne passe les filtres !")
+    )
+    
+    # Liste de gènes ENSEMBL (important !)
+    gene_list <- df$ID  # adapter selon le nom de colonne
+    
+    OrgDb_selected <- switch(input$select,
+                             "humain" = org.Hs.eg.db,
+                             "souris" = org.Mm.eg.db)
+    
+    enrichGO(
+      gene          = gene_list,
+      OrgDb         = OrgDb_selected,
+      keyType       = "ENSEMBL",
+      ont           = input$ont,
+      pAdjustMethod = "BH",
+      pvalueCutoff  = 0.05,
+      qvalueCutoff  = 0.2
+    )
+  })
+  
+  # ---- cnetplot ----
+  output$go_plot1 <- renderPlot({
+    req(enrich_res())
+    
+    if(input$select_graph1 =="ridgeplot"){
+      ridgeplot(enrich_res(), showCategory = 10)
+    } else if(input$select_graph1 =="dotplot"){
+      dotplot(enrich_res())
+    } else if (input$select_graph1 =="cnetplot"){
+      cnetplot(enrich_res(), showCategory = 10)
+    }
+  })
+  
+  output$go_plot2<- renderPlot({
+    req(enrich_res())
+    if(input$select_graph2 =="ridgeplot"){
+      ridgeplot(enrich_res(), showCategory = 10)
+    } else if(input$select_graph2 =="dotplot"){
+      dotplot(enrich_res())
+    } else if (input$select_graph2 =="cnetplot"){
+      cnetplot(enrich_res(), showCategory = 10)
+    }
+    
+    
+    
+  })
+  
+  
+  
+  
   
   
 }

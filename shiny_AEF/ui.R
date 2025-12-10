@@ -31,6 +31,10 @@ library(shinydashboardPlus)
 library(plotly)
 library(waiter)
 library(data.table)
+library(clusterProfiler)
+library(org.Mm.eg.db)
+library(DOSE)
+
 
 # thème permettant de changer les couleurs de base
 mytheme <- create_theme(
@@ -244,34 +248,34 @@ body <- dashboardBody(
             h3("Méthode ORA"),
             
             fluidRow(
-              box(title = "Paramètre ORA", 
-                  width = 12, 
-                  collapsible = TRUE
-              )
+              box(title = "Paramètres", solidHeader = TRUE, width = 12,
+                  selectInput("reg_type", "Choisir le type de régulation :",
+                              choices = c("Overexpressed" = "overexpress", 
+                                          "Underexpress" ="underexpress",
+                                          "Both" ="both"),
+                              selected="both"),
+                  selectInput("ont", "Choisir ontologie :", 
+                              choices = c("Biological Process" = "BP",
+                                          "Cellular Component" ="CC", 
+                                          "Molecular Function" = "MF"),
+                              selected="BP"),
+                  actionButton("runGO", "Run", icon=icon("play"), class="btn-success"))
             ),
             
             fluidRow(
-              box(title = "Figure", 
-                  width = 6,
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_ora_go", "ridge_plot" = "ridge_ora_go", "fig3" = "fig3"))
-              ),
-              box(title = "Figure",
-                  width = 6,
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_ora_go", "ridge_plot" = "ridge_ora_go", "fig3" = "fig3"))
-                  )
+              box(title = "plot1", width=12,  height = 900,  solidHeader =TRUE, 
+                  selectInput("select_graph1", "Sélectionner le type de graphique :", 
+                              choices = c("dotplot" = "dotplot", 
+                                          "ridgeplot" = "ridgeplot", 
+                                          "cnetplot" = "cnetplot")),
+                  plotOutput("go_plot1")),
+              
+              box(title = "plot2", width=12,  height = 600,  solidHeader =TRUE, 
+                  selectInput("select_graph2", "Sélectionner le type de graphique :", 
+                              choices = c("dotplot" = "dotplot", 
+                                          "ridgeplot" = "ridgeplot", 
+                                          "cnetplot" = "cnetplot")),
+                  plotOutput("go_plot2"))
             ),
             
             fluidRow(
