@@ -20,22 +20,6 @@
 # également un script serveur.R
 #--------------------------------------------------------------------------
 
-# chargement des packages
-library(shiny)
-library(shinydashboard)
-library(shinyBS)
-library(fresh)
-library(DT)
-library(shinyWidgets)
-library(shinydashboardPlus)
-library(plotly)
-library(waiter)
-library(data.table)
-library(clusterProfiler)
-library(org.Mm.eg.db)
-library(DOSE)
-
-
 # thème permettant de changer les couleurs de base
 mytheme <- create_theme(
   adminlte_color(
