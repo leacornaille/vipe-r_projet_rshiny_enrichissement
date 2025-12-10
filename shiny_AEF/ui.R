@@ -190,40 +190,42 @@ body <- dashboardBody(
             ),
             
             # box contenant les tableaux de DEG (initial, filtré et sélectionné manuellement)
-            box(
-              title = "Tableaux", status = "info", solidHeader = TRUE,
-              collapsible = TRUE,
-              width = 12,
-              
-              tabsetPanel(
-                # tableau des données DEG brutes
-                tabPanel(
-                  "Données DEG brutes",
-                  dataTableOutput("table")
-                ),
-                # tableau des données DEG filtré
-                tabPanel(
-                  "Données DEG filtrées (Up/Down)",
-                  prettyCheckboxGroup(
-                    inputId = "regulation_choice",
-                    label = "Choix d'affichage",
-                    choices = c("Up", "Down"),
-                    status = "danger",
-                    shape = "curve",
-                    outline = TRUE,
-                    inline = TRUE
+            fluidRow(
+              box(
+                title = "Tableaux", status = "info", solidHeader = TRUE,
+                collapsible = TRUE,
+                width = 12,
+                
+                tabsetPanel(
+                  # tableau des données DEG brutes
+                  tabPanel(
+                    "Données DEG brutes",
+                    dataTableOutput("table")
                   ),
-                  DTOutput("table_filtered"),
-                  downloadButton("downloadData", "Télécharger")
-                ),
-                # tableau des données DEG selectionné par l'utilisateur
-                tabPanel(
-                  "Données sélectionnées",
-                  DTOutput("selected_points_table"),
-                  downloadButton("downloadSelected", "Télécharger")
+                  # tableau des données DEG filtré
+                  tabPanel(
+                    "Données DEG filtrées (Up/Down)",
+                    prettyCheckboxGroup(
+                      inputId = "regulation_choice",
+                      label = "Choix d'affichage",
+                      choices = c("Up", "Down"),
+                      status = "danger",
+                      shape = "curve",
+                      outline = TRUE,
+                      inline = TRUE
+                    ),
+                    DTOutput("table_filtered"),
+                    downloadButton("downloadData", "Télécharger")
+                  ),
+                  # tableau des données DEG selectionné par l'utilisateur
+                  tabPanel(
+                    "Données sélectionnées",
+                    DTOutput("selected_points_table"),
+                    downloadButton("downloadSelected", "Télécharger")
+                  )
                 )
-              )
-            ),
+              ),
+            )
     ),
     
     # ------ Onglet ORA GO term -----------------------------------------------
