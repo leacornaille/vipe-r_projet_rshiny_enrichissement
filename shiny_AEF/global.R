@@ -24,3 +24,9 @@ for (package in bioconductor_dependencies){
     library(package, character.only = T)
   }
 }
+
+source('R/go_ora.R')
+source('R/go_oraUI.R')
+
+library('org.Hs.eg.db')
+library("shinycssloaders")

@@ -229,48 +229,11 @@ body <- dashboardBody(
     ),
     
     # ------ Onglet ORA GO term -----------------------------------------------
-    tabItem(tabName = "ora_go",
-            h2("Enrichissement (GO term)"),
-            h3("Méthode ORA"),
-            
-            fluidRow(
-              box(title = "Paramètres", solidHeader = TRUE, width = 12,
-                  selectInput("reg_type", "Choisir le type de régulation :",
-                              choices = c("Overexpressed" = "overexpress", 
-                                          "Underexpress" ="underexpress",
-                                          "Both" ="both"),
-                              selected="both"),
-                  selectInput("ont", "Choisir ontologie :", 
-                              choices = c("Biological Process" = "BP",
-                                          "Cellular Component" ="CC", 
-                                          "Molecular Function" = "MF"),
-                              selected="BP"),
-                  actionButton("runGO", "Run", icon=icon("play"), class="btn-success"))
-            ),
-            
-            fluidRow(
-              box(title = "plot1", width=12,  height = 900,  solidHeader =TRUE, 
-                  selectInput("select_graph1", "Sélectionner le type de graphique :", 
-                              choices = c("dotplot" = "dotplot", 
-                                          "ridgeplot" = "ridgeplot", 
-                                          "cnetplot" = "cnetplot")),
-                  plotOutput("go_plot1")),
-              
-              box(title = "plot2", width=12,  height = 600,  solidHeader =TRUE, 
-                  selectInput("select_graph2", "Sélectionner le type de graphique :", 
-                              choices = c("dotplot" = "dotplot", 
-                                          "ridgeplot" = "ridgeplot", 
-                                          "cnetplot" = "cnetplot")),
-                  plotOutput("go_plot2"))
-            ),
-            
-            fluidRow(
-              box(title = "Tableau résultats ORA",
-                  width = 12,
-                  collapsible = TRUE
-              )
-            )
+    tabItem(
+      tabName = "ora_go",
+      go_ora_ui("ora_module_plot")   
     ),
+
     
     # ------ Onglet GSEA GO term ----------------------------------------------
     tabItem(tabName = "gsea_go",
