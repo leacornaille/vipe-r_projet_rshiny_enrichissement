@@ -279,7 +279,7 @@ function(input, output, session) {
       modalDialog(
         title = "À propos de VIPE-R",
         HTML(
-          "<p><b>Auteur :</b> Léa Cornaille</p>
+          "<p><b>Auteur :</b> Léa Cornaille</p>1
          <p><b>Email :</b> lea.cornaille@hotmail.com</p>
          <p><b>Affiliation :</b> Université de Rouen</p>
          <p><b>Projet :</b> Analyse d'enrichissement fonctionnel</p>
@@ -296,17 +296,19 @@ function(input, output, session) {
   })
   
   
-  # Récupère l'organisme choisi 
+  # Sélection de la base de données OrgDb en fonction de l'espèce choisie
   OrgDb_selected <- reactive({
     switch(input$select,
            "humain" = org.Hs.eg.db,
            "souris" = org.Mm.eg.db)
   })
   
+
   # Appelle module ora plot pour afficher les plots 
   go_ora_plot("ora_module_plot", filtered_genes_display = filtered_genes_display, OrgDb_selected = OrgDb_selected)
   
   # Appelle module ora pour la partie pathway
   path_ora_server("ora_path_module", deg_data = deg_data,
                   filtered_genes = filtered_genes, OrgDb_selected = OrgDb_selected )
+
 }

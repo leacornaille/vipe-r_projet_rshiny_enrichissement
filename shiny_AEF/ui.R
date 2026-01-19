@@ -52,7 +52,13 @@ sidebar <-dashboardSidebar(
   ),
   
   # interaction avec l'utilisateur qui doit rentrer un fichier
-  fileInput("file", "Choisissez un fichier csv"),
+  fileInput("file", "Choisissez un fichier csv", multiple =FALSE, accept =c("text/csv",
+    "text/tab-separated-values",
+    "text/plain",
+    ".csv",
+    ".tsv",
+    ".txt")
+  ),
   
   # permet de sélectionner une espèce
   selectInput( 
@@ -168,7 +174,7 @@ body <- dashboardBody(
               box(
                 title = "Volcano plot", status = "primary", solidHeader = TRUE,
                 width = 6,  
-                plotlyOutput("plotly", height = 350),
+                withSpinner(plotlyOutput("plotly", height = 350), image = "loading.GIF", image.width = 200, image.height = 150),
                 collapsible = T  
               ),
               
