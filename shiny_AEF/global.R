@@ -9,7 +9,7 @@
 
 list_of_dependencies = c("shiny", "shinydashboard", "shinyBS", "shinyWidgets", 
                          "shinydashboardPlus", "fresh", "plotly", "DT", "waiter",
-                         "data.table","BiocManager")
+                         "data.table","BiocManager", "shinycssloaders")
 for (package in list_of_dependencies){
   if (!require(package, character.only = T)){
     install.packages(package)
@@ -17,7 +17,7 @@ for (package in list_of_dependencies){
   }
 }
 
-bioconductor_dependencies = c("clusterProfiler", "org.Mm.eg.db", "DOSE", "pathview")
+bioconductor_dependencies = c("clusterProfiler", "org.Mm.eg.db", "DOSE", "pathview", "enrichplot","org.Hs.eg.db")
 for (package in bioconductor_dependencies){
   if (!require(package, character.only = T)){
     BiocManager::install(package)
@@ -25,8 +25,10 @@ for (package in bioconductor_dependencies){
   }
 }
 
-source('R/go_ora.R')
-source('R/go_oraUI.R')
+library("ggraph")
+library("igraph")
+library("GO.db")
+library('ggarchery')
+library("shinybusy")
 
-library('org.Hs.eg.db')
-library("shinycssloaders")
+

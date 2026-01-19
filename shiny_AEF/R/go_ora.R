@@ -1,14 +1,15 @@
 
 # Fonction pour générer les plots de l'onglet Go term ORA 
 
-go_ora_plot <- function(id, filtered_genes_display, OrgDb_selected){
+go_ora_plot <- function(id, filtered_genes, OrgDb_selected){
   moduleServer(id, function(input, output, session){
-    
-    # ---- Filtre les donées : selon la sélection de l'utilisateur Down/Up/Both ----
+
+    #----------------Filtrage selon le type de régulation choisi -----------------
     genes_filtered_type <- reactive({
-      df <- filtered_genes_display()
+      df <- filtered_genes()
       req(df)
       
+      # Filtrage selon le type de régulation choisi
       if (input$reg_type == "overexpress") {
         df <- df[df$Regulation == "Up", ]
       } else if (input$reg_type == "underexpress") {
@@ -25,10 +26,11 @@ go_ora_plot <- function(id, filtered_genes_display, OrgDb_selected){
       validate(
         need(nrow(df) > 0, "Aucun gène ne passe les filtres !")
       )
-      
-      gene_list <- df$ID   # Ensembl IDs
-      
-      
+
+      # Création de la liste de gènes
+      gene_list <- unique(df$ID)   # Ensembl IDs
+    
+      # Enrichissement GO term via enrichGO
       enrichGO(
         gene          = gene_list,
         OrgDb         = OrgDb_selected(),
@@ -36,32 +38,43 @@ go_ora_plot <- function(id, filtered_genes_display, OrgDb_selected){
         ont           = input$ont,
         pAdjustMethod = "BH",
         pvalueCutoff  = 0.05,
-        qvalueCutoff  = 0.2
+        qvalueCutoff  = 0.2,
+        readable = TRUE
       )
     })
     
-    
-    # ---- fonction plot ------
+    # ---- fonction plot ORA GO term ------
     render_go_plot <- function(choice) {
       res <- enrich_res()
       req(res)
       
+
+      # Pour treeplot et netplot : calcul des similarités entre termes
+      if (choice %in% c("treeplot", "netplot")) {
+        res <- tryCatch(
+          enrichplot::pairwise_termsim(res),
+          error = function(e) NULL
+          )}
+
+
+      # Génération du plot en fonction du choix
       switch(choice,
-             "ridgeplot" = ridgeplot(res, showCategory = 10),
-             "dotplot"   = dotplot(res),
-             "cnetplot"  = cnetplot(res, showCategory = 10)
-      )
-    }
-    
+             "barplot" = barplot(res, showCategory = 10),
+             "dotplot"   = dotplot(res, showCategory = 10),
+             "cnetplot"  = cnetplot(res),
+             "treeplot"  = enrichplot::treeplot(res, showCategory = 10),
+             "netplot" = enrichplot::emapplot(res, showCategory = 10),
+             "goplot" = goplot(res)
+             )
+        }
     
     # Affiche les plots 
-    output$go_plot1 <- renderPlot(render_go_plot(input$select_graph1))
-    output$go_plot2 <- renderPlot(render_go_plot(input$select_graph2))
-    
+    output$ora_go_plot1 <- renderPlot(render_go_plot(input$select_graph_ora_go1))
+    output$ora_go_plot2 <- renderPlot(render_go_plot(input$select_graph_ora_go2))
+
     # Renvoi résultats pour table
     return(list(
       enrich_res = enrich_res
-    ))
-    
-  })
+      ))
+    })
 }
