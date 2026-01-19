@@ -56,9 +56,9 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 }
 
 /* -------- PRIMARY -------- */
-.box.box-primary .box-header {
+/*.box.box-primary .box-header {
   background: #2a9d8f !important;
-}
+}*/
 .box.box-primary .box-header .btn-box-tool {
   background: #2a9d8f !important;
 }
@@ -67,9 +67,9 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 }
 
 /* -------- INFO -------- */
-.box.box-info .box-header {
+/*.box.box-info .box-header {
   background: #74c69d !important;
-}
+}*/
 .box.box-info .box-header .btn-box-tool {
   background: #74c69d !important;
 }
@@ -78,9 +78,9 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 }
 
 /* -------- WARNING -------- */
-.box.box-warning .box-header {
+/*.box.box-warning .box-header {
   background: #669bbc !important;
-}
+}*/
 .box.box-warning .box-header .btn-box-tool {
   background: #669bbc !important;
 }
@@ -89,9 +89,9 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 }
 
 /* -------- DANGER (si utilisées plus tard) -------- */
-.box.box-danger .box-header {
+/*.box.box-danger .box-header {
   background: #e63946 !important;
-}
+}*/
 .box.box-danger .box-header .btn-box-tool {
   background: #e63946 !important;
 }

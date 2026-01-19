@@ -279,47 +279,9 @@ body <- dashboardBody(
             )
     ) ,
     # ------ Onglet ORA Pathway -----------------------------------------------
-    tabItem(tabName = "ora_path",
-            h2("Enrichissement (Pathway)"),
-            h3("Méthode ORA"),
-            
-            fluidRow(
-              box(title = "Paramètre ORA", 
-                  width = 12, 
-                  collapsible = TRUE
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Figure", 
-                  width = 6,
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_ora_path", "ridge_plot" = "ridge_ora_path", "fig3" = "fig3"))
-              ),
-              box(title = "Figure",
-                  width = 6,
-                  status = "primary",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_oea_path", "ridge_plot" = "ridge_ora_path", "fig3" = "fig3"))
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Tableau résultats ORA",
-                  width = 12,
-                  collapsible = TRUE
-              )
-            )
+    tabItem(
+      tabName = "ora_path",
+      path_ora_ui("ora_path_module")   
     ),
     
     # ------ Onglet GSEA Pathway ----------------------------------------------
