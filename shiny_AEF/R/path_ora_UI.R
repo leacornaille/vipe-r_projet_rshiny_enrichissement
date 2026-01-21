@@ -102,7 +102,7 @@ path_ora_ui <- function(id) {
     fluidRow(
       box(
         title = "Visualisation ORA",
-        width = 6,
+        width = 8,
         status = "primary",
         solidHeader = TRUE,
         collapsible = TRUE,
@@ -112,17 +112,52 @@ path_ora_ui <- function(id) {
           "Type de graphique",
           choices = c(
             "Dotplot" = "dotplot_ora_path",
-            "Barplot" = "barplot",
-            "Mapping pathway" = "emapplot"
+            "Barplot" = "barplot_ora_path",
+            "Mapping pathway" = "pathview_ora"
           )
         ),
         
-        plotOutput(ns("dotplot_ora_path"), height = 400)
+        uiOutput(ns("ora_plot_path"))
+      ),
+      
+      box(
+        title = "Paramètre visuel",
+        width = 4,
+        status = "warning",
+        collapsible = T,
+        
+        textInput(
+          ns("plot_title"),
+          "Titre du graphique",
+          value = "ORA – Enrichissement des pathways"
+        ),
+        
+        sliderInput(
+          ns("n_terms"),
+          "Nombre de pathways affichés",
+          min = 5,
+          max = 50,
+          value = 20,
+          step = 1
+        ),
+        
+        selectInput(
+          ns("color_palette"),
+          "Palette de couleurs (p.adjust)",
+          choices = c(
+            "Viridis" = "viridis",
+            "Plasma" = "plasma",
+            "Magma" = "magma",
+            "Inferno" = "inferno",
+            "Bleu → Rouge" = "blue_red"
+          ),
+          selected = "viridis"
+        )
       ),
       
       box(
         title = "Tableau résultats ORA",
-        width = 6,
+        width = 12,
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
