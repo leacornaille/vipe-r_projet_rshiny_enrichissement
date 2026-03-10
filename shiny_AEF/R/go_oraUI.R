@@ -19,6 +19,8 @@ go_ora_ui <- function(id) {
                                   "Both"          = "both")),
           selectInput(ns("ont"), "Ontologie :",
                       choices = c("BP"="BP","CC"="CC","MF"="MF")),
+          selectInput(ns("padjust_method_go_ora"), "Méthode d'ajustement des p-values : ",
+                      choices = c("Benjamini-Hochberg (FDR)" = "BH", "Bonferroni" = "bonferroni", "Holm" = "holm")),
           actionButton(ns("runGO"), "Run", icon = icon("play"), class="btn-success")
       )
     ),
@@ -35,6 +37,14 @@ go_ora_ui <- function(id) {
                       choices = c("dotplot","barplot","cnetplot", "treeplot", "netplot", "goplot")),
           withSpinner(plotOutput(ns("ora_go_plot2")), image = "loading.GIF")
       )
+    ),
+
+    fluidRow(
+      box(title = "Résulats ORA GO term", width = 12,
+          solidHeader = TRUE,
+          withSpinner(DT::dataTableOutput(ns("ora_go_table")), image = "loading.GIF"),
+          downloadButton(ns("download_ora_go_table"), "Télécharger le tableau des résultats")
+          )
     )
   )
 }
