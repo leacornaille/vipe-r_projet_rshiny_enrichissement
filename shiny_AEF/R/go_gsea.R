@@ -102,6 +102,13 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
     output$gsea_go_plot2 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go2))
     
+    output$go_gsea_table_results <- DT::renderDataTable({
+      res <- gsea_res()
+      req(res)
+      df <- as.data.frame(res@result)
+      df[, c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "p.adjust", "qvalue", "geneID", "Count")]
+    },
+    options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
     
     # Renvoi résultats pour table
     return(list(
