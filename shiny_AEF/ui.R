@@ -242,48 +242,11 @@ body <- dashboardBody(
 
     
     # ------ Onglet GSEA GO term ----------------------------------------------
-    tabItem(tabName = "gsea_go",
-            h2("Enrichissement (GO term)"),
-            h3("Méthode GSEA"),
-            
-            fluidRow(
-              box(title = "Paramètre GSEA", 
-                  width = 12, 
-                  collapsible = TRUE
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Figure", 
-                  width = 6,
-                  status = "warning",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_gsea_go", "ridge_plot" = "ridge_gsea_go", "fig3" = "fig3"))
-              ),
-              box(title = "Figure",
-                  width = 6,
-                  status = "warning",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_gsea_go", "ridge_plot" = "ridge_gsea_go", "fig3" = "fig3"))
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Tableau résultats GSEA",
-                  width = 12,
-                  collapsible = TRUE
-              )
-            )
-    ) ,
+    tabItem(
+      tabName = "gsea_go",
+      go_gsea_ui("gsea_module_plot")   
+    ),
+    
     # ------ Onglet ORA Pathway -----------------------------------------------
     tabItem(
       tabName = "ora_path",
