@@ -9,7 +9,7 @@
 
 list_of_dependencies = c("shiny", "shinydashboard", "shinyBS", "shinyWidgets", 
                          "shinydashboardPlus", "fresh", "plotly", "DT", "waiter",
-                         "data.table","BiocManager", "shinycssloaders")
+                         "data.table","BiocManager", "shinycssloaders","shinyjqui")
 for (package in list_of_dependencies){
   if (!require(package, character.only = T)){
     install.packages(package)

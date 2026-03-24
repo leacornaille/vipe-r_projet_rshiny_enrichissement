@@ -62,13 +62,13 @@ path_ora_ui <- function(id) {
                   selected = "kegg"
                 ),
                 
-                numericInput(
-                  ns("pval_ora"),
-                  "Seuil p-value ORA",
-                  value = 0.05,
-                  min = 0,
-                  max = 0.1,
-                  step = 0.01
+                selectInput(
+                  ns("univers_ora_path"),
+                  "Choix de l'univers",
+                  choices = c(
+                    "Génome de référence (recommandé)" = "gen_ref",
+                    "Gène de l'analyse RNA-seq" = "gene_list"
+                  )
                 )
               ),
               
@@ -85,6 +85,15 @@ path_ora_ui <- function(id) {
                     "Aucune" = "none"
                   ),
                   selected = "BH"
+                ),
+                
+                numericInput(
+                  ns("pval_ora"),
+                  "Seuil p-value ORA",
+                  value = 0.05,
+                  min = 0,
+                  max = 0.1,
+                  step = 0.01
                 )
               )
             )
@@ -117,7 +126,7 @@ path_ora_ui <- function(id) {
           )
         ),
         
-        uiOutput(ns("ora_plot_path"))
+        jqui_resizable(uiOutput(ns("ora_plot_path")))
       ),
       
       box(
