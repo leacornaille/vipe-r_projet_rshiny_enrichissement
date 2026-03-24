@@ -5,7 +5,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     
     #attention, pour GSEA, on utilise tous les gènes, pas Up ou Down au choix comme pour l'ORA
     genes_filtered_type <- reactive({
-      df <- deg_data()
+      df <- deg_data() # filtered_genes
       req(df)
       df
     })
@@ -16,10 +16,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       req(df)
       
       # Tri décroissant comme attendu par GSEA
-      req(input$rank_type_gsea)
-      rank_type <- input$rank_type_gsea
-      rank_type = input$rank_type_gsea
-      gene_list <- df[[rank_type]] # log2FC or padj
+      gene_list <- df$log2FC
       names(gene_list) <- df$ID
       gene_list <- sort(gene_list, decreasing = TRUE)
       
@@ -58,6 +55,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       geneList <- sort(geneList, decreasing = TRUE)
       geneList <- geneList[!duplicated(names(geneList))]
       geneList <- geneList[!is.na(geneList)]
+      
+      print(length(geneList)) # doit être >1000 si possible
+      print(sum(!is.na(names(geneList))))  # doit être = length(geneList))
       
       gseGO(
         geneList      = geneList,
@@ -98,30 +98,10 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       )
     }
     
-    gsea_table <- reactive({
-      res <- gsea_res()
-      req(res)
-      
-      tbl <- as.data.frame(res@result)
-      tbl <- tbl[!is.na(tbl$core_enrichment) & nchar(tbl$core_enrichment) > 0, ]
-      validate(need(nrow(tbl) > 0, "Aucun GO term valide"))
-      
-      tbl
-    })
-    
     # Afficher les plots
     output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
-    output$go_gsea_table_results <- renderDataTable({
-      datatable(gsea_table(),
-                options = list(scrollX = TRUE, 
-                               scrollY = TRUE))})
+    output$gsea_go_plot2 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go2))
     
-    # 
-    # # Affiche la table non filtré sous forme de datatable
-    # output$table <- renderDataTable({
-    #   req(deg_data())
-    #   datatable(deg_data(), options = list(scrollX=T))
-    # })
     
     # Renvoi résultats pour table
     return(list(

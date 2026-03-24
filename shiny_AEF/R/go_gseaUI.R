@@ -12,13 +12,11 @@ go_gsea_ui <- function(id) {
     
     #------------------ Paramètres de la GSEA GO term -------------------
     fluidRow(
-      box(title = "Paramètres GSEA", 
-          solidHeader = TRUE,
-          status = "primary",
-          width = 12,
-          selectInput(ns("rank_type_gsea"), "Classement des gènes :",
-                      choices = c("log2FC" = "log2FC",
-                                  "padj"  = "padj")),
+      box(title = "Paramètres GSEA", solidHeader = TRUE, width = 12,
+          selectInput(ns("reg_type_gsea"), "Type de régulation :",
+                      choices = c("Overexpressed" = "overexpress",
+                                  "Underexpress"  = "underexpress",
+                                  "Both"          = "both")),
           selectInput(ns("ont"), "Ontologie :",
                       choices = c("BP"="BP","CC"="CC","MF"="MF")),
           actionButton(ns("runGSEA"), "Run", icon = icon("play"), class="btn-success")
@@ -27,27 +25,15 @@ go_gsea_ui <- function(id) {
     
     #------------------ Plots GSEA GO term -------------------
     fluidRow(
-      box(title = "Visualisation GSEA", 
-          width = 12, 
-          height = 900,
-          status = "primary",
-          solidHeader = TRUE,
+      box(title = "Visualisation GSEA - plot1", width = 12, height = 900,
           selectInput(ns("select_graph_gsea_go1"), "Type de graphique :",
                       choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
           withSpinner(plotOutput(ns("gsea_go_plot1")), image = "loading.GIF")
       ),
-      
-      box(title = "Table résultats GSEA", 
-          width = 12, 
-          height = 900,
-          status = "primary",
-          solidHeader = TRUE,
-          # selectInput(ns("select_graph_gsea_go2"), "Type de graphique :",
-          #             choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
-          withSpinner(
-            dataTableOutput(ns("go_gsea_table_results")),
-            image = "loading.GIF"
-          )
+      box(title = "Visualisation GSEA - plot2", width = 12, height = 900,
+          selectInput(ns("select_graph_gsea_go2"), "Type de graphique :",
+                      choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
+          withSpinner(plotOutput(ns("gsea_go_plot2")), image = "loading.GIF")
       )
     )
   )
