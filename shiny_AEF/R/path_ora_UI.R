@@ -108,6 +108,7 @@ path_ora_ui <- function(id) {
       )
     ),
     
+    # ------ visualisation resultats ORA_pathway ----------------------------------------
     fluidRow(
       box(
         title = "Visualisation ORA",
@@ -122,13 +123,17 @@ path_ora_ui <- function(id) {
           choices = c(
             "Dotplot" = "dotplot_ora_path",
             "Barplot" = "barplot_ora_path",
+            "Cnetplot" = "cnetplot_ora_path",
+            "Emaplot" = "emaplot_ora_path",
             "Mapping pathway" = "pathview_ora"
           )
         ),
         
-        jqui_resizable(uiOutput(ns("ora_plot_path")))
+        # plot avec taille modifiable par l'utilisateur
+        jqui_resizable(plotOutput(ns("ora_plot_path")))
       ),
       
+      # ------ paramètre visuel---------------------------------------------------
       box(
         title = "Paramètre visuel",
         width = 4,
@@ -141,15 +146,17 @@ path_ora_ui <- function(id) {
           value = "ORA – Enrichissement des pathways"
         ),
         
+        # nombre de pahtway à afficher
         sliderInput(
           ns("n_terms"),
           "Nombre de pathways affichés",
-          min = 5,
+          min = 1,
           max = 50,
-          value = 20,
+          value = 5,
           step = 1
         ),
         
+        # palette de couleur
         selectInput(
           ns("color_palette"),
           "Palette de couleurs (p.adjust)",
@@ -158,7 +165,8 @@ path_ora_ui <- function(id) {
             "Plasma" = "plasma",
             "Magma" = "magma",
             "Inferno" = "inferno",
-            "Bleu → Rouge" = "blue_red"
+            "Bleu → Rouge" = "blue_red",
+            "Vert → Orange" = "green_orange"
           ),
           selected = "viridis"
         )

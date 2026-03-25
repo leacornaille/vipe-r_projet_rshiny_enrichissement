@@ -94,6 +94,10 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
       else NULL
     })
     
+    universe_genome <- reactive({
+      req(OrgDb_selected())
+      keys(OrgDb_selected(), keytype = "ENTREZID")
+    })
     
     enrich_res <- eventReactive(input$run_ora_path, {
       req(organism_kegg())
@@ -106,7 +110,11 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
         return(NULL)
       }
       
-      univ <- universe()
+      if (input$univers_ora_path == "gene_list"){
+        univ <- universe()
+      } else {
+        univ <- universe_genome()
+      }
       
       # Message informatif
       msg <- paste("Analyse avec", length(ids), "gènes")
@@ -152,54 +160,39 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
         "plasma"   = scale_fill_viridis_c(option = "plasma", name = "p.adjust"),
         "magma"    = scale_fill_viridis_c(option = "magma", name = "p.adjust"),
         "inferno"  = scale_fill_viridis_c(option = "inferno", name = "p.adjust"),
-        "blue_red" = scale_fill_gradient(
-          low = "blue", high = "red", name = "p.adjust"
-        )
+        "blue_red" = scale_fill_gradient(low = "blue", high = "red", name = "p.adjust"),
+        "green_orange" = scale_fill_gradient(low= "limegreen" ,high = "darkorange2", name = "p.adjust")
       )
     }
     
     
-    output$dotplot_ora_path <- renderPlot({
-      req(enrich_res())
-      
-      res <- enrich_res()
-      if (is.null(res) || nrow(res) == 0) {
-        plot.new()
-        text(0.5, 0.5, "Aucun résultat à afficher", cex = 1.5)
-        return()
-      }
-      
-      clusterProfiler::dotplot(res, showCategory = 20) + 
-        ora_fill_scale(input$color_palette)
-    })
-    
-    output$barplot_ora_path <- renderPlot({
+    all_path_plots <- reactive({
       req(enrich_res())
       res <- enrich_res()
+      req(res)
       
-      barplot(res, showCategory = 20) +
-        ora_fill_scale(input$color_palette)
+      # # Pour treeplot et netplot : calcul des similarités entre termes
+      res_sim <- tryCatch(
+        enrichplot::pairwise_termsim(res),
+        error = function(e) NULL
+      )
       
-    })
-    
-    output$ora_plot_path <- renderUI({
-      req(enrich_res(), input$select_graph)
-      
-      switch(
-        input$select_graph,
-        
-        "dotplot_ora_path" =
-          plotOutput(session$ns("dotplot_ora_path"), height = 400),
-        
-        "barplot_ora_path" =
-          plotOutput(session$ns("barplot_ora_path"), height = 400),
-        
-        "pathview_ora" =
-          uiOutput(session$ns("pathview_ui"))
+      list(
+        barplot_ora_path = barplot(res, showCategory = input$n_terms),
+        dotplot_ora_path = dotplot(res, showCategory = input$n_terms),
+        cnetplot_ora_path = cnetplot(res),
+        emaplot_ora_path = if (!is.null(res_sim))
+          enrichplot::emapplot(res_sim, showCategory = input$n_terms) else NULL
       )
     })
     
-    
+    output$ora_plot_path <- renderPlot({
+      plots <- all_path_plots()
+      req(plots)
+      p <- plots[[input$select_graph]]
+      req(p)
+      p + ora_fill_scale(input$color_palette) + ggtitle(input$plot_title)
+    })
     
     output$table_results <- DT::renderDataTable({
       req(enrich_res())
