@@ -98,3 +98,36 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 .box.box-danger .box-header .btn-box-tool:hover {
   background: #b02a37 !important;
 }
+
+/* ------SelectInput----------------------------- */
+/* Option survolée dans le dropdown */
+.selectize-dropdown .option:hover,
+.selectize-dropdown .option.active {
+  background-color: #2a9d8f !important; /* vert principal */
+  color: #ffffff !important;
+}
+
+/* Option sélectionnée (tag dans le champ) */
+.selectize-input.focus,
+.selectize-input:focus {
+  border-color: #2a9d8f !important;
+  box-shadow: 0 0 0 0.2rem rgba(28, 104, 91, 0.25) !important;
+}
+
+
+/* Highlight de l'option déjà sélectionnée dans la liste */
+.selectize-dropdown .option.selected {
+  background-color: rgba(28, 104, 91, 0.25) !important; /* vert clair */
+  color: #2F5D62 !important;
+}
+
+/* ------ barre chargement -------------------------*/
+/* Upload fileInput - supprimer le bleu */
+.progress-bar {
+  background-color: #264653 !important;  /* vert app */
+}
+
+/* Texte "Upload complete" */
+.progress-bar-success {
+  background-color: #264653 !important;
+}
