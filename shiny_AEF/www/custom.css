@@ -66,6 +66,11 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
   background: #264653 !important;
 }
 
+/* -------- PRIMARY -------- */
+.tabsetPanel .tabsetPanel-header {
+  background: #2a9d8f !important;
+}
+
 /* -------- INFO -------- */
 /*.box.box-info .box-header {
   background: #74c69d !important;
@@ -131,3 +136,32 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
 .progress-bar-success {
   background-color: #264653 !important;
 }
+
+/* tableau filtre appliqué ora */
+.filter-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.filter-info span {
+  font-weight: bold;
+}
+
+.filter-info-header .heading {
+  font-size: 16px;
+  margin-left: 35px;
+}
+
+.filter-info .padj {
+  color: #264653;
+  font-size: 16px;
+  margin-left: 35px;
+}
+
+.filter-info .logfc {
+  color: #264653;
+  font-size: 16px;
+  margin-left: 35px;
+}
+

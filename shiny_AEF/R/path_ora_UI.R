@@ -23,24 +23,22 @@ path_ora_ui <- function(id) {
             width = 4,
             status = "info",
             
-            radioButtons(
-              ns("gene_type"),
-              "Type de gènes",
-              choices = c(
-                "Sur-exprimés" = "up",
-                "Sous-exprimés" = "down",
-                "Sur + Sous exprimés" = "both"
-              ),
-              selected = "both"
+            column(
+              width = 6,
+              radioButtons(
+                ns("gene_type"),
+                "Type de gènes",
+                choices = c(
+                  "Sur-exprimés" = "up",
+                  "Sous-exprimés" = "down",
+                  "Sur + Sous exprimés" = "both"
+                ),
+                selected = "both"
+              )
             ),
-            
-            numericInput(
-              ns("pval_deg"),
-              "Seuil p-value ajustée (DEG)",
-              value = 0.05,
-              min = 0,
-              max = 1,
-              step = 0.01
+            column(
+              width = 6,
+              uiOutput(ns("filter_info"))
             )
           ),
           
@@ -99,10 +97,10 @@ path_ora_ui <- function(id) {
             )
           ),
           
-          actionButton(
-            ns("run_ora_path"),
-            "Lancer ORA",
-            icon = icon("play")
+          fluidRow(
+            column(12, align = "right",
+                   actionButton(ns("run_ora_path"), "Lancer ORA", icon = icon("play"))
+            )
           )
         )
       )
@@ -124,8 +122,7 @@ path_ora_ui <- function(id) {
             "Dotplot" = "dotplot_ora_path",
             "Barplot" = "barplot_ora_path",
             "Cnetplot" = "cnetplot_ora_path",
-            "Emaplot" = "emaplot_ora_path",
-            "Mapping pathway" = "pathview_ora"
+            "Emaplot" = "emaplot_ora_path"
           )
         ),
         
@@ -159,13 +156,18 @@ path_ora_ui <- function(id) {
         # palette de couleur
         selectInput(
           ns("color_palette"),
-          "Palette de couleurs (p.adjust)",
+          "Palette de couleurs",
           choices = c(
-            "Viridis" = "viridis",
-            "Plasma" = "plasma",
-            "Magma" = "magma",
-            "Inferno" = "inferno",
-            "Bleu → Rouge" = "blue_red",
+            "Viridis"       = "viridis",
+            "Plasma"        = "plasma",
+            "Magma"         = "magma",
+            "Inferno"       = "inferno",
+            "Mako"          = "mako",
+            "Rocket"        = "rocket",
+            "Cividis"       = "cividis",
+            "Turbo"         = "turbo",
+            "Jaune → Rouge" = "YlOrRd",
+            "Bleu → Rouge"  = "blue_red",
             "Vert → Orange" = "green_orange"
           ),
           selected = "viridis"

@@ -1,4 +1,4 @@
-path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
+path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold) {
   moduleServer(id, function(input, output, session) {
     
     # filtered_genes provenant du serveur principal
@@ -19,6 +19,20 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
       
       genes <- df$GeneName
       genes[!is.na(genes) & genes != ""]
+    })
+    
+    # box info utilisé pour filtrage
+    output$filter_info <- renderUI({
+      req(pval_threshold(), fc_threshold())
+      panel(
+          heading = "Critères actifs",
+          status = "primary",
+        tags$div(
+          class = "filter-info",
+          tags$span(class = "padj", paste0("p.adjust ≤ ", pval_threshold())),
+          tags$span(class = "logfc", paste0("|log2FC| ≥ ", fc_threshold()))
+        )
+      )
     })
     
     # Universe : utiliser deg_data (données brutes)
@@ -152,36 +166,68 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
       })
     })
     
-    # variant de couleur pour les graphs
-    ora_fill_scale <- function(palette) {
-      switch(
-        palette,
-        "viridis"  = scale_fill_viridis_c(option = "D", name = "p.adjust"),
-        "plasma"   = scale_fill_viridis_c(option = "plasma", name = "p.adjust"),
-        "magma"    = scale_fill_viridis_c(option = "magma", name = "p.adjust"),
-        "inferno"  = scale_fill_viridis_c(option = "inferno", name = "p.adjust"),
-        "blue_red" = scale_fill_gradient(low = "blue", high = "red", name = "p.adjust"),
-        "green_orange" = scale_fill_gradient(low= "limegreen" ,high = "darkorange2", name = "p.adjust")
+    observe({
+      req(enrich_res())
+      n <- nrow(as.data.frame(enrich_res()))
+      updateSliderInput(session, "n_terms", max = min(n, 50))
+    })
+    
+    # Une seule fonction — retourne fill + color simultanément
+    # ggplot2 ignore celle qui n'est pas utilisée dans le plot
+    ora_scales <- function(palette) {
+      list(
+        switch(palette,
+               "viridis"      = scale_fill_viridis_c(option = "D",       name = "p.adjust"),
+               "plasma"       = scale_fill_viridis_c(option = "plasma",   name = "p.adjust"),
+               "magma"        = scale_fill_viridis_c(option = "magma",    name = "p.adjust"),
+               "inferno"      = scale_fill_viridis_c(option = "inferno",  name = "p.adjust"),
+               "mako"         = scale_fill_viridis_c(option = "mako",     name = "p.adjust"),
+               "rocket"       = scale_fill_viridis_c(option = "rocket",   name = "p.adjust"),
+               "cividis"      = scale_fill_viridis_c(option = "cividis",  name = "p.adjust"),
+               "turbo"        = scale_fill_viridis_c(option = "turbo",    name = "p.adjust"),
+               "YlOrRd"       = scale_fill_distiller(palette = "YlOrRd",  name = "p.adjust", direction = 1),
+               "blue_red"     = scale_fill_gradient(low = "blue",         high = "red",         name = "p.adjust"),
+               "green_orange" = scale_fill_gradient(low = "limegreen",    high = "darkorange2", name = "p.adjust")
+        ),
+        switch(palette,
+               "viridis"      = scale_color_viridis_c(option = "D",       name = "p.adjust"),
+               "plasma"       = scale_color_viridis_c(option = "plasma",   name = "p.adjust"),
+               "magma"        = scale_color_viridis_c(option = "magma",    name = "p.adjust"),
+               "inferno"      = scale_color_viridis_c(option = "inferno",  name = "p.adjust"),
+               "mako"         = scale_color_viridis_c(option = "mako",     name = "p.adjust"),
+               "rocket"       = scale_color_viridis_c(option = "rocket",   name = "p.adjust"),
+               "cividis"      = scale_color_viridis_c(option = "cividis",  name = "p.adjust"),
+               "turbo"        = scale_color_viridis_c(option = "turbo",    name = "p.adjust"),
+               "YlOrRd"       = scale_color_distiller(palette = "YlOrRd",  name = "p.adjust", direction = 1),
+               "blue_red"     = scale_color_gradient(low = "blue",         high = "red",         name = "p.adjust"),
+               "green_orange" = scale_color_gradient(low = "limegreen",    high = "darkorange2", name = "p.adjust")
+        )
       )
     }
     
-    
+    # renderPlot — identique pour tous les graphiques
     all_path_plots <- reactive({
       req(enrich_res())
       res <- enrich_res()
-      req(res)
       
-      # # Pour treeplot et netplot : calcul des similarités entre termes
+      res_readable <- tryCatch(
+        setReadable(res, OrgDb = OrgDb_selected(), keyType = "ENTREZID"),
+        error = function(e) res
+      )
+      
       res_sim <- tryCatch(
-        enrichplot::pairwise_termsim(res),
+        enrichplot::pairwise_termsim(res, method = "JC"),
         error = function(e) NULL
       )
       
+      fc_vector <- setNames(deg_data()$log2FC, deg_data()$GeneName)
+      
       list(
-        barplot_ora_path = barplot(res, showCategory = input$n_terms),
-        dotplot_ora_path = dotplot(res, showCategory = input$n_terms),
-        cnetplot_ora_path = cnetplot(res),
-        emaplot_ora_path = if (!is.null(res_sim))
+        barplot_ora_path  = barplot(res, showCategory = input$n_terms),
+        dotplot_ora_path  = dotplot(res, showCategory = input$n_terms),
+        cnetplot_ora_path = cnetplot(res_readable, showCategory = input$n_terms,
+                                     foldChange = fc_vector),
+        emaplot_ora_path  = if (!is.null(res_sim))
           enrichplot::emapplot(res_sim, showCategory = input$n_terms) else NULL
       )
     })
@@ -191,8 +237,8 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected) {
       req(plots)
       p <- plots[[input$select_graph]]
       req(p)
-      p + ora_fill_scale(input$color_palette) + ggtitle(input$plot_title)
-    })
+      p + ora_scales(input$color_palette) + ggtitle(input$plot_title)
+    }, res = 100)
     
     output$table_results <- DT::renderDataTable({
       req(enrich_res())
