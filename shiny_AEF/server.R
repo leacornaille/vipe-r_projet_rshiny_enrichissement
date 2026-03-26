@@ -305,7 +305,8 @@ function(input, output, session) {
   
 
   # Appelle module ora plot pour afficher les plots 
-  go_ora_plot("ora_module_plot", filtered_genes = filtered_genes, OrgDb_selected = OrgDb_selected)
+                  
+  go_ora_plot("ora_module_plot", deg_data = deg_data, filtered_genes = filtered_genes, OrgDb_selected = OrgDb_selected, pval_threshold = reactive(input$slider_pval),fc_threshold = reactive(input$slider_fc))
   
   # Appelle module ora pour la partie pathway
   path_ora_server("ora_path_module", deg_data = deg_data,

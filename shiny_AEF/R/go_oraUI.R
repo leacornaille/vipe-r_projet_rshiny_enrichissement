@@ -6,45 +6,178 @@ go_ora_ui <- function(id) {
   ns <- NS(id)
   
   # Interface utilisateur
-  tagList(
+  tabItem(
     h2("Enrichissement (GO term)"),
     h3("Méthode ORA"),
     
     #------------------ Paramètres de l'ORA GO term -------------------
     fluidRow(
-      box(title = "Paramètres", solidHeader = TRUE, width = 12,
-          selectInput(ns("reg_type"), "Type de régulation :",
-                      choices = c("Overexpressed" = "overexpress",
-                                  "Underexpress"  = "underexpress",
-                                  "Both"          = "both")),
-          selectInput(ns("ont"), "Ontologie :",
-                      choices = c("BP"="BP","CC"="CC","MF"="MF")),
-          selectInput(ns("padjust_method_go_ora"), "Méthode d'ajustement des p-values : ",
-                      choices = c("Benjamini-Hochberg (FDR)" = "BH", "Bonferroni" = "bonferroni", "Holm" = "holm")),
-          actionButton(ns("runGO"), "Run", icon = icon("play"), class="btn-success")
-      )
-    ),
-    
-    #------------------ Plots ORA GO term -------------------
-    fluidRow(
-      box(title = "plot1", width = 12, height = 900,
-          selectInput(ns("select_graph_ora_go1"), "Type de graphique :",
-                      choices = c("dotplot","barplot","cnetplot", "treeplot", "netplot", "goplot")),
-          withSpinner(plotOutput(ns("ora_go_plot1")), image = "loading.GIF")
-      ),
-      box(title = "plot2", width = 12, height = 900,
-          selectInput(ns("select_graph_ora_go2"), "Type de graphique :",
-                      choices = c("dotplot","barplot","cnetplot", "treeplot", "netplot", "goplot")),
-          withSpinner(plotOutput(ns("ora_go_plot2")), image = "loading.GIF")
+      box(
+        title = "Paramètre ORA",
+        width = 12,
+        status = "primary",
+        solidHeader = TRUE,
+        collapsible = TRUE, 
+
+        fluidRow(
+          box(
+            title = "Données DEG à analyser",
+            width = 4,
+            status = "info",
+
+            column(
+              width = 6,
+              radioButtons(
+                ns("reg_type"), 
+                "Type de gènes",
+                choices = c(
+                  "Sur-exprimés" = "overexpress",
+                  "Sous-exprimés"  = "underexpress",
+                  "Sur + Sous-exprimés" = "both"
+                ),
+                selected = "both"
+              )
+            ),
+            column(
+              width = 6,
+              uiOutput(ns('filter_info_box'))
+            )
+          ),
+          
+          # paramètre statistiques ORA
+          box(
+            title = "Paramètres statistiques ORA",
+            width = 8,
+            status = "primary",
+            fluidRow(
+              column(
+                width = 6,
+                selectInput(
+                  ns("ont"),
+                  "Ontologie GO",
+                  choices = c(
+                    "Biological Process (BP)" = "BP",
+                    "Molecular Function (MF)" = "MF",
+                    "Cellular Component (CC)" = "CC"
+                  ),
+                  selected = "BP"
+                ),
+                selectInput(
+                  ns("univers_ora_go"),
+                  "Choix de l'univers",
+                  choices = c(
+                    "Génome de référence (recommandé)" = "gen_ref",
+                    "Gène de l'analyse RNA-seq" = "gene_list"
+                  )
+                )
+              ),
+              column(
+                width = 6,
+                selectInput(
+                  ns("padjust_method_go_ora"),
+                  "Méthode de correction multiple",
+                  choices = c(
+                    "Benjamini-Hochberg (FDR)" = "BH",
+                    "Bonferroni" = "bonferroni",
+                    "Holm" = "holm",
+                    "Benjamini-Yekutieli" = "BY",
+                    "Aucune" = "none"
+                  ),
+                  selected = "BH"
+                ),
+
+                numericInput(
+                  ns("pval_ora_go"),
+                  "Seuil p-value ORA",
+                  value = 0.05,
+                  min = 0,
+                  max = 0.1,
+                  step = 0.01
+                )
+              )
+            )
+          ),
+
+          actionButton(
+            ns("runGO"),
+            "Lancer ORA",
+            icon = icon("play")
+          )
+        )
       )
     ),
 
     fluidRow(
-      box(title = "Résulats ORA GO term", width = 12,
-          solidHeader = TRUE,
-          withSpinner(DT::dataTableOutput(ns("ora_go_table")), image = "loading.GIF"),
-          downloadButton(ns("download_ora_go_table"), "Télécharger le tableau des résultats")
+      box(
+        title = "Visualisation ORA",
+        width = 8,
+        height = 600,
+        status = "primary",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+
+        selectInput(
+          ns("select_graph_ora_go1"),
+          "Type de graphique",
+          choices = c(
+            "dotplot",
+            "barplot",
+            "cnetplot",
+            "treeplot",
+            "netplot",
+            "goplot"
           )
+        ),
+        withSpinner(plotOutput(ns("ora_go_plot1")), image = "loading.GIF")
+      ),
+
+
+
+      box(
+        title = "Paramètre visuel",
+        width = 4,
+        status = "warning",
+        collapsible = TRUE,
+
+        textInput(
+          ns("plot_title_ora_go"),
+          "Titre du graphique",
+          value = "ORA - Enrichissement des GoTerm"
+        ),
+
+        sliderInput(
+          ns("n_cat_go_ora"),
+          "Nombre de GO terms affichés",
+          min = 5, 
+          max = 50,
+          value = 20,
+          step = 1
+        ),
+        
+        selectInput(
+          ns("color_palette_go_ora"),
+          "Palette des couleurs (p.adjust)", 
+          choices = c(
+            "Viridis" = "viridis",
+            "Plasma" = "plasma",
+            "Magma" = "magma",
+            "Inferno" = "inferno",
+            "Bleu → Rouge" = "blue_red"
+          ),
+          selected = "viridis"
+        )
+      ),
+
+      box(
+        title = "Tableau résultats ORA GO term",
+        width = 12,
+        status = "info",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+
+        DT::dataTableOutput(ns("ora_go_table"))
+
+      )
     )
   )
 }
