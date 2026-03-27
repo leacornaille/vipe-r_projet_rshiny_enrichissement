@@ -98,10 +98,11 @@ go_ora_ui <- function(id) {
             )
           ),
           
-          actionButton(
-            ns("runGO"),
-            "Lancer ORA",
-            icon = icon("play")
+          fluidRow(
+            column(12, align = "center",
+                   actionButton(ns("runGO"), "Lancer ORA",
+                                icon = icon("play"))
+            )
           )
         )
       )
