@@ -63,10 +63,19 @@ function(input, output, session) {
       df_deg$padj <- as.numeric(df_deg$padj)
       df_deg$baseMean <- as.numeric(df_deg$baseMean)
       df_deg$pval <- as.numeric(df_deg$pval)
+      df_deg <- retrieve_entrezID(df_deg)
       
       return(df_deg)
     })
   })
+  
+  # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
+  retrieve_entrezID <- function(deg_data){
+    req(deg_data, OrgDb_selected())
+    deg_data$ENTREZID <- mapIds(x=OrgDb_selected(), keys=deg_data$GeneName, column="ENTREZID", 
+                                keytype = "SYMBOL", multiVals = "first") # 1er match retourné si plusieurs
+    return(deg_data)
+  }
   
   # gènes filtrés en fonction des sliders 
   filtered_genes <- reactive({
@@ -93,7 +102,6 @@ function(input, output, session) {
     # Retourner le data.frame filtré
     df_filtered
   })
-  
   
   # les gènes à afficher selon les case cochées (up et down)
   filtered_genes_display <- reactive({
