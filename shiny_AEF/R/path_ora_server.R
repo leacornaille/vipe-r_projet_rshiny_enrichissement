@@ -238,7 +238,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       p <- plots[[input$select_graph]]
       req(p)
       p + ora_scales(input$color_palette) + ggtitle(input$plot_title)
-    }, res = 100)
+    }, res = 85)
     
     output$table_results <- DT::renderDataTable({
       req(enrich_res())

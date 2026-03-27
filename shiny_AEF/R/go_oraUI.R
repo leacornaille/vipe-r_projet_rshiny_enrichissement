@@ -18,13 +18,13 @@ go_ora_ui <- function(id) {
         status = "primary",
         solidHeader = TRUE,
         collapsible = TRUE, 
-
+        
         fluidRow(
           box(
             title = "Données DEG à analyser",
             width = 4,
             status = "info",
-
+            
             column(
               width = 6,
               radioButtons(
@@ -85,7 +85,7 @@ go_ora_ui <- function(id) {
                   ),
                   selected = "BH"
                 ),
-
+                
                 numericInput(
                   ns("pval_ora_go"),
                   "Seuil p-value ORA",
@@ -97,7 +97,7 @@ go_ora_ui <- function(id) {
               )
             )
           ),
-
+          
           actionButton(
             ns("runGO"),
             "Lancer ORA",
@@ -106,7 +106,7 @@ go_ora_ui <- function(id) {
         )
       )
     ),
-
+    
     fluidRow(
       box(
         title = "Visualisation ORA",
@@ -115,7 +115,7 @@ go_ora_ui <- function(id) {
         status = "primary",
         solidHeader = TRUE,
         collapsible = TRUE,
-
+        
         selectInput(
           ns("select_graph_ora_go1"),
           "Type de graphique",
@@ -128,23 +128,24 @@ go_ora_ui <- function(id) {
             "goplot"
           )
         ),
-        withSpinner(plotOutput(ns("ora_go_plot1")), image = "loading.GIF")
+        
+        withSpinner(jqui_resizable( plotOutput(ns("ora_go_plot1")), options = list(handles = "se")),image = "loading.GIF")
       ),
-
-
-
+      
+      
+      
       box(
         title = "Paramètre visuel",
         width = 4,
         status = "warning",
         collapsible = TRUE,
-
+        
         textInput(
           ns("plot_title_ora_go"),
           "Titre du graphique",
           value = "ORA - Enrichissement des GoTerm"
         ),
-
+        
         sliderInput(
           ns("n_cat_go_ora"),
           "Nombre de GO terms affichés",
@@ -167,16 +168,16 @@ go_ora_ui <- function(id) {
           selected = "viridis"
         )
       ),
-
+      
       box(
         title = "Tableau résultats ORA GO term",
         width = 12,
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
-
+        
         DT::dataTableOutput(ns("ora_go_table"))
-
+        
       )
     )
   )

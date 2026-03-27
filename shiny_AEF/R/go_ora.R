@@ -143,22 +143,29 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
 
     # ---------------- Affichage des plots ----------------
     output$ora_go_plot1 <- renderPlot({
-      plots <- all_go_plots() 
+      plots <- all_go_plots()
       req(plots)
       p <- plots[[input$select_graph_ora_go1]]
       req(p)
-
+      
       title <- input$plot_title_ora_go
-      p + ora_scales(input$color_palette_go_ora) + 
-      ggtitle(title) + 
-      ggplot2::theme(
-        plot.title = ggplot2::element_text(
-        size = 18,      # taille du titre
-        face = "bold",  # gras
-        hjust = 0.5     # centré
+      
+      # treeplot retourne un objet patchwork → traitement séparé
+      if (input$select_graph_ora_go1 == "treeplot") {
+        p + patchwork::plot_annotation(
+          title = title,
+          theme = ggplot2::theme(
+            plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
+          )
         )
-      )
-    }, res =100)
+      } else {
+        p + ora_scales(input$color_palette_go_ora) +
+          ggtitle(title) +
+          ggplot2::theme(
+            plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
+          )
+      }
+    }, res = 85)
 
 
     output$ora_go_table <- DT::renderDataTable({

@@ -98,7 +98,7 @@ path_ora_ui <- function(id) {
           ),
           
           fluidRow(
-            column(12, align = "right",
+            column(12, align = "center",
                    actionButton(ns("run_ora_path"), "Lancer ORA", icon = icon("play"))
             )
           )
@@ -127,7 +127,7 @@ path_ora_ui <- function(id) {
         ),
         
         # plot avec taille modifiable par l'utilisateur
-        jqui_resizable(plotOutput(ns("ora_plot_path")))
+        withSpinner(jqui_resizable( plotOutput(ns("ora_plot_path")), options = list(handles = "se")),image = "loading.GIF")
       ),
       
       # ------ paramètre visuel---------------------------------------------------
