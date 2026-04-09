@@ -171,12 +171,7 @@ body <- dashboardBody(
             
             fluidRow( #  fluidRow permet de fixer ce qu'il y a dans la ligne
               # box pour le boxplot
-              box(
-                title = "Volcano plot", status = "primary", solidHeader = TRUE,
-                width = 6,  
-                withSpinner(plotlyOutput("plotly", height = 350), image = "loading.GIF", image.width = 200, image.height = 150),
-                collapsible = T  
-              ),
+              volcano_plot_UI("volcano_plot_module"),
               
               # Summary box pour le total de gènes filtrés
               valueBoxOutput("nb_filtered_genes_box", width = 4),
