@@ -1,8 +1,8 @@
-volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold) {
+volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold, reset_all) {
   moduleServer(id, function(input, output, session) {
     
-    output$plotly <- renderPlotly({
-      input$reset_all
+    make_vplot <-function(deg_data, pval_threshold, fc_threshold){
+     return (renderPlotly({
       df_deg <- deg_data()
       req(df_deg)
       
@@ -16,10 +16,10 @@ volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold) {
       # Colore en rouge les gènes sur-régulés et en vert les sous-régulés significatif
       colors <- ifelse(
         padj_log >= -log10(pval_threshold()) & log2fc_deg >= fc_threshold(), 
-        "#FF6B6B",
+        "#74c69d",
         ifelse(
           padj_log >= -log10(pval_threshold()) & log2fc_deg <= -fc_threshold(),
-          "#74c69d",
+          "#FF6B6B",
           "lightgrey"
         )
       )
@@ -51,6 +51,44 @@ volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold) {
         )
       
       vplot
+    }))
+  }
+    output$plotly = make_vplot(deg_data, pval_threshold, fc_threshold)
+    
+    
+    # permet de garder en mémoire les points selectionné sur le volcano plot
+    selected_point_volcano <- reactiveVal(NULL)
+    
+    # récupère les points selectionnés et renvoie les indices
+    observe({
+      s <- tryCatch(
+        plotly::event_data("plotly_selected", source = "volcano"),
+        error = function(e) NULL
+      )
+      if (is.null(s)) return()   # rien à faire si aucun point sélectionné
+      
+      selected_point_volcano(deg_data()[s$pointNumber + 1, ])
     })
+   
+    # Réinitialise la sélection sur le tableau
+    observeEvent(reset_all(), {
+      selected_point_volcano(NULL)
+      output$plotly = make_vplot(deg_data, pval_threshold, fc_threshold)
+    }) 
+    
+    # Affiche le tableau avec les points sélectionnés
+    output$selected_points_table <- renderDataTable({
+      req(selected_point_volcano())
+      datatable(selected_point_volcano(), options = list(scrollX=T))
+    })
+    
+    # téléchargement du tableau avec les points selectionnées par l'utilisateur
+    output$downloadSelected <- downloadHandler(
+      filename = function() { "selected_genes.csv" },
+      content = function(file) {
+        req(selected_point_volcano())  # assure qu'il y a des points sélectionnés
+        write.csv(selected_point_volcano(), file, row.names = FALSE)
+      }
+    )
   })
 }

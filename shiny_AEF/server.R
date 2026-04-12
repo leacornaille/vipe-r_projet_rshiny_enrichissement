@@ -70,11 +70,10 @@ function(input, output, session) {
   
   # gènes filtrés en fonction des sliders 
   filtered_genes <- reactive({
-    df_deg <- deg_data()
-    req(df_deg, input$slider_pval, input$slider_fc)
-    
+    req(deg_data(), input$slider_pval, input$slider_fc)
+
     # Conversion en data.frame pour éviter les problèmes avec data.table
-    df_deg <- as.data.frame(df_deg)
+    df_deg <- as.data.frame(deg_data())
     
     # Créer un vecteur logique pour le filtrage
     keep <- !is.na(df_deg$log2FC) & 
@@ -155,37 +154,11 @@ function(input, output, session) {
     sliderInput("slider_pval", "P-value ajustée", min=0, max=1, value=0.1) 
   })
   
-  ### volcano plot 
+  ### volcano plot
   volcano_plot("volcano_plot_module", deg_data = deg_data,
               pval_threshold = reactive(input$slider_pval),
-              fc_threshold = reactive(input$slider_fc))
-  
-  # permet de garder en mémoire les points selectionné sur le volcano plot
-  selected_point_volcano <- reactiveVal(NULL)
-  
-  # récupère les points selectionnés et renvoie les indices
-  observe({
-    s <- tryCatch(
-      plotly::event_data("plotly_selected", source = "volcano"),
-      error = function(e) NULL
-    )
-    
-    if (is.null(s)) return()   # rien à faire si aucun point sélectionné
-    
-    df_deg <- deg_data()
-    selected_point_volcano(df_deg[s$pointNumber + 1, ])
-  })
-  
-  # Réinitialise la selection quand appuie sur "reset"
-  observeEvent(input$reset_all, {
-    selected_point_volcano(NULL)
-  })
-  
-  # Affiche le tableau avec les points sélectionnés
-  output$selected_points_table <- renderDataTable({
-    req(selected_point_volcano())
-    datatable(selected_point_volcano(), options = list(scrollX=T))
-  })
+              fc_threshold = reactive(input$slider_fc),
+              reset_all = reactive(input$reset_all))
   
   # permet le téléchargement du tableau filtré (up ou down ou les deux)
   output$downloadData <- downloadHandler(
@@ -193,15 +166,6 @@ function(input, output, session) {
     content = function(file) {
       req(filtered_genes())                  
       write.csv(filtered_genes_display(), file, row.names = FALSE)
-    }
-  )
-  
-  # téléchargement du tableau avec les points selectionnées par l'utilisateur
-  output$downloadSelected <- downloadHandler(
-    filename = function() { "selected_genes.csv" },
-    content = function(file) {
-      req(selected_point_volcano())  # assure qu'il y a des points sélectionnés
-      write.csv(selected_point_volcano(), file, row.names = FALSE)
     }
   )
   
@@ -256,7 +220,7 @@ function(input, output, session) {
 
   # Appelle module ora plot pour afficher les plots 
                   
-  go_ora_plot("ora_module_plot", deg_data = deg_data,
+  go_ora_plot("ora_plot_module", deg_data = deg_data,
               filtered_genes = filtered_genes,
               OrgDb_selected = OrgDb_selected,
               pval_threshold = reactive(input$slider_pval),
@@ -270,6 +234,6 @@ function(input, output, session) {
                   fc_threshold = reactive(input$slider_fc))
   
   # Appel module GSEA GO plot pour afficher les plots 
-  go_gsea_plot("gsea_module_plot", deg_data = deg_data, OrgDb_selected = OrgDb_selected)
+  go_gsea_plot("gsea_plot_module", deg_data = deg_data(), OrgDb_selected = OrgDb_selected)
 
 }
