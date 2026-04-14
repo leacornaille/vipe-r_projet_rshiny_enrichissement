@@ -45,7 +45,8 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       # Création de la liste de gènes
       genes <- unique(df$GeneName)   
 
-      gene_list <- tryCatch({
+      gene_list <- tryCatch(
+      {
         ids<- mapIds(
           OrgDb_selected(),
           keys = genes,
@@ -53,6 +54,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
           keytype = "SYMBOL",
           multiVals = "first"
         )
+        
         ids<-ids[!is.na(ids)]
         unique(ids)
       }, error = function(e){
@@ -67,7 +69,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
         unique(deg_data()$ID)   
       } else {
         req(OrgDb_selected())
-        keys(OrgDb_selected(), keytype = "ENTREZID")                       # tous les gènes des données DEG
+        keys(OrgDb_selected(), keytype = "ENTREZID") # tous les gènes des données DEG
       }
 
 
@@ -116,7 +118,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       )
     }
 
-    all_go_plots <- reactive( {
+    all_go_plots <- reactive({
       req(enrich_res())
       res <- enrich_res()
       req(res)

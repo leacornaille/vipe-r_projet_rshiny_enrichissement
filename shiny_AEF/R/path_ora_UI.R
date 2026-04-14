@@ -127,7 +127,7 @@ path_ora_ui <- function(id) {
         ),
         
         # plot avec taille modifiable par l'utilisateur
-        withSpinner(jqui_resizable( plotOutput(ns("ora_plot_path")), options = list(handles = "se")),image = "loading.GIF")
+        withSpinner(jqui_resizable(plotOutput(ns("ora_plot_path")), options = list(handles = "se")),image = "loading.GIF")
       ),
       
       # ------ paramètre visuel---------------------------------------------------

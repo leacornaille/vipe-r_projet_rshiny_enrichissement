@@ -171,12 +171,7 @@ body <- dashboardBody(
             
             fluidRow( #  fluidRow permet de fixer ce qu'il y a dans la ligne
               # box pour le boxplot
-              box(
-                title = "Volcano plot", status = "primary", solidHeader = TRUE,
-                width = 6,  
-                withSpinner(plotlyOutput("plotly", height = 350), image = "loading.GIF", image.width = 200, image.height = 150),
-                collapsible = T  
-              ),
+              volcano_plot_ui("volcano_plot_module"),
               
               # Summary box pour le total de gènes filtrés
               valueBoxOutput("nb_filtered_genes_box", width = 4),
@@ -224,11 +219,7 @@ body <- dashboardBody(
                     downloadButton("downloadData", "Télécharger")
                   ),
                   # tableau des données DEG selectionné par l'utilisateur
-                  tabPanel(
-                    "Données sélectionnées",
-                    DTOutput("selected_points_table"),
-                    downloadButton("downloadSelected", "Télécharger")
-                  )
+                  selected_table_ui("volcano_plot_module"),
                 )
               ),
             )
@@ -237,14 +228,14 @@ body <- dashboardBody(
     # ------ Onglet ORA GO term -----------------------------------------------
     tabItem(
       tabName = "ora_go",
-      go_ora_ui("ora_module_plot")   
+      go_ora_ui("ora_plot_module")   
     ),
 
     
     # ------ Onglet GSEA GO term ----------------------------------------------
     tabItem(
       tabName = "gsea_go",
-      go_gsea_ui("gsea_module_plot")   
+      go_gsea_ui("gsea_plot_module")   
     ),
     
     # ------ Onglet ORA Pathway -----------------------------------------------
