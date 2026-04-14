@@ -58,26 +58,27 @@ function(input, output, session) {
         return(NULL)
       }
       
+      # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
+      retrieve_entrezID <- function(df_deg){
+        req(df_deg, OrgDb_selected())
+        df_deg$ENTREZID <- mapIds(x=OrgDb_selected(), keys=df_deg$GeneName, column="ENTREZID", 
+                                    keytype = "SYMBOL", multiVals = "first") # 1er match retourné si plusieurs
+        df_deg$ENTREZID[is.na(df_deg$ENTREZID)] = "Not found"
+        return(df_deg)
+      }
+      
       # Conversion en numérique des colonnes critiques
       df_deg <- retrieve_entrezID(df_deg)
       df_deg$log2FC <- as.numeric(df_deg$log2FC)
       df_deg$padj <- as.numeric(df_deg$padj)
-      # df_deg$baseMean <- as.numeric(df_deg$baseMean)
       df_deg$pval <- as.numeric(df_deg$pval)
-      
+      # Réordonner les colonnes
       df_deg <- df_deg[,c("GeneName", "ID", "ENTREZID", "log2FC", "pval", "padj")]
       return(df_deg)
     })
   })
   
-  # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
-  retrieve_entrezID <- function(deg_data){
-    req(deg_data, OrgDb_selected())
-    deg_data$ENTREZID <- mapIds(x=OrgDb_selected(), keys=deg_data$GeneName, column="ENTREZID", 
-                                keytype = "SYMBOL", multiVals = "first") # 1er match retourné si plusieurs
-    deg_data$ENTREZID[is.na(deg_data$ENTREZID)] = "Not found"
-    return(deg_data)
-  }
+
   
   # gènes filtrés en fonction des sliders 
   filtered_genes <- reactive({
@@ -106,26 +107,26 @@ function(input, output, session) {
   
   # les gènes à afficher selon les case cochées (up et down)
   filtered_genes_display <- reactive({
-    df_filtre_updown <- filtered_genes()
-    req(df_filtre_updown)
+    req(filtered_genes())
+    filtered_genes <- filtered_genes()
     
     # Si aucune case n'est cochée: tableau vide
     if (is.null(input$regulation_choice) || length(input$regulation_choice) == 0) {
-      return(df_filtre_updown[0, ])  # renvoie un data.frame vide
+      return(filtered_genes[0, ])  # renvoie un data.frame vide
     }
     
     # Filtrage selon Up / Down sélectionnés
-    df_filtre_updown[df_filtre_updown$Regulation %in% input$regulation_choice, ]
+    filtered_genes[filtered_genes$Regulation %in% input$regulation_choice, ]
   })
   
   # nombre de gènes filtrés
   output$nb_filtered_genes_box <- renderValueBox({
-    df <- filtered_genes()
-    req(df)
+    req(filtered_genes())
+    filtered_genes <- filtered_genes()
     # somme des gènes up et/ou down 
-    n_up   <- sum(df$Regulation == "Up", na.rm = TRUE)
-    n_down <- sum(df$Regulation == "Down", na.rm = TRUE)
-    n_total <- nrow(df)
+    n_up   <- sum(filtered_genes$Regulation == "Up", na.rm = TRUE)
+    n_down <- sum(filtered_genes$Regulation == "Down", na.rm = TRUE)
+    n_total <- nrow(filtered_genes)
     
     valueBox(
       value = paste0(n_total," gènes DEG"),
@@ -150,17 +151,16 @@ function(input, output, session) {
   
   # slider en fonction du log2FC
   output$slider_fc <- renderUI({ 
-    df_deg <- deg_data()
-    req(df_deg)
-    log2fc_vals <- as.numeric(df_deg$log2FC)
+    req(deg_data())
+    deg_data <- deg_data()
+    log2fc_vals <- as.numeric(deg_data$log2FC)
     log2fc_vals <- log2fc_vals[!is.na(log2fc_vals)]
     sliderInput("slider_fc", "Log2FC", min = 0, max = round(max(abs(log2fc_vals)), 2), value = 0.5)
   })
   
   # slider en fonction de la p-value
   output$slider_pval <- renderUI({ 
-    df_deg <- deg_data()
-    req(df_deg)
+    req(deg_data())
     sliderInput("slider_pval", "P-value ajustée", min=0, max=1, value=0.1) 
   })
   
