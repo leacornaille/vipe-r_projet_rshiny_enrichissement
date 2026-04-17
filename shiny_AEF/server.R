@@ -11,6 +11,9 @@
 # ce script server.R correspond au côté serveur et ne fonctionne que si il y a 
 # également un script ui.R
 #--------------------------------------------------------------------------
+# TODO : ajouter org selected en parallèle de org db selected pour gseKEGG
+
+
 
 # Define server
 function(input, output, session) {
@@ -230,12 +233,16 @@ function(input, output, session) {
 
   # Appelle module ora plot pour afficher les plots 
                   
-  go_ora_plot("ora_plot_module", deg_data = deg_data,
+  go_ora_plot("ora_go_module", deg_data = deg_data,
               filtered_genes = filtered_genes,
               OrgDb_selected = OrgDb_selected,
               pval_threshold = reactive(input$slider_pval),
               fc_threshold = reactive(input$slider_fc))
   
+  # Appel module GSEA GO plot pour afficher les plots 
+  go_gsea_plot("gsea_go_module", deg_data = deg_data(), 
+               OrgDb_selected = OrgDb_selected)
+
   # Appelle module ora pour la partie pathway
   path_ora_server("ora_path_module", deg_data = deg_data,
                   filtered_genes = filtered_genes, 
@@ -244,6 +251,8 @@ function(input, output, session) {
                   fc_threshold = reactive(input$slider_fc))
   
   # Appel module GSEA GO plot pour afficher les plots 
-  go_gsea_plot("gsea_plot_module", deg_data = deg_data(), OrgDb_selected = OrgDb_selected)
-
+  #path_gsea_server("gsea_path_module", deg_data = reactive(deg_data), 
+  #              OrgDb_selected = OrgDb_selected)
+  
+  
 }

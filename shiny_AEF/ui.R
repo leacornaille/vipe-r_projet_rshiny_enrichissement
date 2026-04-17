@@ -228,65 +228,27 @@ body <- dashboardBody(
     # ------ Onglet ORA GO term -----------------------------------------------
     tabItem(
       tabName = "ora_go",
-      go_ora_ui("ora_plot_module")   
+      go_ora_ui("ora_go_module")   
     ),
 
     
     # ------ Onglet GSEA GO term ----------------------------------------------
     tabItem(
       tabName = "gsea_go",
-      go_gsea_ui("gsea_plot_module")   
+      go_gsea_ui("gsea_go_module")   
     ),
     
     # ------ Onglet ORA Pathway -----------------------------------------------
     tabItem(
       tabName = "ora_path",
       path_ora_ui("ora_path_module")   
-    ),
+    )
     
     # ------ Onglet GSEA Pathway ----------------------------------------------
-    tabItem(tabName = "gsea_path",
-            h2("Enrichissement (Pathway)"),
-            h3("Méthode GSEA"),
-            
-            fluidRow(
-              box(title = "Paramètre GSEA", 
-                  width = 12, 
-                  collapsible = TRUE
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Figure", 
-                  width = 6,
-                  status = "warning",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_gsea_path", "ridge_plot" = "ridge_gsea_path", "fig3" = "fig3"))
-              ),
-              box(title = "Figure",
-                  width = 6,
-                  status = "warning",
-                  solidHeader = TRUE,
-                  collapsible = TRUE,
-                  
-                  selectInput( 
-                    "select_graph", 
-                    "Sélectionner le type de graphique:", 
-                    list("dotplot" = "dotplot_gsea_path", "ridge_plot" = "ridge_gsea_path", "fig3" = "fig3"))
-              )
-            ),
-            
-            fluidRow(
-              box(title = "Tableau résultats GSEA",
-                  width = 12,
-                  collapsible = TRUE
-              )
-            )
-    )
+    # tabItem(
+    #   tabName = "gsea_path",
+    #   path_gsea_ui("gsea_path_module")
+    # )
   )
 )
 
