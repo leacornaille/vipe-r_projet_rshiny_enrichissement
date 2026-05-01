@@ -240,7 +240,7 @@ function(input, output, session) {
               fc_threshold = reactive(input$slider_fc))
   
   # Appel module GSEA GO plot pour afficher les plots 
-  go_gsea_plot("gsea_go_module", deg_data = deg_data(), 
+  go_gsea_plot("gsea_go_module", deg_data = deg_data, 
                OrgDb_selected = OrgDb_selected)
 
   # Appelle module ora pour la partie pathway
