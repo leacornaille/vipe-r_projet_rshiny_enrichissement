@@ -57,12 +57,12 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       switch(
         choice,
         "gseaplot" = gseaplot2(res, geneSetID = sel_go_id),
-        "dotplot" = dotplot(res, showCategory = 15),
+        "dotplot" = dotplot(res, showCategory = input$n_cat_go_gsea),
         "emapplot" = {
           sim <- pairwise_termsim(res)
-          emapplot(sim)
+          emapplot(sim, showCategory = input$n_cat_gsea)
         },
-        "ridgeplot" = ridgeplot(res),
+        "ridgeplot" = ridgeplot(res, showCategory = input$n_cat_gsea),
       )
     }
     
