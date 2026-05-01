@@ -1,7 +1,7 @@
 #---------------------------------- GO GSEA UI ----------------------------------#
 
 # Fonction ui pour l'onglet GO term de GSEA 
-go_gsea_ui <- function(id) {
+path_gsea_ui <- function(id) {
   # Creation d'un namespace pour le module
   ns <- NS(id)
   
