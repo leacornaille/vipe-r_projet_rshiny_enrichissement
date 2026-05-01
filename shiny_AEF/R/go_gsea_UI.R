@@ -118,6 +118,43 @@ go_gsea_ui <- function(id) {
           withSpinner(plotOutput(ns("gsea_go_plot1")), image = "loading.GIF")
       ),
       
+      box(
+        title = "Paramètres visuels",
+        width = 4,
+        status = "warning",
+        collapsible = TRUE,
+        
+        textInput(
+          ns("plot_title_gsea_go"),
+          "Titre du graphique",
+          value = "GSEA Enrichissement termes GO"
+        ),
+        
+        sliderInput(
+          ns("n_cat_go_gsea"),
+          "Nombre de GO terms affichés",
+          min = 5, 
+          max = 50,
+          value = 20,
+          step = 1
+        ),
+        
+        selectInput(
+          ns("color_palette_go_gsea"),
+          "Palette des couleurs (p.adjust)", 
+          choices = c(
+            "Viridis" = "viridis",
+            "Plasma" = "plasma",
+            "Magma" = "magma",
+            "Inferno" = "inferno",
+            "Bleu → Rouge" = "blue_red"
+          ),
+          selected = "viridis"
+        )
+      ),
+      
+      
+      #------------------ Tableau GSEA GO term -------------------
       box(title = "Table résultats GSEA", 
           width = 12, 
           height = 900,
