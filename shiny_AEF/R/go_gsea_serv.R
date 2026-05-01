@@ -48,14 +48,15 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       res_tbl <- res@result
       res_tbl <- res_tbl[!is.na(res_tbl$core_enrichment) & nchar(res_tbl$core_enrichment) > 0, ]
-      validate(need(nrow(res_tbl) > 0, "Aucun GO term valide"))
-      top_id <- res_tbl$ID[1]
+      validate(need(nrow(res_tbl) > 0, "Aucun terme GO valide"))
+      # top_id <- res_tbl$ID[1]
+      sel_go_id <- selected_go_id() # GO choisi dans le tableau des résultats GSEA
       
-      gseaplot2(res, geneSetID = top_id)
+      gseaplot2(res, geneSetID = sel_go_id)
       
       switch(
         choice,
-        "gseaplot" = gseaplot2(res, geneSetID = top_id),
+        "gseaplot" = gseaplot2(res, geneSetID = sel_go_id),
         "dotplot" = dotplot(res, showCategory = 15),
         "emapplot" = {
           sim <- pairwise_termsim(res)
@@ -69,13 +70,30 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
     output$gsea_go_plot2 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go2))
     
+    # Tableau interactif : terme GO sélectionné pour le GSEA plot
     output$go_gsea_table_results <- DT::renderDataTable({
       res <- gsea_res()
       req(res)
       df <- as.data.frame(res@result)
-      # df[, c("ID", "Description", "GeneRatio", "BgRatio", "pvalue", "p.adjust", "qvalue", "geneID", "Count")]
     },
+    selection = "single", # une seule (terme GO) ligne sélectionnable à la fois
+
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
+    
+    # Sélection d'un terme GO du tableau pour les plots
+    selected_go_id <- reactive({
+      res <- gsea_res()
+      req(res)
+      
+      df <- as.data.frame(res@result)
+      idx_selGO <- input$go_gsea_table_results_rows_selected
+      
+      # Si rien de sélectionné, top 1 par défaut
+      if (is.null(idx_selGO) || length(idx_selGO) == 0) {
+        return(df$ID[1])
+      }
+      df$ID[idx_selGO]
+    })
     
     # Renvoi résultats pour table
     return(list(
