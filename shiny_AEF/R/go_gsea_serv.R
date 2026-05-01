@@ -21,10 +21,10 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     # ---- Calcul GSEA ----
     
     gsea_res <- eventReactive(input$runGSEA, {
-      # validate(need(nrow(genes_filtered_type()) > 0, "Aucun gène ne passe les filtres !"))
       
       geneList <- ranked_genes()
-      # nombre de permutations ?
+      validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
+      
       gseGO(
         geneList      = geneList,
         OrgDb         = OrgDb_selected(),
@@ -32,11 +32,13 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         ont           = input$ont,
         minGSSize     = 15,
         maxGSSize     = 500,
-        pAdjustMethod = "BH",
-        # attention : laisser le choix à l'utilisateur ?
-        # pvalueCutoff  = 1, # laisser le choix à l'utilisateur (cf. ORA GO Christine)
+        pAdjustMethod = input$padjust_method_go_gsea,
+        pvalueCutoff  = input$pval_ora_gsea,
         verbose       = FALSE
       )
+      
+      # nombre de permutations ?
+      
     })
     
     # ---- Génération du plot ----
