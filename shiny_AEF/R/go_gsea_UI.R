@@ -59,7 +59,7 @@ go_gsea_ui <- function(id) {
                 ),
                 
                 selectInput(
-                  ns("univers_ora_go"),
+                  ns("univers_gsea_go"),
                   "Choix de l'univers",
                   choices = c(
                     "Génome de référence (recommandé)" = "gen_ref",
@@ -71,7 +71,7 @@ go_gsea_ui <- function(id) {
               column(
                 width = 6,
                 selectInput(
-                  ns("padjust_method_go_ora"),
+                  ns("padjust_method_go_gsea"),
                   "Méthode de correction multiple",
                   choices = c(
                     "Benjamini-Hochberg (FDR)" = "BH",
@@ -84,8 +84,8 @@ go_gsea_ui <- function(id) {
                 ),
                 
                 numericInput(
-                  ns("pval_ora_go"),
-                  "Seuil p-value ORA",
+                  ns("pval_ora_gsea"),
+                  "Seuil p-value GSEA",
                   value = 0.05,
                   min = 0,
                   max = 0.1,
