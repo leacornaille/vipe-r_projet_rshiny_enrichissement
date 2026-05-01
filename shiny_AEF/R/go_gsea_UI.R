@@ -33,10 +33,6 @@ go_gsea_ui <- function(id) {
               selected = "log2FC"
               )
             ),
-            # selectInput(
-            #   ns("rank_type_gsea"), 
-            #   "Choisir le critère de classement :",
-            #   choices = c("log2FC" = "log2FC", "padj"  = "padj")),
            
           # paramètres statistiques ORA 
           box(
