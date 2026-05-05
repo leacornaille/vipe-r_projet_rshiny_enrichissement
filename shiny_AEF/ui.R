@@ -130,38 +130,30 @@ body <- dashboardBody(
           
           p("Prenez le temps de parcourir les différentes sections pour découvrir toutes les fonctionnalités et tirer le meilleur parti de VIPE-R !")
         ),
-        tabPanel("Importation des données", 
-                 h3("Importer vos fichiers"),
-                 p("Vous pouvez importer vos fichiers CSV via le menu à gauche."),
-                 tags$ul(
-                   tags$li("Les colonnes obligatoires sont : GeneName, ID, baseMean, log2FC, pval, padj"),
-                   tags$li("Formats acceptés : CSV, TSV, TXT"),
-                   tags$li("En cas d'erreur, un message s'affichera automatiquement")
-                 )),
+        
         tabPanel(
-          "Visualisation données DEG",
-          h3("Analyse et exploration des gènes différentiellement exprimés"),
-          p("Ajustez les seuils de Log2FC et p-value pour faire varier le volcano plot."),
-          
-          p("Un volcano plot permet de visualiser les gènes différentiellement exprimés :"),
-          tags$ul(
-            tags$li("L'axe X représente le Log2 fold change (Log2FC)."),
-            tags$li("L'axe Y représente le -log10(p-value)."),
-            tags$li("Les gènes significativement régulés vers le haut ou vers le bas apparaissent généralement en rouge ou bleu.")
-          ),
-          
-          p("Seuils par défaut : Log2FC = 1 et p-value = 0.05. Vous pouvez ajuster ces valeurs pour filtrer les gènes."),
-          p("Les gènes colorés sont significatifs."),
-          
-          p("Fonctionnalités interactives disponibles :"),
-          tags$ul(
-            tags$li("Vous pouvez sélectionner des gènes directement sur le volcano plot et les afficher dans un tableau."),
-            tags$li("Il est possible de télécharger le volcano plot en image."),
-            tags$li("Vous pouvez également télécharger les tables de gènes filtrés selon les seuils choisis et le sens de régulation.")
+          "Guide d'utilisation",
+          tags$iframe(
+            src = "guide_utilisation.html",
+            style = "border: none; display: block;",
+            width = "70%",
+            height = "800px"
           )
         ),
-        tabPanel("Enrichissement", 
-                 p("Explorez les GO terms pour identifier les processus biologiques associés."))
+
+        tabPanel(
+          "Enrichissement fonctionnel",
+          tags$iframe(
+            src = "theorie_ora_gsea.html",
+            style = "border: none; display: block;",
+            width = "70%",
+            height = "800px"
+          )
+        ),
+        tabPanel(
+          "Interprétation des figures",
+          includeMarkdown("www/analyse_figures.md")
+        )
       )
     ),
     

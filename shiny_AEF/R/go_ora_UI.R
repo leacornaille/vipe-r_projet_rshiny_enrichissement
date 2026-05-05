@@ -66,7 +66,7 @@ go_ora_ui <- function(id) {
                   ns("univers_ora_go"),
                   "Choix de l'univers",
                   choices = c(
-                    "Génome de référence (recommandé)" = "gen_ref",
+                    "Génome de référence" = "gen_ref",
                     "Gène de l'analyse RNA-seq" = "gene_list"
                   )
                 )
@@ -133,8 +133,6 @@ go_ora_ui <- function(id) {
         withSpinner(jqui_resizable( plotOutput(ns("ora_go_plot1")), options = list(handles = "se")),image = "loading.GIF")
       ),
       
-      
-      
       box(
         title = "Paramètre visuel",
         width = 4,
@@ -164,7 +162,13 @@ go_ora_ui <- function(id) {
             "Plasma" = "plasma",
             "Magma" = "magma",
             "Inferno" = "inferno",
-            "Bleu → Rouge" = "blue_red"
+            "Mako" = "mako",
+            "Rocket" = "rocket",
+            "Cividis" = "cividis",
+            "Turbo" = "turbo",
+            "Jaune → Rouge" = "YlOrRd",
+            "Bleu → Rouge" = "blue_red",
+            "Vert → Orange" = "green_orange"
           ),
           selected = "viridis"
         )

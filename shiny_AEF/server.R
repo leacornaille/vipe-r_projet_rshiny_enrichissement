@@ -44,44 +44,40 @@ function(input, output, session) {
     }
     
     # Lecture avec fread pour détecter automatiquement le separateur
-    isolate({
-      df_deg <- fread(input$file$datapath)
-      
-      # Vérification colonnes obligatoires (et pop-up si elles manquent)
-      required_cols <- c("GeneName","ID","baseMean","log2FC","pval","padj")
-      missing <- setdiff(required_cols, colnames(df_deg))
-      if (length(missing) > 0) {
-        showModal(modalDialog(
-          title = "Colonnes manquantes",
-          HTML(paste0("Votre fichier doit contenir :", paste(required_cols, collapse=", "),
-                      "<br>Colonnes absentes :", paste(missing, collapse=", "))),
-          easyClose = TRUE,
-          footer = modalButton("Fermer")
-        ))
-        return(NULL)
-      }
-      
-      # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
-      retrieve_entrezID <- function(df_deg){
-        req(df_deg, OrgDb_selected())
-        df_deg$ENTREZID <- mapIds(x=OrgDb_selected(), keys=df_deg$GeneName, column="ENTREZID", 
-                                    keytype = "SYMBOL", multiVals = "first") # 1er match retourné si plusieurs
-        df_deg$ENTREZID[is.na(df_deg$ENTREZID)] = "Not found"
-        return(df_deg)
-      }
-      
-      # Conversion en numérique des colonnes critiques
-      df_deg <- retrieve_entrezID(df_deg)
-      df_deg$log2FC <- as.numeric(df_deg$log2FC)
-      df_deg$padj <- as.numeric(df_deg$padj)
-      df_deg$pval <- as.numeric(df_deg$pval)
-      # Réordonner les colonnes
-      df_deg <- df_deg[,c("GeneName", "ID", "ENTREZID", "log2FC", "pval", "padj")]
+    df_deg <- fread(input$file$datapath)
+    
+    # Vérification colonnes obligatoires (et pop-up si elles manquent)
+    required_cols <- c("GeneName","ID","baseMean","log2FC","pval","padj")
+    missing <- setdiff(required_cols, colnames(df_deg))
+    if (length(missing) > 0) {
+      showModal(modalDialog(
+        title = "Colonnes manquantes",
+        HTML(paste0("Votre fichier doit contenir :", paste(required_cols, collapse=", "),
+                    "<br>Colonnes absentes :", paste(missing, collapse=", "))),
+        easyClose = TRUE,
+        footer = modalButton("Fermer")
+      ))
+      return(NULL)
+    }
+    
+    # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
+    retrieve_entrezID <- function(df_deg){
+      req(df_deg, OrgDb_selected())
+      df_deg$ENTREZID <- mapIds(x=OrgDb_selected(), keys=df_deg$GeneName, column="ENTREZID", 
+                                  keytype = "SYMBOL", multiVals = "first") # 1er match retourné si plusieurs
+      df_deg$ENTREZID[is.na(df_deg$ENTREZID)] = "Not found"
       return(df_deg)
-    })
+    }
+    
+    # Conversion en numérique des colonnes critiques
+    df_deg <- retrieve_entrezID(df_deg)
+    df_deg$log2FC <- as.numeric(df_deg$log2FC)
+    df_deg$padj <- as.numeric(df_deg$padj)
+    df_deg$pval <- as.numeric(df_deg$pval)
+    # Réordonner les colonnes
+    df_deg <- df_deg[,c("GeneName", "ID", "ENTREZID", "log2FC", "pval", "padj")]
+    return(df_deg)
   })
-  
-
   
   # gènes filtrés en fonction des sliders 
   filtered_genes <- reactive({
@@ -206,7 +202,7 @@ function(input, output, session) {
       modalDialog(
         title = "À propos de VIPE-R",
         HTML(
-          "<p><b>Auteur :</b> Léa Cornaille</p>1
+          "<p><b>Auteur :</b> Léa Cornaille</p>
          <p><b>Email :</b> lea.cornaille@hotmail.com</p>
          <p><b>Affiliation :</b> Université de Rouen</p>
          <p><b>Projet :</b> Analyse d'enrichissement fonctionnel</p>
@@ -232,7 +228,6 @@ function(input, output, session) {
   
 
   # Appelle module ora plot pour afficher les plots 
-                  
   go_ora_plot("ora_go_module", deg_data = deg_data,
               filtered_genes = filtered_genes,
               OrgDb_selected = OrgDb_selected,

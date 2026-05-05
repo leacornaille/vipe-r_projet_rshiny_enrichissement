@@ -4,20 +4,6 @@
 go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold){
   moduleServer(id, function(input, output, session){
 
-    #----------------Filtrage selon le type de régulation choisi ---------------
-    genes_filtered_type <- reactive({
-      df <- filtered_genes()
-      req(df)
-
-      # Filtrage selon le type de régulation choisi
-      if (input$reg_type == "overexpress") {
-        df <- df[df$Regulation == "Up", ]
-      } else if (input$reg_type == "underexpress") {
-        df <- df[df$Regulation == "Down", ]
-      }
-      df
-    })
-
     # box info pour le filtrage
     output$filter_info_box <- renderUI({
       req(pval_threshold(), fc_threshold())
@@ -33,90 +19,57 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
     })
 
 
-
     # ----ORA enrichGO ----
     enrich_res <- eventReactive(input$runGO, {
-      df <- genes_filtered_type()
-
-      validate(
-        need(nrow(df) > 0, "Aucun gène ne passe les filtres !")
-      )
-
-      # Création de la liste de gènes
-      genes <- unique(df$GeneName)   
-
-      gene_list <- tryCatch(
-      {
-        ids<- mapIds(
-          OrgDb_selected(),
-          keys = genes,
-          column = "ENTREZID",
-          keytype = "SYMBOL",
-          multiVals = "first"
-        )
-        
-        ids<-ids[!is.na(ids)]
-        unique(ids)
-      }, error = function(e){
-        showNotification(
-          paste("Erreur conversion gènes : ", e$message),
-          type = "error"
-        )
-        character(0)
-      })
-
+      req(OrgDb_selected(), deg_data())
+      
+      df <- filtered_genes()
+      
+      # Filtrage Up / Down / Both
+      if (input$reg_type == "overexpress") {
+        df <- df[df$Regulation == "Up", ]
+      } else if (input$reg_type == "underexpress") {
+        df <- df[df$Regulation == "Down", ]
+      } else {
+        df <- df[df$Regulation %in% c("Up", "Down"), ]
+      }
+      
+      # Gènes d’intérêt ORA (ENTREZID)
+      ids <- df$ENTREZID
+      ids <- ids[!is.na(ids) & ids != "Not found"]
+      ids <- unique(ids)
+      
+      if (length(ids) == 0) {
+        showNotification("Aucun gène valide trouvé", type = "warning")
+        return(NULL)
+      }
+  
       univ <- if (input$univers_ora_go == "gene_list") {
-        unique(deg_data()$ID)   
+        unique(deg_data()$ENTREZID)   
       } else {
         req(OrgDb_selected())
-        keys(OrgDb_selected(), keytype = "ENTREZID") # tous les gènes des données DEG
+        keys(OrgDb_selected(), keytype = "ENTREZID") 
       }
 
-
+      # Message informatif
+      msg <- paste("Analyse avec", length(ids), "gènes")
+      if (!is.null(univ)) {
+        msg <- paste0(msg, " (universe: ", length(univ), " gènes)")
+      }
+      showNotification(msg, type = "message", duration = 3)
 
       # Enrichissement GO term via enrichGO
       enrichGO(
-        gene          = gene_list,
-        OrgDb         = OrgDb_selected(),
-        universe      = univ,
-        keyType       = "ENTREZID",
-        ont           = input$ont,
+        gene = ids,
+        OrgDb = OrgDb_selected(),
+        universe = univ,
+        keyType = "ENTREZID",
+        ont = input$ont,
         pAdjustMethod = input$padjust_method_go_ora,
-        pvalueCutoff  = input$pval_ora_go,
+        pvalueCutoff = input$pval_ora_go,
         readable = TRUE
       )
     })
-
-    ora_scales <- function(palette) {
-      list(
-        switch(palette,
-               "viridis"      = scale_fill_viridis_c(option = "D",       name = "p.adjust"),
-               "plasma"       = scale_fill_viridis_c(option = "plasma",   name = "p.adjust"),
-               "magma"        = scale_fill_viridis_c(option = "magma",    name = "p.adjust"),
-               "inferno"      = scale_fill_viridis_c(option = "inferno",  name = "p.adjust"),
-               "mako"         = scale_fill_viridis_c(option = "mako",     name = "p.adjust"),
-               "rocket"       = scale_fill_viridis_c(option = "rocket",   name = "p.adjust"),
-               "cividis"      = scale_fill_viridis_c(option = "cividis",  name = "p.adjust"),
-               "turbo"        = scale_fill_viridis_c(option = "turbo",    name = "p.adjust"),
-               "YlOrRd"       = scale_fill_distiller(palette = "YlOrRd",  name = "p.adjust", direction = 1),
-               "blue_red"     = scale_fill_gradient(low = "blue",         high = "red",         name = "p.adjust"),
-               "green_orange" = scale_fill_gradient(low = "limegreen",    high = "darkorange2", name = "p.adjust")
-        ),
-        switch(palette,
-               "viridis"      = scale_color_viridis_c(option = "D",       name = "p.adjust"),
-               "plasma"       = scale_color_viridis_c(option = "plasma",   name = "p.adjust"),
-               "magma"        = scale_color_viridis_c(option = "magma",    name = "p.adjust"),
-               "inferno"      = scale_color_viridis_c(option = "inferno",  name = "p.adjust"),
-               "mako"         = scale_color_viridis_c(option = "mako",     name = "p.adjust"),
-               "rocket"       = scale_color_viridis_c(option = "rocket",   name = "p.adjust"),
-               "cividis"      = scale_color_viridis_c(option = "cividis",  name = "p.adjust"),
-               "turbo"        = scale_color_viridis_c(option = "turbo",    name = "p.adjust"),
-               "YlOrRd"       = scale_color_distiller(palette = "YlOrRd",  name = "p.adjust", direction = 1),
-               "blue_red"     = scale_color_gradient(low = "blue",         high = "red",         name = "p.adjust"),
-               "green_orange" = scale_color_gradient(low = "limegreen",    high = "darkorange2", name = "p.adjust")
-        )
-      )
-    }
 
     all_go_plots <- reactive({
       req(enrich_res())
@@ -161,7 +114,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
           )
         )
       } else {
-        p + ora_scales(input$color_palette_go_ora) +
+        p + color_palette(input$color_palette_go_ora) +
           ggtitle(title) +
           ggplot2::theme(
             plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
