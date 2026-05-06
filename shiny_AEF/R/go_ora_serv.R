@@ -1,6 +1,5 @@
 
 # Fonction pour générer les plots de l'onglet Go term ORA 
-
 go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold){
   moduleServer(id, function(input, output, session){
 
@@ -20,7 +19,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
 
 
     # ----ORA enrichGO ----
-    enrich_res <- eventReactive(input$runGO, {
+    enrich_res_ora <- eventReactive(input$runGO, {
       req(OrgDb_selected(), deg_data())
       
       df <- filtered_genes()
@@ -72,8 +71,8 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
     })
 
     all_go_plots <- reactive({
-      req(enrich_res())
-      res <- enrich_res()
+      req(enrich_res_ora())
+      res <- enrich_res_ora()
       req(res)
 
       # # Pour treeplot et netplot : calcul des similarités entre termes
@@ -124,16 +123,23 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
 
 
     output$ora_go_table <- DT::renderDataTable({
-      res <- enrich_res()
+      res <- enrich_res_ora()
       req(res)
       df <- as.data.frame(res)
     },
     options = list(pageLength = 15, scrollX = TRUE, order = list(list(5, "asc"))))
 
+    # Label précis reflétant les paramètres du dernier run
+    source_label <- reactive({
+      req(enrich_res_ora())
+      paste0("GO ORA (", input$ont, ")")
+    })
+    
 
     # Renvoi résultats pour table
     return(list(
-      enrich_res = enrich_res
+      enrich_res = enrich_res_ora,
+      source_label = source_label
       ))
     })
 }

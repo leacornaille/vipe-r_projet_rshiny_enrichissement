@@ -1,0 +1,106 @@
+recap_ui <- function(id) {
+  ns <- NS(id)
+  
+  tabItem(
+    tabName = "recap",
+    
+    h2("Visualisation globale des résultats"),
+    p("Ce graphique agrège l'ensemble des analyses d'enrichissement lancées dans l'application.
+       Chaque source (GO ORA, GO GSEA, Pathway ORA…) forme un bloc sur l'axe X.
+       Les termes sont ordonnés par significativité décroissante au sein de chaque bloc.
+       Les résultats s'accumulent à chaque Run : relancer avec d'autres paramètres ajoute
+       une nouvelle entrée ou remplace l'ancienne si le label est identique."),
+    
+    fluidRow(
+      
+      # ── Paramètres graphiques ─────────────────────────────────────────────
+      box(
+        title       = "Paramètres graphiques",
+        width       = 3,
+        status      = "warning",
+        solidHeader = FALSE,
+        collapsible = TRUE,
+        
+        # Résultats accumulés
+        h4("Analyses accumulées"),
+        uiOutput(ns("run_counter")),
+        hr(),
+        
+        h4("Sources à afficher"),
+        helpText("Seules les analyses déjà lancées sont disponibles."),
+        uiOutput(ns("source_checkboxes")),
+        
+        hr(),
+        
+        sliderInput(
+          ns("pval_threshold"),
+          label   = HTML("Seuil &minus;log<sub>10</sub>(p.adjust)"),
+          min = 0, max = 10, value = 1.30, step = 0.05,
+          ticks = FALSE
+        ),
+        
+        numericInput(
+          ns("n_labels"),
+          label = "Top N termes annotés",
+          value = 10, min = 0, max = 50, step = 1
+        ),
+        
+        numericInput(
+          ns("nbr_points"),
+          label = "Nbr de points à afficher par analyse",
+          value = 10, min = 1, max = 50, step = 1
+        ),
+        
+        radioButtons(
+          ns("size_metric"),
+          label   = "Taille des points",
+          choices = c(
+            "Count / setSize" = "count",
+            "GeneRatio / NES" = "generatio",
+            "Uniforme"        = "uniform"
+          ),
+          selected = "count"
+        ),
+        
+        hr(),
+        
+        actionButton(
+          ns("build_plot"),
+          label = tags$span(icon("chart-bar"), " Construire le plot"),
+          class = "btn-primary btn-block"
+        ),
+        
+        br()
+      ),
+      
+      # ── Manhattan plot ────────────────────────────────────────────────────
+      box(
+        title       = "Manhattan plot",
+        width       = 9,
+        status      = "primary",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+        
+        withSpinner(
+          plotlyOutput(ns("manhattan_plot"), height = "500px"),
+          image        = "loading.GIF",
+          image.width  = 200,
+          image.height = 150
+        )
+      )
+    ),
+    
+    # ── Détail du terme cliqué ────────────────────────────────────────────
+    fluidRow(
+      box(
+        title  = tags$span(icon("info-circle"), " Terme sélectionné"),
+        status = "info",
+        solidHeader = TRUE,
+        width = 12,
+        collapsible = TRUE,
+        collapsed = FALSE,
+        uiOutput(ns("selected_term_info"))
+      )
+    )
+  )
+}

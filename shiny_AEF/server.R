@@ -226,28 +226,39 @@ function(input, output, session) {
            "souris" = org.Mm.eg.db)
   })
   
-
-  # Appelle module ora plot pour afficher les plots 
-  go_ora_plot("ora_go_module", deg_data = deg_data,
-              filtered_genes = filtered_genes,
-              OrgDb_selected = OrgDb_selected,
-              pval_threshold = reactive(input$slider_pval),
-              fc_threshold = reactive(input$slider_fc))
+  volcano_plot("volcano_plot_module",
+               deg_data = deg_data,
+               pval_threshold = reactive(input$slider_pval),
+               fc_threshold = reactive(input$slider_fc),
+               reset_all = reactive(input$reset_all))
   
-  # Appel module GSEA GO plot pour afficher les plots 
-  go_gsea_plot("gsea_go_module", deg_data = deg_data, 
-               OrgDb_selected = OrgDb_selected)
-
-  # Appelle module ora pour la partie pathway
-  path_ora_server("ora_path_module", deg_data = deg_data,
-                  filtered_genes = filtered_genes, 
-                  OrgDb_selected = OrgDb_selected,
-                  pval_threshold = reactive(input$slider_pval),
-                  fc_threshold = reactive(input$slider_fc))
+  go_ora_res <- go_ora_plot("ora_go_module",
+                            deg_data = deg_data,
+                            filtered_genes = filtered_genes,
+                            OrgDb_selected = OrgDb_selected,
+                            pval_threshold = reactive(input$slider_pval),
+                            fc_threshold = reactive(input$slider_fc))
+  
+  go_gsea_res <- go_gsea_plot("gsea_go_module",
+                              deg_data = deg_data,
+                              OrgDb_selected = OrgDb_selected)
+  
+  path_ora_res <- path_ora_server("ora_path_module",
+                                  deg_data = deg_data,
+                                  filtered_genes = filtered_genes,
+                                  OrgDb_selected = OrgDb_selected,
+                                  pval_threshold = reactive(input$slider_pval),
+                                  fc_threshold = reactive(input$slider_fc))
   
   # Appel module GSEA GO plot pour afficher les plots 
   #path_gsea_server("gsea_path_module", deg_data = reactive(deg_data), 
   #              OrgDb_selected = OrgDb_selected)
+  
+  recap_server("recap_module",
+               go_ora_module = go_ora_res,
+               go_gsea_module = go_gsea_res,
+               path_ora_module = path_ora_res,
+               path_gsea_module = NULL)
   
   
 }

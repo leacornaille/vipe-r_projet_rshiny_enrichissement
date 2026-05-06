@@ -29,7 +29,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
     })
     
     # ORA analysis
-    enrich_res <- eventReactive(input$run_ora_path, {
+    enrich_res_ora_path <- eventReactive(input$run_ora_path, {
       req(OrgDb_selected(), deg_data())
       
       df <- filtered_genes()
@@ -100,15 +100,15 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
     
     # update slider dynamique
     observe({
-      req(enrich_res())
-      n <- nrow(as.data.frame(enrich_res()))
+      req(enrich_res_ora_path())
+      n <- nrow(as.data.frame(enrich_res_ora_path()))
       updateSliderInput(session, "n_terms", max = min(n, 50))
     })
     
     # renderPlot — identique pour tous les graphiques
     all_path_plots <- reactive({
-      req(enrich_res())
-      res <- enrich_res()
+      req(enrich_res_ora_path())
+      res <- enrich_res_ora_path()
       
       res_readable <- tryCatch(
         setReadable(res, OrgDb = OrgDb_selected(), keyType = "ENTREZID"),
@@ -142,13 +142,31 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
     
     # table results
     output$table_results <- DT::renderDataTable({
-      req(enrich_res())
-      res <- enrich_res()
+      req(enrich_res_ora_path())
+      res <- enrich_res_ora_path()
       
       DT::datatable(
         as.data.frame(res),
         options = list(scrollX = TRUE, pageLength = 15)
       )
     })
+    
+    # Label précis reflétant les paramètres du dernier run
+    source_label <- reactive({
+      req(enrich_res_ora_path())
+      db_label <- switch(input$pathway_db,
+                         "kegg"     = "KEGG",
+                         "reactome" = "Reactome",
+                         input$pathway_db
+      )
+      paste0("Pathway ORA (", db_label, ")")
+    })
+    
+    
+    # Renvoi résultats pour table
+    return(list(
+      enrich_res = enrich_res_ora_path,
+      source_label = source_label
+    ))
   })
 }

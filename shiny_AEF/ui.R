@@ -74,7 +74,8 @@ sidebar <-dashboardSidebar(
              menuSubItem("GSEA", tabName = "gsea_go")),
     menuItem("Enrichissement (Pathway)", icon = icon("chart-pie"),tabName = "pathway", startExpanded = TRUE,
              menuSubItem("ORA", tabName = "ora_path"),
-             menuSubItem("GSEA", tabName = "gsea_path"))
+             menuSubItem("GSEA", tabName = "gsea_path")),
+    menuItem("Récapitulatif", icon = icon("chart-column"), tabName = "recap")
   )
 )
 
@@ -223,7 +224,6 @@ body <- dashboardBody(
       go_ora_ui("ora_go_module")   
     ),
 
-    
     # ------ Onglet GSEA GO term ----------------------------------------------
     tabItem(
       tabName = "gsea_go",
@@ -234,13 +234,19 @@ body <- dashboardBody(
     tabItem(
       tabName = "ora_path",
       path_ora_ui("ora_path_module")   
-    )
+    ),
     
     # ------ Onglet GSEA Pathway ----------------------------------------------
     # tabItem(
     #   tabName = "gsea_path",
     #   path_gsea_ui("gsea_path_module")
     # )
+    
+    # ------ Onglet Récapitulatif ---------------------------------------------
+    tabItem(
+      tabName = "recap",
+      recap_ui("recap_module")
+    )
   )
 )
 
