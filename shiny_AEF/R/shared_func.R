@@ -31,7 +31,7 @@ build_geneList <- function(deg_data, rank_type){
     
     # Enlever les gènes pour lesquels les ENTREZID sont "Not found"
     deg_data <- deg_data[deg_data$ENTREZID != "Not found",]
-    
+
     # Tri décroissant comme attendu par GSEA
     gene_list <- deg_data[[rank_type]]
     names(gene_list) <- deg_data$ENTREZID
