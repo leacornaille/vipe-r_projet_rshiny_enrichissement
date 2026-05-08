@@ -107,9 +107,17 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       df$ID[idx_selGO]
     })
     
-    # Renvoi résultats pour table
+    # Label avec les paramètres du dernier run pour recap_serv (Manhattan Plot)
+    source_label <- reactive({
+      req(gsea_res())
+      paste0("GO GSEA (", input$ont, ")")
+    })
+    
+    
+    # Renvoi résultats pour table du Manhattan Plot
     return(list(
-      enrich_res = gsea_res
+      enrich_res = gsea_res,
+      source_label = source_label
     ))
   })
 }
