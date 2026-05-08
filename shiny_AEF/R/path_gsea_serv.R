@@ -20,26 +20,35 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     })
     
     
-    geneList = build_geneList(deg_data)
     # ---- Calcul GSEA ----
+    
     gsea_res <- eventReactive(input$runGSEA, {
-
       # nombre de permutations ?
-      gseKEGG(
-        geneList      = geneList,
-        OrgDb         = OrgDb_selected(),
-        keyType       = "ENTREZID",
-        ont           = input$ont,
-        minGSSize     = 10,
-        maxGSSize     = 500,
-        pAdjustMethod = "BH",
-        # attention : laisser le choix à l'utilisateur ?
-        # pvalueCutoff  = 1, # laisser le choix à l'utilisateur (cf. ORA GO Christine)
-        verbose       = FALSE
-      )
+      geneList = build_geneList(deg_data, input$rank_type_gsea)
+      print(paste0("KEGG db : ",organism_kegg()))
+      if (input$pathway_db == "kegg"){
+        gsea = gseKEGG(
+          geneList = geneList,
+          organism = organism_kegg(),
+          keyType =  "ncbi-geneid",
+          minGSSize     = 10,
+          maxGSSize     = 500,
+          pAdjustMethod = input$padjust_method_path_gsea,
+          verbose       = FALSE
+        )
+      } else if (input$pathway_db == "reactome"){
+        gsea = gsePathway(
+          geneList = geneList,
+          organism = organism_reactome(),
+          minGSSize     = 10,
+          maxGSSize     = 500,
+          pAdjustMethod = input$padjust_method_path_gsea,
+          verbose       = FALSE
+        )
+      }
+      print("gse done")
+      return(gsea)
     })
-    
-    
     
     # ---- Génération du plot ----
     render_gsea_plot <- function(choice) {
@@ -48,7 +57,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       res_tbl <- res@result
       res_tbl <- res_tbl[!is.na(res_tbl$core_enrichment) & nchar(res_tbl$core_enrichment) > 0, ]
-      validate(need(nrow(res_tbl) > 0, "Aucun GO term valide"))
+      validate(need(nrow(res_tbl) > 0, "Aucun pathway valide"))
       top_id <- res_tbl$ID[1]
       
       gseaplot2(res, geneSetID = top_id)
@@ -56,7 +65,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       switch(
         choice,
         "gseaplot" = gseaplot2(res, geneSetID = top_id),
-        "dotplot" = dotplot(res, showCategory = 15),
+        "dotplot" = dotplot(res, showCatepathry = 15),
         "emapplot" = {
           sim <- pairwise_termsim(res)
           emapplot(sim)
@@ -66,12 +75,11 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     }
     
     # Afficher les plots
-    output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
-    output$gsea_go_plot2 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go2))
+    output$gsea_path_plot <- renderPlot(render_gsea_plot(input$select_graph_gsea_path))
     
-    output$go_gsea_table_results <- DT::renderDataTable({
+    output$path_gsea_table_results <- DT::renderDataTable({
       req(gsea_res())
-      df = as.data.frame(renderDataTable@result)
+      df = as.data.frame(gsea_res()@result)
     },
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
     

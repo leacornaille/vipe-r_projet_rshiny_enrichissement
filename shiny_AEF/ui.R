@@ -237,10 +237,10 @@ body <- dashboardBody(
     ),
     
     # ------ Onglet GSEA Pathway ----------------------------------------------
-    # tabItem(
-    #   tabName = "gsea_path",
-    #   path_gsea_ui("gsea_path_module")
-    # )
+    tabItem(
+      tabName = "gsea_path",
+      path_gsea_ui("gsea_path_module")
+    ),
     
     # ------ Onglet Récapitulatif ---------------------------------------------
     tabItem(
