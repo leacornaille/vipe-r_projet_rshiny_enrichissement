@@ -60,8 +60,6 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       validate(need(nrow(res_tbl) > 0, "Aucun pathway valide"))
       top_id <- res_tbl$ID[1]
       
-      gseaplot2(res, geneSetID = top_id)
-      
       switch(
         choice,
         "gseaplot" = gseaplot2(res, geneSetID = top_id),
@@ -83,9 +81,42 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     },
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
     
+    # # Renvoi résultats pour table
+    # return(list(
+    #   enrich_res = gsea_res
+    # ))
+    
+    # Label précis reflétant les paramètres du dernier run
+    source_label <- reactive({
+      req(gsea_res())
+      db_label <- switch(input$pathway_db,
+                         "kegg"     = "KEGG",
+                         "reactome" = "Reactome",
+                         input$pathway_db
+      )
+      paste0("Pathway GSEA (", db_label, ")")
+    })
+    
+    # Test debug récupérer analyse dans manhattan plot
+    observe({
+      
+      cat("\n=== PATH GSEA DEBUG ===\n")
+      
+      print(source_label())
+      
+      res <- gsea_res()
+      
+      if (!is.null(res)) {
+        print(class(res))
+        print(nrow(as.data.frame(res)))
+      }
+      
+    })
+    
     # Renvoi résultats pour table
     return(list(
-      enrich_res = gsea_res
+      enrich_res = gsea_res,
+      source_label = source_label
     ))
   })
 }
