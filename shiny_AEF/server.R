@@ -250,8 +250,7 @@ function(input, output, session) {
                                   pval_threshold = reactive(input$slider_pval),
                                   fc_threshold = reactive(input$slider_fc))
   
-  # Appel module GSEA GO plot pour afficher les plots 
-  path_ora_res <- path_gsea_server("gsea_path_module", 
+  path_gsea_res <- path_gsea_server("gsea_path_module", 
                                    deg_data = deg_data(), 
                                    OrgDb_selected = OrgDb_selected
                                    )
@@ -260,7 +259,7 @@ function(input, output, session) {
                go_ora_module = go_ora_res,
                go_gsea_module = go_gsea_res,
                path_ora_module = path_ora_res,
-               path_gsea_module = NULL)
+               path_gsea_module = path_gsea_res)
   
   
 }
