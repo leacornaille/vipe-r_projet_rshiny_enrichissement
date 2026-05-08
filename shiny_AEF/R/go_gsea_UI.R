@@ -54,14 +54,14 @@ go_gsea_ui <- function(id) {
                   selected = "BP"
                 ),
                 
-                selectInput(
-                  ns("univers_gsea_go"),
-                  "Choix de l'univers",
-                  choices = c(
-                    "Génome de référence (recommandé)" = "gen_ref",
-                    "Gène de l'analyse RNA-seq" = "gene_list"
-                  )
-                )
+                # selectInput(
+                #   ns("univers_gsea_go"),
+                #   "Choix de l'univers",
+                #   choices = c(
+                #     "Génome de référence (recommandé)" = "gen_ref",
+                #     "Gène de l'analyse RNA-seq" = "gene_list"
+                #   )
+                # )
               ),
                 
               column(
