@@ -12,7 +12,6 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     })
     
     # ---- Calcul GSEA ----
-    
     gsea_res <- eventReactive(input$runGSEA, {
       
       geneList <- ranked_genes()
@@ -26,7 +25,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         minGSSize     = 15,
         maxGSSize     = 500,
         pAdjustMethod = input$padjust_method_go_gsea,
-        pvalueCutoff  = input$pval_ora_gsea,
+        pvalueCutoff  = input$padj_thr_gsea,
         verbose       = FALSE
       )
       
@@ -39,13 +38,11 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       res <- gsea_res()
       req(res)
       
-      res_tbl <- res@result
-      res_tbl <- res_tbl[!is.na(res_tbl$core_enrichment) & nchar(res_tbl$core_enrichment) > 0, ]
-      validate(need(nrow(res_tbl) > 0, "Aucun terme GO valide"))
-      # top_id <- res_tbl$ID[1]
+      res@result <- res@result[!is.na(res@result$core_enrichment) & nchar(res@result$core_enrichment) > 0, ]
+      validate(need(nrow(res@result) > 0, "Aucun terme GO enrichi"))
       sel_go_id <- selected_go_id() # GO choisi dans le tableau des résultats GSEA
       
-      gseaplot2(res, geneSetID = sel_go_id)
+      print(input$n_cat_gsea)
       
       switch(
         choice,
@@ -80,8 +77,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     
     # Afficher les plots
     output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
-    output$gsea_go_plot2 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go2))
-    
+
     # Tableau interactif : terme GO sélectionné pour le GSEA plot
     output$go_gsea_table_results <- DT::renderDataTable({
       res <- gsea_res()
