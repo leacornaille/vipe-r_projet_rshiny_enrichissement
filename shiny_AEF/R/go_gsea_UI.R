@@ -8,7 +8,7 @@ go_gsea_ui <- function(id) {
   # Interface utilisateur
   tagList(
     h2("Enrichissement (GO terms)"),
-    h3("Méthode ORA"),
+    h3("Méthode GSEA"),
     
     #------------------ Paramètres de la GSEA GO term -------------------
     fluidRow(
