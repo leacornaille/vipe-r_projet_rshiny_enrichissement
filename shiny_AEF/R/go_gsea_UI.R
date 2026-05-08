@@ -80,7 +80,7 @@ go_gsea_ui <- function(id) {
                 ),
                 
                 numericInput(
-                  ns("pval_ora_gsea"),
+                  ns("padj_thr_gsea"),
                   "Seuil p-value GSEA",
                   value = 0.05,
                   min = 0,
@@ -97,7 +97,7 @@ go_gsea_ui <- function(id) {
               align = "center",
               actionButton(
                 ns("runGSEA"), 
-                "Run", 
+                "Lancer GSEA", 
                 icon = icon("play"), 
                 class="btn-success")
             )
@@ -127,11 +127,11 @@ go_gsea_ui <- function(id) {
         textInput(
           ns("plot_title_gsea_go"),
           "Titre du graphique",
-          value = "GSEA Enrichissement termes GO"
+          value = "GSEA Enrichissement GO"
         ),
         
         sliderInput(
-          ns("n_cat_go_gsea"),
+          ns("n_cat_gsea"),
           "Nombre de GO terms affichés",
           min = 5, 
           max = 50,
@@ -147,7 +147,7 @@ go_gsea_ui <- function(id) {
             "Plasma" = "plasma",
             "Magma" = "magma",
             "Inferno" = "inferno",
-            "Bleu → Rouge" = "blue_red"
+            "Bleu -> Rouge" = "blue_red"
           ),
           selected = "viridis"
         )
