@@ -5,17 +5,10 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     
     # ---- Préparation : création d'un vecteur nommé pour GSEA ----
     ranked_genes <- reactive({
-      df <- deg_data()
+      deg_data <- deg_data()
       
-      # Enlever les gènes pour lesquels les ENTREZID sont "Not found"
-      df <- df[df$ENTREZID != "Not found",]
-
-      # Tri décroissant comme attendu par GSEA
-      gene_list <- df$log2FC # ATTENTION
-      names(gene_list) <- df$ENTREZID
-      gene_list <- sort(gene_list, decreasing = TRUE)
+      df <- build_geneList(deg_data, input$rank_type_gsea)
       
-      return(gene_list)
     })
     
     # ---- Calcul GSEA ----
