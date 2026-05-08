@@ -56,13 +56,32 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       switch(
         choice,
-        "gseaplot" = gseaplot2(res, geneSetID = sel_go_id),
-        "dotplot" = dotplot(res, showCategory = input$n_cat_go_gsea),
+        "gseaplot" = gseaplot2(
+                      x         = res, 
+                      geneSetID = sel_go_id, 
+                      title     = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, ")"),  
+                     ),
+        
+        "dotplot" = dotplot(
+                    object = res, 
+                    showCategory = min(input$n_cat_gsea, nrow(res@result)),
+                    title = input$plot_title_gsea_go,
+                    ),
+        
         "emapplot" = {
+          validate(
+            need(nrow(as.data.frame(res)) > 1,
+                 "Pas assez de termes enrichis pour emapplot")
+          )
           sim <- pairwise_termsim(res)
-          emapplot(sim, showCategory = input$n_cat_gsea)
+          emapplot(sim, showCategory = min(input$n_cat_gsea, nrow(res@result)))
         },
-        "ridgeplot" = ridgeplot(res, showCategory = input$n_cat_gsea),
+        
+        
+        "ridgeplot" = ridgeplot(
+                      x = res,
+                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))) # min(input$n_cat_gsea, nrow(res@result)),
+                      ),
       )
     }
     
