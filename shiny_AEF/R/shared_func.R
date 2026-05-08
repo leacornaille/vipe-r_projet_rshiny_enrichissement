@@ -1,5 +1,5 @@
 non_null_entrezID <- function(deg_data){
-  genes = genes[genes$entrezID != "Not Found",]
+  genes = genes[genes$entrezID != "Not found",]
 }
 
 # Gene mapping to perform ORA and GSEA on EntrezID
