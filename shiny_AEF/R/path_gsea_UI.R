@@ -34,9 +34,9 @@ path_gsea_ui <- function(id) {
             )
           ),
           
-          # paramètres statistiques ORA 
+          # paramètres statistiques GSEA 
           box(
-            title = "Paramètres statistiques ORA",
+            title = "Paramètres statistiques GSEA",
             width = 8,
             status = "primary",
             
@@ -99,7 +99,7 @@ path_gsea_ui <- function(id) {
     #------------------ Plots GSEA Pathway -------------------
     fluidRow(
       box(title = "Visualisation GSEA", 
-          width = 12, 
+          width = 8, 
           height = 900,
           status = "primary",
           solidHeader = TRUE,

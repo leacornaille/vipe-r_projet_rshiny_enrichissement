@@ -1,5 +1,5 @@
 #----------------------------------------------------------------
-# auteur: Léa Cornaille
+# auteur: Léa Cornaille, Christine Lin, Julien Chevreau, Miquel Moli Gonzalez
 # mail: lea.cornaille@hotmail.com
 # Affiliation: Université de Rouen
 # Date: 10-2025
@@ -12,7 +12,6 @@
 # également un script ui.R
 #--------------------------------------------------------------------------
 # TODO : ajouter org selected en parallèle de org db selected pour gseKEGG
-
 
 
 # Define server
@@ -123,7 +122,7 @@ function(input, output, session) {
     req(filtered_genes())
     filtered_genes <- filtered_genes()
     # somme des gènes up et/ou down 
-    n_up   <- sum(filtered_genes$Regulation == "Up", na.rm = TRUE)
+    n_up <- sum(filtered_genes$Regulation == "Up", na.rm = TRUE)
     n_down <- sum(filtered_genes$Regulation == "Down", na.rm = TRUE)
     n_total <- nrow(filtered_genes)
     
@@ -225,12 +224,6 @@ function(input, output, session) {
            "humain" = org.Hs.eg.db,
            "souris" = org.Mm.eg.db)
   })
-  
-  volcano_plot("volcano_plot_module",
-               deg_data = deg_data,
-               pval_threshold = reactive(input$slider_pval),
-               fc_threshold = reactive(input$slider_fc),
-               reset_all = reactive(input$reset_all))
   
   go_ora_res <- go_ora_plot("ora_go_module",
                             deg_data = deg_data,

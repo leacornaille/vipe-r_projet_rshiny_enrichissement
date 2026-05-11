@@ -34,9 +34,9 @@ go_gsea_ui <- function(id) {
               )
             ),
            
-          # paramètres statistiques ORA 
+          # paramètres statistiques GSEA 
           box(
-            title = "Paramètres statistiques ORA",
+            title = "Paramètres statistiques GSEA",
             width = 8,
             status = "primary",
             

@@ -113,11 +113,13 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
           )
         )
       } else {
-        p + color_palette(input$color_palette_go_ora) +
-          ggtitle(title) +
-          ggplot2::theme(
-            plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
-          )
+        suppressWarnings(
+          p + color_palette(input$color_palette_go_ora) +
+            ggtitle(title) +
+            ggplot2::theme(
+              plot.title = ggplot2::element_text(size = 18, face = "bold", hjust = 0.5)
+            )
+        )
       }
     }, res = 85)
 

@@ -134,10 +134,10 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
     
     output$ora_plot_path <- renderPlot({
       plots <- all_path_plots()
-      req(plots)
       p <- plots[[input$select_graph]]
-      req(p)
-      p + color_palette(input$color_palette) + ggtitle(input$plot_title)
+      suppressWarnings(
+        p + color_palette(input$color_palette) + ggtitle(input$plot_title)
+      )
     }, res = 85)
     
     # table results

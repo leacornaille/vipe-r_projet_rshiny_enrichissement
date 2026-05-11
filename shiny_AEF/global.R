@@ -1,16 +1,17 @@
-#' *------------------------------------------------------*
-#' Authors: 
-#' Mail: 
-#' Date: 
-#' Affiliation: University of Rouen Normandie
-#' Code: 
-#' *------------------------------------------------------*
+#' -----------------------------------------------------------------------------
+# auteur: Léa Cornaille, Christine Lin, Julien Chevreau, Miquel Moli Gonzalez
+# mail: lea.cornaille@hotmail.com
+# Affiliation: Université de Rouen
+# Date: 10-2025
+#
+#' ------------------------------------------------------------------------------
 #' TODO :
 
 list_of_dependencies = c("shiny", "shinydashboard", "shinyBS", "shinyWidgets", 
                          "shinydashboardPlus", "fresh", "plotly", "DT", "waiter",
                          "data.table","BiocManager", "shinycssloaders","shinyjqui", 
-                         "markdown", "ggbeeswarm")
+                         "markdown", "ggbeeswarm", "ggplot2", "dplyr", "stringr", "ggrepel", "ggtext",
+                         "ggraph", "igraph", "GO.db", "ggarchery", "shinybusy")
 for (package in list_of_dependencies){
   if (!require(package, character.only = T)){
     install.packages(package)
@@ -27,10 +28,5 @@ for (package in bioconductor_dependencies){
   }
 }
 
-library("ggraph")
-library("igraph")
-library("GO.db")
-library('ggarchery')
-library("shinybusy")
 
 

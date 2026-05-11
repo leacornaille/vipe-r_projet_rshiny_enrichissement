@@ -63,7 +63,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       switch(
         choice,
         "gseaplot" = gseaplot2(res, geneSetID = top_id),
-        "dotplot" = dotplot(res, showCatepathry = 15),
+        "dotplot" = dotplot(res, showCategory = input$n_cat_path_gsea),
         "emapplot" = {
           sim <- pairwise_termsim(res)
           emapplot(sim)
@@ -73,7 +73,13 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     }
     
     # Afficher les plots
-    output$gsea_path_plot <- renderPlot(render_gsea_plot(input$select_graph_gsea_path))
+    output$gsea_path_plot <- renderPlot({
+      p <- render_gsea_plot(input$select_graph_gsea_path)
+      if (input$select_graph_gsea_path != "gseaplot") {
+        p <- p + ggtitle(input$plot_title_gsea_path)
+      }
+      p
+    })
     
     output$path_gsea_table_results <- DT::renderDataTable({
       req(gsea_res())
@@ -90,7 +96,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     source_label <- reactive({
       req(gsea_res())
       db_label <- switch(input$pathway_db,
-                         "kegg"     = "KEGG",
+                         "kegg" = "KEGG",
                          "reactome" = "Reactome",
                          input$pathway_db
       )

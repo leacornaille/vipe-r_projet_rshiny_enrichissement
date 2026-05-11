@@ -6,27 +6,21 @@ recap_ui <- function(id) {
     
     h2("Visualisation globale des résultats"),
     p("Ce graphique agrège l'ensemble des analyses d'enrichissement lancées dans l'application.
-       Chaque source (GO ORA, GO GSEA, Pathway ORA…) forme un bloc sur l'axe X.
-       Les termes sont ordonnés par significativité décroissante au sein de chaque bloc.
+       Chaque source (GO ORA, GO GSEA, Pathway ORA…) forme un bloc sur l'axe x.
        Les résultats s'accumulent à chaque Run : relancer avec d'autres paramètres ajoute
-       une nouvelle entrée ou remplace l'ancienne si le label est identique."),
+       une nouvelle entrée ou remplace l'ancienne si le nom est identique."),
     
     fluidRow(
       
-      # ── Paramètres graphiques ─────────────────────────────────────────────
+      # --- Paramètres graphiques -----------------------------------------------
       box(
-        title       = "Paramètres graphiques",
-        width       = 3,
-        status      = "warning",
+        title = "Paramètres graphiques",
+        width = 3,
+        status = "warning",
         solidHeader = FALSE,
         collapsible = TRUE,
         
-        # Résultats accumulés
-        h4("Analyses accumulées"),
-        uiOutput(ns("run_counter")),
-        hr(),
-        
-        h4("Sources à afficher"),
+        h4("Analyse à afficher"),
         helpText("Seules les analyses déjà lancées sont disponibles."),
         uiOutput(ns("source_checkboxes")),
         
@@ -53,11 +47,11 @@ recap_ui <- function(id) {
         
         radioButtons(
           ns("size_metric"),
-          label   = "Taille des points",
+          label = "Taille des points",
           choices = c(
             "Count / setSize" = "count",
             "GeneRatio / NES" = "generatio",
-            "Uniforme"        = "uniform"
+            "Uniforme" = "uniform"
           ),
           selected = "count"
         ),
@@ -73,24 +67,24 @@ recap_ui <- function(id) {
         br()
       ),
       
-      # ── Manhattan plot ────────────────────────────────────────────────────
+      # --- Manhattan plot --------------------------------------------------
       box(
-        title       = "Manhattan plot",
-        width       = 9,
-        status      = "primary",
+        title = "Manhattan plot",
+        width = 9,
+        status = "primary",
         solidHeader = TRUE,
         collapsible = TRUE,
         
         withSpinner(
           plotlyOutput(ns("manhattan_plot"), height = "500px"),
-          image        = "loading.GIF",
-          image.width  = 200,
-          image.height = 150
+          image = "this-is.gif",
+          image.width  = 400,
+          image.height = 300
         )
       )
     ),
     
-    # ── Détail du terme cliqué ────────────────────────────────────────────
+    # --- Détail du terme cliqué ----------------------------------------------
     fluidRow(
       box(
         title  = tags$span(icon("info-circle"), " Terme sélectionné"),

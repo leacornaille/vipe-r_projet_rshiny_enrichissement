@@ -1,18 +1,16 @@
-# ─────────────────────────────────────────────────────────────────────────────
+# ------------------------------------------------------------------------------
 # recap_serv.R
 # Module serveur — Manhattan plot style g:Profiler
 #
-# Stratégie d'accumulation des résultats :
-#   Un reactiveVal `accumulated_results` stocke une LISTE NOMMÉE par label.
-#   Chaque fois qu'un module enfant lance un nouveau run (son eventReactive se
-#   déclenche), un observeEvent le détecte et met à jour l'entrée correspondante.
-#   Deux runs avec le MÊME label → remplacement (ex : deux BP consécutifs).
-#   Deux labels DIFFÉRENTS → coexistence dans le Manhattan plot (ex : BP + MF).
-#   Un bouton "Réinitialiser" vide la liste.
-#
+# Un reactiveVal `accumulated_results` stocke une LISTE NOMMÉE par label.
+# Chaque fois qu'un module enfant lance un nouveau run (son eventReactive se
+# déclenche), un observeEvent le détecte et met à jour l'entrée correspondante.
+# Deux runs avec le même label : remplacement (ex : deux BP consécutifs).
+# Deux labels différent : coexistence dans le Manhattan plot (ex : BP + MF).
+# 
 # Chaque module d'enrichissement renvoie :
 #   list(enrich_res = <eventReactive>, source_label = <reactive character>)
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 recap_server <- function(id,
                          go_ora_module = NULL,
@@ -33,10 +31,12 @@ recap_server <- function(id,
       "GO GSEA (CC)" = "#03045e",
       "Pathway ORA (KEGG)" = "#a4133c",
       "Pathway ORA (Reactome)" = "#c9184a",
-      "Pathway GSEA (KEGG)" = "#BA7517",
-      "Pathway GSEA (Reactome)" = "#854F0B"
+      "Pathway GSEA (KEGG)" = "#ffba08",
+      "Pathway GSEA (Reactome)" = "#e85d04"
     )
     
+    # permet de récupérer la bonne couleur qui correspond au label 
+    # met gris sinon
     get_color <- function(label) {
       col <- source_palette[label]
       if (is.na(col)) "#888888" else unname(col)
@@ -107,7 +107,7 @@ recap_server <- function(id,
       is_gsea <- entry$is_gsea
       if (is.null(mod)) return()
       
-      # on teste si il y a bien res et label (normalement tj bon pas sur de garder le tryCatch)
+      # on teste si il y a bien res et label
       observeEvent(mod$enrich_res(), {
         res <- mod$enrich_res()
         label <- mod$source_label()
@@ -122,8 +122,7 @@ recap_server <- function(id,
         
         # Message qui apparait dans l'onglet en cours
         showNotification(
-          paste0("Résultats ajoutés au recap : ", label,
-                 " (", nrow(df), " termes)"),
+          paste0("Résultats ajoutés au recap : ", label," (", nrow(df), " termes)"),
           type = "message",
           duration = 4
         )
@@ -138,33 +137,7 @@ recap_server <- function(id,
       do.call(rbind, acc)
     })
     
-    # --- Compteur de runs accumulés --------------------------------------------
-    output$run_counter <- renderUI({
-      acc <- accumulated_results()
-      if (length(acc) == 0) {
-        helpText("Aucune analyse n'a encore été lancée.")
-      } else {
-        tags$div(
-          lapply(names(acc), function(lbl) {
-            col <- get_color(lbl)
-            n <- nrow(acc[[lbl]])
-            tags$div(
-              style = "margin-bottom:4px;",
-              tags$span(style = paste0(
-                "display:inline-block; width:10px; height:10px;",
-                "border-radius:50%; background:", col,
-                "; margin-right:6px; vertical-align:middle;"
-              )),
-              tags$span(lbl),
-              tags$span(paste0(" (", n, " termes)"),
-                        style = "color:#888; font-size:0.9em;")
-            )
-          })
-        )
-      }
-    })
-    
-    # ── Checkboxes sources disponibles ─────────────────────────────────────
+    # --- Checkboxes analyse disponibles --------------------------------------
     output$source_checkboxes <- renderUI({
       df <- all_results()
       if (is.null(df)) {
@@ -175,13 +148,16 @@ recap_server <- function(id,
       
       choice_labels <- lapply(sources_dispo, function(src) {
         col <- get_color(src)
+        # meme tag que pour le compteur
         tags$span(
           tags$span(style = paste0(
             "display:inline-block; width:10px; height:10px;",
             "border-radius:50%; background:", col,
             "; margin-right:6px; vertical-align:middle;"
           )),
-          src
+          src,
+          tags$span(paste0(" (", n, " termes)"),
+          style = "color:#888; font-size:0.9em;")
         )
       })
       
@@ -232,7 +208,6 @@ recap_server <- function(id,
 
       # identifiant pour plotly
       df$uid <- seq_len(nrow(df))
-      
       df
     })
    
@@ -272,7 +247,7 @@ recap_server <- function(id,
           check_overlap = TRUE
         ) +
         
-        geom_hline(yintercept = input$pval_threshold,
+        geom_hline(yintercept = -log10(input$pval_threshold),
                    linetype = "dashed",
                    color = "grey50") +
         
