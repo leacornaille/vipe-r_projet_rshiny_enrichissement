@@ -105,7 +105,7 @@ path_gsea_ui <- function(id) {
           solidHeader = TRUE,
           selectInput(ns("select_graph_gsea_path"), "Type de graphique :",
                       choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot", 
-                                  "cnetplot")),
+                                  "cnetplot", "pathway")),
           withSpinner(plotOutput(ns("gsea_path_plot")), image = "loading.GIF")
       ),
       
