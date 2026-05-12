@@ -69,13 +69,15 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
           emapplot(sim)
         },
         "ridgeplot" = ridgeplot(res),
+        "cnetplot" = cnetplot(res)
       )
     }
     
     # Afficher les plots
     output$gsea_path_plot <- renderPlot({
       p <- render_gsea_plot(input$select_graph_gsea_path)
-      if (input$select_graph_gsea_path != "gseaplot") {
+      if (input$select_graph_gsea_path != "gseaplot" &&
+          input$select_graph_gsea_path != "treeplot") {
         p <- p + ggtitle(input$plot_title_gsea_path)
       }
       p
@@ -86,12 +88,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       df = as.data.frame(gsea_res()@result)
     },
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
-    
-    # # Renvoi résultats pour table
-    # return(list(
-    #   enrich_res = gsea_res
-    # ))
-    
+
     # Label précis reflétant les paramètres du dernier run
     source_label <- reactive({
       req(gsea_res())
@@ -103,21 +100,6 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       paste0("Pathway GSEA (", db_label, ")")
     })
     
-    # Test debug récupérer analyse dans manhattan plot
-    observe({
-      
-      cat("\n=== PATH GSEA DEBUG ===\n")
-      
-      print(source_label())
-      
-      res <- gsea_res()
-      
-      if (!is.null(res)) {
-        print(class(res))
-        print(nrow(as.data.frame(res)))
-      }
-      
-    })
     
     # Renvoi résultats pour table
     return(list(
