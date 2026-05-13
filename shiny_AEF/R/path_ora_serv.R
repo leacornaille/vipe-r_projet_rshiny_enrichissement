@@ -177,10 +177,10 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
     observeEvent(input$run_pathview, {
       req(input$pathview_kegg_id)
       showModal(modalDialog(
-        title     = "Pathview",
-        size      = "xl",
+        title = "Pathview",
+        size = "xl",
         easyClose = TRUE,
-        footer    = FALSE,
+        footer = actionButton(session$ns("close_pathview_ora"), "Fermer", class = "btn-default"),
         tags$head(tags$style(".modal-dialog { width: 90vw !important; max-width: 90vw !important; }")),
         tags$div(
           style = "width:100%; overflow:auto; max-height:75vh;",
@@ -191,16 +191,22 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       ))
     })
     
-    # Nettoyage à la fermeture de session
-    session$onSessionEnded(function() {
-      files_to_remove <- c(
-        paste0(input$pathview_kegg_id, ".png"),
-        paste0(input$pathview_kegg_id, ".xml"),
-        paste0(input$pathview_kegg_id, ".pathview.png")
-      )
-      invisible(file.remove(files_to_remove[file.exists(files_to_remove)]))
+    # Fermeture
+    observeEvent(input$close_pathview_ora, {
+      pathway_id <- input$pathview_kegg_id
+      removeModal()
+      invisible(file.remove(c(
+        paste0(pathway_id, ".pathview.png"),
+        paste0(pathway_id, ".png"),
+        paste0(pathway_id, ".xml")
+      )[file.exists(c(
+        paste0(pathway_id, ".pathview.png"),
+        paste0(pathway_id, ".png"),
+        paste0(pathway_id, ".xml")
+      ))]))
     })
     
+    # ------ tableau ------------------------------------------------------------
     output$table_results <- DT::renderDataTable({
       req(enrich_res_ora_path())
       DT::datatable(

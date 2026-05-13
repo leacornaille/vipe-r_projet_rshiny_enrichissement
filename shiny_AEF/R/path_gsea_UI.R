@@ -1,19 +1,13 @@
-#---------------------------------- GO GSEA UI ----------------------------------#
-
-# Fonction ui pour l'onglet GO term de GSEA 
 path_gsea_ui <- function(id) {
-  # Creation d'un namespace pour le module
   ns <- NS(id)
   
-  # Interface utilisateur
   tagList(
     h2("Enrichissement (Pathway)"),
     h3("Méthode GSEA"),
     
-    #------------------ Paramètres de la GSEA Pathway-------------------
     fluidRow(
       box(
-        title = "Paramètres GSEA", 
+        title = "Paramètres GSEA",
         solidHeader = TRUE,
         status = "primary",
         width = 12,
@@ -21,41 +15,35 @@ path_gsea_ui <- function(id) {
         fluidRow(
           box(
             title = "Classement des gènes",
-            width = 4,
+            width = 3,
             status = "info",
-            
             column(
-              width = 6,
+              width = 8,
               radioButtons(
-                ns("rank_type_gsea"), 
-                "Choisir le critère de classement :",
-                choices = c("log2FC" = "log2FC", "padj"  = "padj")),
-              selected = "log2FC"
+                ns("rank_type_gsea"),
+                "Critère de classement :",
+                choices  = c("log2FC" = "log2FC", "padj" = "padj"),
+                selected = "log2FC"
+              )
             )
           ),
           
-          # paramètres statistiques GSEA 
           box(
-            title = "Paramètres statistiques GSEA",
-            width = 8,
+            title  = "Paramètres statistiques GSEA",
+            width  = 9,
             status = "primary",
-            
             fluidRow(
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("pathway_db"),
                   "Base de données Pathway",
-                  choices = c(
-                    "KEGG" = "kegg",
-                    "Reactome" = "reactome"
-                  ),
+                  choices  = c("KEGG" = "kegg", "Reactome" = "reactome"),
                   selected = "kegg"
-                ),
+                )
               ),
-              
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("padjust_method_path_gsea"),
                   "Méthode de correction multiple",
@@ -67,72 +55,70 @@ path_gsea_ui <- function(id) {
                     "Aucune" = "none"
                   ),
                   selected = "BH"
-                ),
-                
+                )
+              ),
+              column(
+                width = 4,
                 numericInput(
-                  ns("pval_ora_gsea"),
-                  "Seuil p-value GSEA",
-                  value = 0.05,
-                  min = 0,
-                  max = 0.1,
-                  step = 0.01
-                ) 
+                  ns("pval_ora_gsea"), "Seuil p-value GSEA",
+                  value = 0.05, min = 0, max = 0.1, step = 0.01
+                )
               )
             )
           ),
           
           fluidRow(
-            column(
-              width = 12,
-              align = "center",
-              actionButton(
-                ns("runGSEA"), 
-                "Run", 
-                icon = icon("play"), 
-                class="btn-success")
+            column(12, align = "center",
+                   actionButton(ns("runGSEA"), "Lancer GSEA",
+                                icon = icon("play"), class = "btn-success")
             )
           )
         )
       )
     ),
     
-    #------------------ Plots GSEA Pathway -------------------
     fluidRow(
-      box(title = "Visualisation GSEA", 
-          width = 8, 
-          height = 900,
-          status = "primary",
-          solidHeader = TRUE,
-          selectInput(ns("select_graph_gsea_path"), "Type de graphique :",
-                      choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot", 
-                                  "cnetplot", "pathway")),
-          withSpinner(plotOutput(ns("gsea_path_plot")), image = "loading.GIF")
+      # ------ Visualisation --------------------------------------------------
+      box(
+        title = "Visualisation GSEA",
+        width = 8,
+        status = "primary",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+        
+        selectInput(
+          ns("select_graph_gsea_path"),
+          "Type de graphique :",
+          choices = c(
+            "GSEA plot" = "gseaplot",
+            "Dotplot" = "dotplot",
+            "Emaplot" = "emapplot",
+            "Ridgeplot" = "ridgeplot",
+            "Cnetplot" = "cnetplot"
+          )
+        ),
+        withSpinner(
+          jqui_resizable(plotOutput(ns("gsea_path_plot")), options = list(handles = "se")),
+          image = "loading.GIF"
+        )
       ),
       
+      # ---- Paramètres visuels ----
       box(
         title = "Paramètres visuels",
         width = 4,
         status = "warning",
         collapsible = TRUE,
         
-        textInput(
-          ns("plot_title_gsea_path"),
-          "Titre du graphique",
-          value = "GSEA Enrichissement Pathway"
-        ),
+        textInput(ns("plot_title_gsea_path"), "Titre du graphique",
+                  value = "GSEA – Enrichissement Pathway"),
         
-        sliderInput(
-          ns("n_cat_path_gsea"),
-          "Nombre de GO terms affichés",
-          min = 5, 
-          max = 50,
-          value = 20,
-          step = 1
-        ),
+        sliderInput(ns("n_cat_path_gsea"), "Nombre de pathways affichés",
+                    min = 1, max = 50, value = 20, step = 1),
         
         selectInput(
           ns("color_palette_path_gsea"),
-          "Palette des couleurs (p.adjust)", 
+          "Palette de couleurs",
           choices = c(
             "Viridis" = "viridis",
             "Plasma" = "plasma",
@@ -144,19 +130,37 @@ path_gsea_ui <- function(id) {
         )
       ),
       
-      
-      #------------------ Tableau GSEA GO term -------------------
-      box(title = "Table résultats GSEA", 
-          width = 12, 
-          height = 900,
+      # ------ Pathview (KEGG) ------------------------------------------------
+      conditionalPanel(
+        condition = paste0("input['", ns("pathway_db"), "'] == 'kegg'"),
+        box(
+          title = "Pathview",
+          width = 4,
           status = "primary",
-          solidHeader = TRUE,
-          # selectInput(ns("select_graph_gsea_go2"), "Type de graphique :",
-          #             choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
-          withSpinner(
-            dataTableOutput(ns("path_gsea_table_results")),
-            image = "loading.GIF"
+          collapsible = TRUE,
+          
+          selectInput(ns("pathview_kegg_id_gsea"), "Voie métabolique", choices = NULL),
+          
+          actionButton(
+            ns("run_pathview_gsea"),
+            "Afficher la voie dans Pathview",
+            icon  = icon("play"),
+            width = "100%"
           )
+        )
+      ),
+      
+      # ---- Tableau ----
+      box(
+        title = "Table résultats GSEA",
+        width = 12,
+        status = "info",
+        solidHeader = TRUE,
+        collapsible = TRUE,
+        withSpinner(
+          DT::dataTableOutput(ns("path_gsea_table_results")),
+          image = "loading.GIF"
+        )
       )
     )
   )
