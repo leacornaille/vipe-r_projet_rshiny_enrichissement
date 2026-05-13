@@ -1,18 +1,16 @@
 path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold) {
   moduleServer(id, function(input, output, session) {
     
-    # box info utilisé pour filtrage 
     output$filter_info <- renderUI({ 
       req(pval_threshold(), fc_threshold()) 
       panel( heading = "Critères actifs", status = "primary", 
              tags$div( class = "filter-info", 
                        tags$span(class = "padj", paste0("p.adjust ≤ ", pval_threshold())),
                        tags$span(class = "logfc", paste0("|log2FC| ≥ ", fc_threshold())) 
-                     ) 
-           ) 
+             ) 
+      ) 
     })
     
-    # Organism Reactome
     organism_reactome <- reactive({
       req(OrgDb_selected())
       if (identical(OrgDb_selected(), org.Mm.eg.db)) "mouse"
@@ -20,7 +18,6 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       else NULL
     })
     
-    # Organism KEGG
     organism_kegg <- reactive({
       req(OrgDb_selected())
       if (identical(OrgDb_selected(), org.Mm.eg.db)) "mmu"
@@ -28,13 +25,11 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       else NULL
     })
     
-    # ORA analysis
     enrich_res_ora_path <- eventReactive(input$run_ora_path, {
       req(OrgDb_selected(), deg_data())
       
       df <- filtered_genes()
       
-      # Filtrage Up / Down / Both
       if (input$gene_type == "up") {
         df <- df[df$Regulation == "Up", ]
       } else if (input$gene_type == "down") {
@@ -43,32 +38,22 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
         df <- df[df$Regulation %in% c("Up", "Down"), ]
       }
       
-      # Gènes d’intérêt ORA (ENTREZID)
       ids <- df$ENTREZID
-      ids <- ids[!is.na(ids) & ids != "Not found"]
-      ids <- unique(ids)
+      ids <- unique(ids[!is.na(ids) & ids != "Not found"])
       
       if (length(ids) == 0) {
         showNotification("Aucun gène valide trouvé", type = "warning")
         return(NULL)
       }
       
-      # Universe
       univ <- if (input$univers_ora_path == "gene_list") {
         unique(deg_data()$ENTREZID)
       } else {
-        req(OrgDb_selected())
         keys(OrgDb_selected(), keytype = "ENTREZID")
       }
       
-      # Message informatif
-      msg <- paste("Analyse avec", length(ids), "gènes")
-      if (!is.null(univ)) {
-        msg <- paste0(msg, " (universe: ", length(univ), " gènes)")
-      }
-      showNotification(msg, type = "message", duration = 3)
+      showNotification(paste("Analyse avec", length(ids), "gènes"), type = "message", duration = 3)
       
-      # Enrichement
       tryCatch({
         if (input$pathway_db == "reactome") {
           enrichPathway(
@@ -79,7 +64,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
             pAdjustMethod = input$p_adjust_method,
             readable = TRUE
           )
-        } else if (input$pathway_db == "kegg") {
+        } else {
           enrichKEGG(
             gene = ids,
             universe = univ,
@@ -89,23 +74,18 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
           )
         }
       }, error = function(e) {
-        showNotification(
-          paste("Erreur ORA :", e$message),
-          type = "error",
-          duration = 10
-        )
+        showNotification(paste("Erreur ORA :", e$message), type = "error", duration = 10)
         NULL
       })
     })
     
-    # update slider dynamique
     observe({
       req(enrich_res_ora_path())
-      n <- nrow(as.data.frame(enrich_res_ora_path()))
-      updateSliderInput(session, "n_terms", max = min(n, 50))
+      res <- enrich_res_ora_path()
+      n <- nrow(as.data.frame(res))
+      updateSliderInput(session, "n_terms", max = max(1, min(n, 50)))
     })
     
-    # renderPlot — identique pour tous les graphiques
     all_path_plots <- reactive({
       req(enrich_res_ora_path())
       res <- enrich_res_ora_path()
@@ -120,7 +100,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
         error = function(e) NULL
       )
       
-      fc_vector <- setNames(deg_data()$log2FC, deg_data()$GeneName)
+      fc_vector <- setNames(deg_data()$log2FC, deg_data()$ENTREZID)
       
       list(
         barplot_ora_path  = barplot(res, showCategory = input$n_terms),
@@ -140,30 +120,105 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       )
     }, res = 85)
     
-    # table results
-    output$table_results <- DT::renderDataTable({
+    observe({
       req(enrich_res_ora_path())
       res <- enrich_res_ora_path()
       
+      voie_ids_ora <- setNames(
+        res$ID,
+        res$Description
+      )
+      updateSelectInput(
+        session,
+        "pathview_kegg_id",
+        choices = voie_ids_ora
+      )
+    })
+    
+    output$pathview_plot <- renderImage({
+      req(enrich_res_ora_path(), input$pathview_kegg_id)
+      
+      geneList   <- setNames(deg_data()$log2FC, deg_data()$ENTREZID)
+      pathway_id <- input$pathview_kegg_id
+      file_png   <- paste0(pathway_id, ".pathview.png")
+      
+      if (!file.exists(file_png)) {
+        withProgress(message = "Chargement Pathview...", value = 0, {
+          
+          incProgress(0.2, detail = "Préparation des données...")
+          Sys.sleep(0.1)
+          
+          incProgress(0.3, detail = "Connexion KEGG...")
+          tryCatch({
+            pathview(
+              gene.data  = geneList,
+              pathway.id = pathway_id,
+              species    = organism_kegg(),
+              limit      = list(gene = max(abs(geneList)), cpd = 1)
+            )
+          }, error = function(e) {
+            showNotification(paste("Erreur Pathview :", e$message), type = "error", duration = 10)
+          })
+          
+          incProgress(0.5, detail = "Génération de l'image...")
+        })
+      }
+      
+      req(file.exists(file_png))
+      list(
+        src = file_png,
+        contentType = "image/png",
+        width = "100%",
+        height = "100%",
+        deleteFile  = FALSE
+      )
+    }, deleteFile = FALSE)
+    
+    observeEvent(input$run_pathview, {
+      req(input$pathview_kegg_id)
+      showModal(modalDialog(
+        title     = "Pathview",
+        size      = "xl",
+        easyClose = TRUE,
+        footer    = FALSE,
+        tags$head(tags$style(".modal-dialog { width: 90vw !important; max-width: 90vw !important; }")),
+        tags$div(
+          style = "width:100%; overflow:auto; max-height:75vh;",
+          imageOutput(session$ns("pathview_plot"),
+                      width  = "100%",
+                      height = "100%")
+        )
+      ))
+    })
+    
+    # Nettoyage à la fermeture de session
+    session$onSessionEnded(function() {
+      files_to_remove <- c(
+        paste0(input$pathview_kegg_id, ".png"),
+        paste0(input$pathview_kegg_id, ".xml"),
+        paste0(input$pathview_kegg_id, ".pathview.png")
+      )
+      invisible(file.remove(files_to_remove[file.exists(files_to_remove)]))
+    })
+    
+    output$table_results <- DT::renderDataTable({
+      req(enrich_res_ora_path())
       DT::datatable(
-        as.data.frame(res),
+        as.data.frame(enrich_res_ora_path()),
         options = list(scrollX = TRUE, pageLength = 15)
       )
     })
     
-    # Label précis reflétant les paramètres du dernier run
     source_label <- reactive({
       req(enrich_res_ora_path())
       db_label <- switch(input$pathway_db,
-                         "kegg"     = "KEGG",
+                         "kegg" = "KEGG",
                          "reactome" = "Reactome",
                          input$pathway_db
       )
       paste0("Pathway ORA (", db_label, ")")
     })
     
-    
-    # Renvoi résultats pour table
     return(list(
       enrich_res = enrich_res_ora_path,
       source_label = source_label

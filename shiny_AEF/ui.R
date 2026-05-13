@@ -64,7 +64,7 @@ sidebar <-dashboardSidebar(
   selectInput( 
     "select", 
     "Sélectionner un organisme:", 
-    list("homo sapiens" = "humain", "mus musculus" = "souris", "gallus gallus" = "poulet")),
+    list("homo sapiens" = "humain", "mus musculus" = "souris")),
   
   # créer les onglets dans sidebar
   sidebarMenu(

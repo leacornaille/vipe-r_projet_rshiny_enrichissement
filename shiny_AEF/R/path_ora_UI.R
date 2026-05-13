@@ -132,7 +132,7 @@ path_ora_ui <- function(id) {
       
       # ------ paramètre visuel---------------------------------------------------
       box(
-        title = "Paramètre visuel",
+        title = "Paramètres visuels",
         width = 4,
         status = "warning",
         collapsible = T,
@@ -173,7 +173,26 @@ path_ora_ui <- function(id) {
           selected = "viridis"
         )
       ),
-      
+      box(
+        title = "Pathview",
+        width = 4,
+        status = "primary",
+        collapsible = TRUE,
+        
+        selectInput(
+          ns("pathview_kegg_id"),
+          "Voie métabolique",
+          choices = NULL
+        ),
+        
+        actionButton(
+          ns("run_pathview"),
+          "Afficher la voie dans Pathview",
+          icon = icon("play"),
+          width = "100%"
+        )
+        
+      ),
       box(
         title = "Tableau résultats ORA",
         width = 12,
