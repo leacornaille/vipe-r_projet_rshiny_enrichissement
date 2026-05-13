@@ -244,7 +244,7 @@ function(input, output, session) {
                                   fc_threshold = reactive(input$slider_fc))
   
   path_gsea_res <- path_gsea_server("gsea_path_module", 
-                                   deg_data = deg_data(), 
+                                   deg_data = deg_data, 
                                    OrgDb_selected = OrgDb_selected
                                    )
   

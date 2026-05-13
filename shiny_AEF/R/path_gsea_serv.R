@@ -17,25 +17,27 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
     
     # ---- Calcul GSEA ----
     gsea_res <- eventReactive(input$runGSEA, {
-      geneList <- build_geneList(deg_data, input$rank_type_gsea)
+      geneList <- build_geneList(deg_data(), input$rank_type_gsea)
       if (input$pathway_db == "kegg") {
         gsea <- gseKEGG(
-          geneList      = geneList,
-          organism      = organism_kegg(),
-          keyType       = "ncbi-geneid",
-          minGSSize     = 10,
-          maxGSSize     = 500,
+          geneList = geneList,
+          organism = organism_kegg(),
+          keyType = "ncbi-geneid",
+          minGSSize = 10,
+          maxGSSize = 500,
+          pvalueCutoff = input$pval_path_gsea,
           pAdjustMethod = input$padjust_method_path_gsea,
-          verbose       = FALSE
+          verbose = FALSE
         )
       } else if (input$pathway_db == "reactome") {
         gsea <- gsePathway(
-          geneList      = geneList,
-          organism      = organism_reactome(),
-          minGSSize     = 10,
-          maxGSSize     = 500,
+          geneList = geneList,
+          organism = organism_reactome(),
+          minGSSize = 10,
+          maxGSSize = 500,
+          pvalueCutoff = input$pval_path_gsea,
           pAdjustMethod = input$padjust_method_path_gsea,
-          verbose       = FALSE
+          verbose = FALSE
         )
       }
       return(gsea)
@@ -64,14 +66,14 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
       
       p <- switch(
         input$select_graph_gsea_path,
-        "gseaplot"  = gseaplot2(res, geneSetID = selected_pathway_id()),
-        "dotplot"   = dotplot(res, showCategory = input$n_cat_path_gsea),
+        "gseaplot" = gseaplot2(res, geneSetID = selected_pathway_id()),
+        "dotplot" = dotplot(res, showCategory = input$n_cat_path_gsea),
         "emapplot"  = {
           sim <- pairwise_termsim(res)
           emapplot(sim)
         },
         "ridgeplot" = ridgeplot(res),
-        "cnetplot"  = cnetplot(res)
+        "cnetplot" = cnetplot(res)
       )
       
       if (!input$select_graph_gsea_path %in% c("gseaplot")) {
@@ -95,11 +97,11 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
     observeEvent(input$run_pathview_gsea, {
       req(input$pathview_kegg_id_gsea, input$pathway_db == "kegg")
       pathway_id <- input$pathview_kegg_id_gsea
-      file_png   <- paste0(pathway_id, ".pathview.png")
+      file_png <- paste0(pathway_id, ".pathview.png")
       
       withProgress(message = "Génération Pathview...", value = 0, {
         incProgress(0.2, detail = "Préparation des données...")
-        geneList <- build_geneList(deg_data, input$rank_type_gsea)
+        geneList <- build_geneList(deg_data(), input$rank_type_gsea)
         
         incProgress(0.3, detail = "Connexion KEGG...")
         if (!file.exists(file_png)) {
@@ -107,8 +109,8 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
             pathview(
               gene.data  = geneList,
               pathway.id = pathway_id,
-              species    = organism_kegg(),
-              limit      = list(gene = max(abs(geneList)), cpd = 1)
+              species = organism_kegg(),
+              limit = list(gene = max(abs(geneList)), cpd = 1)
             )
           }, error = function(e) {
             showNotification(paste("Erreur Pathview :", e$message), type = "error", duration = 10)
@@ -123,7 +125,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
         title = "Pathview",
         size = "xl",
         easyClose = TRUE,
-        footer = actionButton(ns("close_pathview_gsea"), "Fermer", class = "btn-default"),
+        footer = actionButton(session$ns("close_pathview_gsea"), "Fermer", class = "btn-default"),
         tags$head(tags$style(".modal-dialog { width: 90vw !important; max-width: 90vw !important; }")),
         tags$div(
           style = "width:100%; overflow:auto; max-height:75vh;",
@@ -139,11 +141,11 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
       file_png <- paste0(input$pathview_kegg_id_gsea, ".pathview.png")
       req(file.exists(file_png))
       list(
-        src         = file_png,
+        src = file_png,
         contentType = "image/png",
-        width       = "100%",
-        height      = "auto",
-        deleteFile  = FALSE
+        width = "100%",
+        height = "auto",
+        deleteFile = FALSE
       )
     }, deleteFile = FALSE)
     

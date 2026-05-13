@@ -59,12 +59,14 @@ sidebar <-dashboardSidebar(
     ".tsv",
     ".txt")
   ),
+  bsTooltip("file", "Colonnes requises : gene, log2FoldChange, padj. Séparateur : virgule ou tabulation.", placement = "right"),
   
   # permet de sélectionner une espèce
   selectInput( 
     "select", 
     "Sélectionner un organisme:", 
     list("homo sapiens" = "humain", "mus musculus" = "souris")),
+  p("⚠ choisissez l'organisme qui correspond à vos données",style = "text-align: center;"),
   
   # créer les onglets dans sidebar
   sidebarMenu(
@@ -174,6 +176,7 @@ body <- dashboardBody(
                 title = "Valeur seuil", solidHeader = TRUE,
                 width = 6,
                 chooseSliderSkin(skin= "Flat", color ="#264653"),
+                helpText("Ces seuils définissent les gènes considérés comme différentiellement exprimés et serviront d'entrée aux analyses d'enrichissement."),
                 uiOutput("slider_fc"),
                 uiOutput("slider_pval"),
                 bsTooltip("slider_fc", "Seuil de log2FC pour filtrer les gènes", placement = "top"),

@@ -17,8 +17,9 @@ path_gsea_ui <- function(id) {
             title = "Classement des gènes",
             width = 3,
             status = "info",
+            helpText("log2FC (recommandé) : classe les gènes par intensité de régulation. padj : classe par significativité statistique."),
             column(
-              width = 8,
+              width = 12,
               radioButtons(
                 ns("rank_type_gsea"),
                 "Critère de classement :",
@@ -60,8 +61,8 @@ path_gsea_ui <- function(id) {
               column(
                 width = 4,
                 numericInput(
-                  ns("pval_ora_gsea"), "Seuil p-value GSEA",
-                  value = 0.05, min = 0, max = 0.1, step = 0.01
+                  ns("pval_path_gsea"), "Seuil p-value GSEA",
+                  value = 0.05, min = 0, max = 1, step = 0.01
                 )
               )
             )

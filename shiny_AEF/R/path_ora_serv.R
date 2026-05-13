@@ -185,7 +185,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
         tags$div(
           style = "width:100%; overflow:auto; max-height:75vh;",
           imageOutput(session$ns("pathview_plot"),
-                      width  = "100%",
+                      width = "100%",
                       height = "100%")
         )
       ))
