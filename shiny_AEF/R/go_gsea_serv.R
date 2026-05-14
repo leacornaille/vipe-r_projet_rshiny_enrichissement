@@ -55,6 +55,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
                     object = res, 
                     showCategory = min(input$n_cat_gsea, nrow(res@result)),
                     title = input$plot_title_gsea_go,
+                    color = 'p.adjust'
                     ),
         
         "emapplot" = {
@@ -63,20 +64,33 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
                  "Pas assez de termes enrichis pour emapplot")
           )
           sim <- pairwise_termsim(res)
-          emapplot(sim, showCategory = min(input$n_cat_gsea, nrow(res@result)))
+          emapplot(sim, 
+                   showCategory = min(input$n_cat_gsea, nrow(res@result)),
+                   color = 'p.adjust')
         },
         
         
         "ridgeplot" = ridgeplot(
                       x = res,
-                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result)))
+                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))),
+                      color = 'p.adjust'
                       ),
       )
     }
     
     # Afficher les plots
-    output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
-
+    # output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
+    
+    # # Afficher les plots
+    output$gsea_go_plot1 <- renderPlot({
+      p <- render_gsea_plot(input$select_graph_gsea_go1)
+      # Ajouter palette seulement au dotplot, ridgeplot, empalot
+      if (input$select_graph_gsea_go1 %in% c("dotplot", "emaplot", "ridgeplot")) {
+        p <- p + color_palette(input$color_palette_go_gsea)
+      }
+      p
+    })
+    
     # Tableau interactif : terme GO sélectionné pour le GSEA plot
     output$go_gsea_table_results <- DT::renderDataTable({
       res <- gsea_res()
