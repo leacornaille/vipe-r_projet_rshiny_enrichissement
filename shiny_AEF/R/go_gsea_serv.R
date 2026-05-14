@@ -43,6 +43,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       sel_go_id <- selected_go_id()
       sel_description <- res@result$Description[res@result$ID == sel_go_id][1]
 
+      # Calcul de la matrice de distance des termes pour certains plots
+      sim <- pairwise_termsim(res)
+      
       switch(
         choice,
         "gseaplot" = gseaplot2(
@@ -63,7 +66,6 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
             need(nrow(as.data.frame(res)) > 1,
                  "Pas assez de termes enrichis pour emapplot")
           )
-          sim <- pairwise_termsim(res)
           emapplot(sim, 
                    showCategory = min(input$n_cat_gsea, nrow(res@result)),
                    color = 'p.adjust')
@@ -73,19 +75,31 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         "ridgeplot" = ridgeplot(
                       x = res,
                       showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))),
-                      color = 'p.adjust'
                       ),
-      )
+        
+        "treeplot" =  {
+          validate(
+            need(nrow(as.data.frame(res)) > 1,
+                 "Pas assez de termes enrichis pour emapplot")
+          )
+          treeplot(
+                    x = sim,
+                    showCategory = min(input$n_cat_gsea, nrow(res@result)),
+                    )
+          },
+        
+        "goplot" = goplot(
+                    x = res,
+                    showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result)))
+                  )
+        )
     }
     
     # Afficher les plots
-    # output$gsea_go_plot1 <- renderPlot(render_gsea_plot(input$select_graph_gsea_go1))
-    
-    # # Afficher les plots
     output$gsea_go_plot1 <- renderPlot({
       p <- render_gsea_plot(input$select_graph_gsea_go1)
       # Ajouter palette seulement au dotplot, ridgeplot, empalot
-      if (input$select_graph_gsea_go1 %in% c("dotplot", "emaplot", "ridgeplot")) {
+      if (input$select_graph_gsea_go1 %in% c("dotplot", "emapplot", "ridgeplot")) {
         p <- p + color_palette(input$color_palette_go_gsea)
       }
       p
