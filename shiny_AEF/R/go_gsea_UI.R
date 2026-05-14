@@ -132,7 +132,7 @@ go_gsea_ui <- function(id) {
           ns("n_cat_gsea"),
           "Nombre de GO terms affichés",
           min = 5, 
-          max = 50,
+          max = 150,
           value = 20,
           step = 1
         ),
