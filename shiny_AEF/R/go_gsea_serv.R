@@ -29,9 +29,6 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         verbose       = FALSE,
         nPerm         = as.numeric(input$nperm_go_gsea)
       )
-      
-      # nombre de permutations ?
-      
     })
     
     # ---- Génération du plot ----
@@ -41,16 +38,17 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       res@result <- res@result[!is.na(res@result$core_enrichment) & nchar(res@result$core_enrichment) > 0, ]
       validate(need(nrow(res@result) > 0, "Aucun terme GO enrichi"))
-      sel_go_id <- selected_go_id() # GO choisi dans le tableau des résultats GSEA
       
-      print(input$n_cat_gsea)
-      
+      # récupérer le GO choisi dans le tableau des résultats GSEA (ID + description)
+      sel_go_id <- selected_go_id()
+      sel_description <- res@result$Description[res@result$ID == sel_go_id][1]
+
       switch(
         choice,
         "gseaplot" = gseaplot2(
                       x         = res, 
                       geneSetID = sel_go_id, 
-                      title     = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, ")"),  
+                      title     = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", sel_description, ")"),  
                      ),
         
         "dotplot" = dotplot(
@@ -71,7 +69,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         
         "ridgeplot" = ridgeplot(
                       x = res,
-                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))) # min(input$n_cat_gsea, nrow(res@result)),
+                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result)))
                       ),
       )
     }
