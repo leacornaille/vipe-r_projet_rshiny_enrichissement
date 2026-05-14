@@ -26,7 +26,8 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         maxGSSize     = 500,
         pAdjustMethod = input$padjust_method_go_gsea,
         pvalueCutoff  = input$padj_thr_gsea,
-        verbose       = FALSE
+        verbose       = FALSE,
+        nPerm         = as.numeric(input$nperm_go_gsea)
       )
       
       # nombre de permutations ?
