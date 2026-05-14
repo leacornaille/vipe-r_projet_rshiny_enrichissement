@@ -109,7 +109,7 @@ go_gsea_ui <- function(id) {
     #------------------ Plots GSEA GO term -------------------
     fluidRow(
       box(title = "Visualisation GSEA", 
-          width = 12, 
+          width = 8, 
           height = 900,
           status = "primary",
           solidHeader = TRUE,
