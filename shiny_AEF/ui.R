@@ -182,7 +182,7 @@ body <- dashboardBody(
                 bsTooltip("slider_fc", "Seuil de log2FC pour filtrer les gènes", placement = "top"),
                 bsTooltip("slider_pval", "Seuil de p-value ajustée", placement = "top"),
                 collapsible = T,
-                actionButton("reset_all", "Réinitialiser")
+                actionButton("reset_all", "Réinitialiser la sélection du tableau")
               )
             ),
             
