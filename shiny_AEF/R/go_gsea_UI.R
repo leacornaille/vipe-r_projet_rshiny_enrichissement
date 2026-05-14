@@ -54,14 +54,12 @@ go_gsea_ui <- function(id) {
                   selected = "BP"
                 ),
                 
-                # selectInput(
-                #   ns("univers_gsea_go"),
-                #   "Choix de l'univers",
-                #   choices = c(
-                #     "Génome de référence (recommandé)" = "gen_ref",
-                #     "Gène de l'analyse RNA-seq" = "gene_list"
-                #   )
-                # )
+                numericInput(
+                  ns("nperm_go_gsea"),
+                  "Nombre de permutations",
+                  value = 1000,
+                  step = 50.0
+                )
               ),
                 
               column(
@@ -82,7 +80,7 @@ go_gsea_ui <- function(id) {
                 numericInput(
                   ns("padj_thr_gsea"),
                   "Seuil p-value GSEA",
-                  value = 0.05,
+                  value = 1,
                   min = 0,
                   max = 0.1,
                   step = 0.01
