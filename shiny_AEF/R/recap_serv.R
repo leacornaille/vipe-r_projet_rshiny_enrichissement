@@ -83,7 +83,7 @@ recap_server <- function(id,
           # champs spécifique ora
         } else {
           out$count <- df$Count
-          out$NES   <- NA_real_
+          out$NES <- NA_real_
           gr <- df$GeneRatio
           
           # on calcule le ratio en séparant les deux nombres et en faisant le rapport
@@ -148,7 +148,7 @@ recap_server <- function(id,
       
       choice_labels <- lapply(sources_dispo, function(src) {
         col <- get_color(src)
-        # meme tag que pour le compteur
+        num_term <- sum(df$source == src)
         tags$span(
           tags$span(style = paste0(
             "display:inline-block; width:10px; height:10px;",
@@ -156,7 +156,7 @@ recap_server <- function(id,
             "; margin-right:6px; vertical-align:middle;"
           )),
           src,
-          tags$span(paste0(" (", n, " termes)"),
+          tags$span(paste0(" (", num_term, " termes)"),
           style = "color:#888; font-size:0.9em;")
         )
       })
@@ -191,9 +191,9 @@ recap_server <- function(id,
       
       raw_size <- switch(
         input$size_metric,
-        "count"     = df$count,
+        "count" = df$count,
         "generatio" = df$generatio,
-        "uniform"   = rep(1, nrow(df))
+        "uniform" = rep(1, nrow(df))
       )
       
       raw_size[is.na(raw_size)] <- min(raw_size, na.rm = TRUE)
@@ -201,7 +201,7 @@ recap_server <- function(id,
       s_max <- max(raw_size, na.rm = TRUE)
       
       df$pt_size <- if (s_max > s_min) {
-        3 + 7 * (raw_size - s_min) / (s_max - s_min)
+        3 + 6 * (raw_size - s_min) / (s_max - s_min)
       } else {
         rep(5, nrow(df))
       }
@@ -255,7 +255,7 @@ recap_server <- function(id,
         
         scale_size_continuous(range = c(2, 7), guide = "none") +
         
-        labs(x = NULL, y = expression(-log[10](p.adjust))) +
+        labs(x = NULL, y = "-log10(p.adjust)") +
         
         theme_minimal() +
         theme(
