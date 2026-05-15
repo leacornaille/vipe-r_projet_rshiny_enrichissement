@@ -186,7 +186,7 @@ recap_server <- function(id,
       # garder les top N par source
       df <- df %>%
         dplyr::group_by(source) %>%
-        dplyr::slice_max(log10p, n = input$nbr_points) %>%
+        dplyr::slice_max(log10p, n = input$nbr_points, with_ties = FALSE) %>% # termes avec même padj GSEA GO
         dplyr::ungroup()
       
       raw_size <- switch(
