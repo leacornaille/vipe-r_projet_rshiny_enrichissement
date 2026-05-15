@@ -201,7 +201,7 @@ recap_server <- function(id,
       s_max <- max(raw_size, na.rm = TRUE)
       
       df$pt_size <- if (s_max > s_min) {
-        3 + 6 * (raw_size - s_min) / (s_max - s_min)
+        3 + 7 * (raw_size - s_min) / (s_max - s_min)
       } else {
         rep(5, nrow(df))
       }

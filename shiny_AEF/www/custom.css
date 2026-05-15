@@ -166,3 +166,79 @@ body, .main-header, .main-sidebar, .content-wrapper, .box {
   color: #264653;
   font-size: 16px;
 }
+
+
+/* ============================================================
+   TOOLTIPS BOOTSTRAP (bsTooltip / bsPopover)
+   ============================================================ */
+
+/* Conteneur général */
+.tooltip .tooltip-inner {
+  background-color: #264653;
+  color: #ffffff;
+  font-family: Roboto, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: 8px;
+  max-width: 260px;
+  text-align: left;
+  box-shadow: 0 4px 16px rgba(38, 70, 83, 0.2);
+}
+
+/* Flèche — top */
+.tooltip.top .tooltip-arrow,
+.bs-tooltip-top .arrow::before {
+  border-top-color: #264653 !important;
+}
+
+/* Flèche — bottom */
+.tooltip.bottom .tooltip-arrow,
+.bs-tooltip-bottom .arrow::before {
+  border-bottom-color: #264653 !important;
+}
+
+/* Flèche — right */
+.tooltip.right .tooltip-arrow,
+.bs-tooltip-right .arrow::before {
+  border-right-color: #264653 !important;
+}
+
+/* Flèche — left */
+.tooltip.left .tooltip-arrow,
+.bs-tooltip-left .arrow::before {
+  border-left-color: #264653 !important;
+}
+
+/* ============================================================
+   POPOVERS (bsPopover) — pour les icônes ? d'aide
+   ============================================================ */
+
+.popover {
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 20px rgba(38, 70, 83, 0.15) !important;
+  font-family: Roboto, sans-serif;
+}
+
+.popover-title {
+  background-color: #264653 !important;
+  color: #ffffff !important;
+  font-size: 13px !important;
+  font-weight: bold !important;
+  border-radius: 8px 8px 0 0 !important;
+  padding: 8px 14px !important;
+}
+
+.popover-content {
+  font-size: 13px !important;
+  color: #264653 !important;
+  line-height: 1.6 !important;
+  padding: 10px 14px !important;
+}
+
+/* Flèche popover */
+.popover.right > .arrow::after { border-right-color: #264653 !important; }
+.popover.left  > .arrow::after { border-left-color:  #264653 !important; }
+.popover.top   > .arrow::after { border-top-color:   #264653 !important; }
+.popover.bottom > .arrow::after { border-bottom-color: #264653 !important; }
