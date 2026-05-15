@@ -59,6 +59,13 @@ function(input, output, session) {
       return(NULL)
     }
     
+    if (nrow(df_deg) == 0) {
+      showModal(modalDialog(title = "Fichier vide",
+                            "Le fichier chargé ne contient aucune ligne de données.",
+                            easyClose = TRUE, footer = modalButton("Fermer")))
+      return(NULL)
+    }
+    
     # Fonction pour récupérer les ENTREZ ID à partir des GeneSymbol
     retrieve_entrezID <- function(df_deg){
       req(df_deg, OrgDb_selected())
@@ -75,6 +82,12 @@ function(input, output, session) {
     df_deg$pval <- as.numeric(df_deg$pval)
     # Réordonner les colonnes
     df_deg <- df_deg[,c("GeneName", "ID", "ENTREZID", "log2FC", "pval", "padj")]
+    
+    pct_found <- mean(df_deg$ENTREZID != "Not found") * 100
+    if (pct_found < 20) {
+      showNotification(paste0("Seulement ", round(pct_found), "% des gènes ont été mappés à un ENTREZID. 
+    Vérifiez que l'organisme sélectionné est correct."), type = "warning", duration = 10)
+    }
     return(df_deg)
   })
   
@@ -98,6 +111,12 @@ function(input, output, session) {
     df_filtered$Regulation <- ifelse(
       df_filtered$log2FC >= input$slider_fc, "Up", "Down"
     )
+    
+    # Dans filtered_genes(), à la fin :
+    if (nrow(df_filtered) == 0) {
+      showNotification("Aucun gène ne passe les seuils actuels. Essayez d'assouplir log2FC ou p-value.", 
+                       type = "warning", duration = 6)
+    }
     
     # Retourner le data.frame filtré
     df_filtered

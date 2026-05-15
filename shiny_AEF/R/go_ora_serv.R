@@ -3,7 +3,7 @@
 go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold){
   moduleServer(id, function(input, output, session){
 
-    # box info pour le filtrage
+    # ------ box info pour le filtrage -----------------------------------------
     output$filter_info_box <- renderUI({
       req(pval_threshold(), fc_threshold())
       panel(
@@ -18,7 +18,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
     })
 
 
-    # ----ORA enrichGO ----
+    # ------ ORA enrichGO ------------------------------------------------------
     enrich_res_ora <- eventReactive(input$runGO, {
       req(OrgDb_selected(), deg_data())
       
@@ -42,7 +42,8 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
         showNotification("Aucun gène valide trouvé", type = "warning")
         return(NULL)
       }
-  
+      
+      # Universe : soit les gènes de la liste, soit tous les gènes de l'organisme
       univ <- if (input$univers_ora_go == "gene_list") {
         unique(deg_data()$ENTREZID)   
       } else {
@@ -58,7 +59,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       showNotification(msg, type = "message", duration = 3)
 
       # Enrichissement GO term via enrichGO
-      enrichGO(
+      res <- enrichGO(
         gene = ids,
         OrgDb = OrgDb_selected(),
         universe = univ,
@@ -68,8 +69,20 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
         pvalueCutoff = input$pval_ora_go,
         readable = TRUE
       )
+      
+      # Simplification des termes GO redondants si demandée
+      if (!is.null(res) && nrow(as.data.frame(res)) > 0 && isTRUE(input$simplify_ora_go)) {
+        tryCatch(
+          res <- clusterProfiler::simplify(res, cutoff = 0.7, by = "p.adjust", select_fun = min),
+          error = function(e) {
+            showNotification(paste("simplify() a échoué :", e$message), type = "warning", duration = 5)
+          }
+        )
+      }
+      res
     })
-
+    
+    # ------ Graphiques --------------------------------------------------------
     all_go_plots <- reactive({
       req(enrich_res_ora())
       res <- enrich_res_ora()
@@ -95,7 +108,7 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
 
 
 
-    # ---------------- Affichage des plots ----------------
+    # ---------------- Affichage des plots ---------------------------------------
     output$ora_go_plot1 <- renderPlot({
       plots <- all_go_plots()
       req(plots)
@@ -122,7 +135,6 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
         )
       }
     }, res = 85)
-
 
     output$ora_go_table <- DT::renderDataTable({
       res <- enrich_res_ora()

@@ -8,7 +8,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       deg_data <- deg_data()
       
       df <- build_geneList(deg_data, input$rank_type_gsea)
-      
+      df
     })
     
     # ---- Calcul GSEA ----
@@ -17,18 +17,29 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       geneList <- ranked_genes()
       validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
       
-      gseGO(
-        geneList      = geneList,
-        OrgDb         = OrgDb_selected(),
-        keyType       = "ENTREZID",
-        ont           = input$ont,
-        minGSSize     = 15,
-        maxGSSize     = 500,
+      res_gsea <- gseGO(
+        geneList = geneList,
+        OrgDb = OrgDb_selected(),
+        keyType = "ENTREZID",
+        ont = input$ont,
+        minGSSize = 15,
+        maxGSSize = 500,
         pAdjustMethod = input$padjust_method_go_gsea,
         pvalueCutoff  = input$padj_thr_gsea,
-        verbose       = FALSE,
-        nPerm         = as.numeric(input$nperm_go_gsea)
+        verbose = FALSE,
+        nPerm = as.numeric(input$nperm_go_gsea)
       )
+      
+      # Simplification des termes GO redondants si demandée
+      if (!is.null(res_gsea) && nrow(as.data.frame(res_gsea)) > 0 && isTRUE(input$simplify_gsea_go)) {
+        tryCatch(
+          res_gsea <- clusterProfiler::simplify(res_gsea, cutoff = 0.7, by = "p.adjust", select_fun = min),
+          error = function(e) {
+            showNotification(paste("simplify() a échoué :", e$message), type = "warning", duration = 5)
+          }
+        )
+      }
+      res_gsea
     })
     
     # ---- Génération du plot ----
@@ -49,9 +60,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       switch(
         choice,
         "gseaplot" = gseaplot2(
-                      x         = res, 
+                      x = res, 
                       geneSetID = sel_go_id, 
-                      title     = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", sel_description, ")"),  
+                      title = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", sel_description, ")"),  
                      ),
         
         "dotplot" = dotplot(
