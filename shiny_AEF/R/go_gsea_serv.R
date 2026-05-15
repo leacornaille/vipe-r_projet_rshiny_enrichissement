@@ -41,7 +41,6 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       # récupérer le GO choisi dans le tableau des résultats GSEA (ID + description)
       sel_go_id <- selected_go_id()
-      sel_description <- res@result$Description[res@result$ID == sel_go_id][1]
 
       # Calcul de la matrice de distance des termes pour certains plots
       sim <- pairwise_termsim(res)
@@ -51,7 +50,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         "gseaplot" = gseaplot2(
                       x         = res, 
                       geneSetID = sel_go_id, 
-                      title     = paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", sel_description, ")"),  
+                      title     = if (length(sel_go_id) == 1) {
+                        paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", res@result$Description[res@result$ID == sel_go_id][1], ")")}
+                      else {input$plot_title_gsea_go}
                      ),
         
         "dotplot" = dotplot(
@@ -111,7 +112,6 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       req(res)
       df <- as.data.frame(res@result)
     },
-    selection = "single", # une seule (terme GO) ligne sélectionnable à la fois
 
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
     
