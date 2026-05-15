@@ -272,6 +272,4 @@ function(input, output, session) {
                go_gsea_module = go_gsea_res,
                path_ora_module = path_ora_res,
                path_gsea_module = path_gsea_res)
-  
-  
 }
