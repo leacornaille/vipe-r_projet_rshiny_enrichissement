@@ -42,8 +42,19 @@ path_gsea_ui <- function(id) {
                   choices  = c("KEGG" = "kegg", "Reactome" = "reactome"),
                   selected = "kegg"
                 ),
+                 checkboxInput(
+                  ns("use_permutation_path_gsea"),
+                  "Faire des permutations (à indiquer ci-dessous)",
+                  value = FALSE
+                ),
+                bsTooltip(
+                  id = ns("use_permutation_path_gsea"),
+                  title = "Réordonnement aléatoire des gènes afin d’estimer la significativité statistique de l’enrichissement observé.",
+                  placement = "right",
+                  trigger = "hover"
+                ),
                 numericInput(
-                  ns("nperm_go_gsea"),
+                  ns("nperm_path_gsea"),
                   "Nombre de permutations",
                   value = 1000,
                   step = 50.0

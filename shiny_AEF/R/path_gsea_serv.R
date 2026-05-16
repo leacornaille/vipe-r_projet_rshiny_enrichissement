@@ -19,28 +19,53 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
     gsea_res <- eventReactive(input$runGSEA, {
       geneList <- build_geneList(deg_data(), input$rank_type_gsea)
       if (input$pathway_db == "kegg") {
-        gsea <- gseKEGG(
-          geneList = geneList,
-          organism = organism_kegg(),
-          keyType = "ncbi-geneid",
-          minGSSize = 10,
-          maxGSSize = 500,
-          pvalueCutoff = input$pval_path_gsea,
-          pAdjustMethod = input$padjust_method_path_gsea,
-          verbose = FALSE,
-          nPerm = as.numeric(input$nperm_go_gsea)
-        )
-      } else if (input$pathway_db == "reactome") {
-        gsea <- gsePathway(
-          geneList = geneList,
-          organism = organism_reactome(),
-          minGSSize = 10,
-          maxGSSize = 500,
-          pvalueCutoff = input$pval_path_gsea,
-          pAdjustMethod = input$padjust_method_path_gsea,
-          verbose = FALSE,
-          nPerm = as.numeric(input$nperm_go_gsea)
-        )
+        if (isTRUE(input$use_permutation_path_gsea)) {
+          gsea <- gseKEGG(
+            geneList = geneList,
+            organism = organism_kegg(),
+            keyType = "ncbi-geneid",
+            minGSSize = 10,
+            maxGSSize = 500,
+            pvalueCutoff = input$pval_path_gsea,
+            pAdjustMethod = input$padjust_method_path_gsea,
+            verbose = FALSE,
+            nPerm = as.numeric(input$nperm_path_gsea)
+          )
+        } else {
+          gsea <- gseKEGG(
+            geneList = geneList,
+            organism = organism_kegg(),
+            keyType = "ncbi-geneid",
+            minGSSize = 10,
+            maxGSSize = 500,
+            pvalueCutoff = input$pval_path_gsea,
+            pAdjustMethod = input$padjust_method_path_gsea,
+            verbose = FALSE
+          )
+        }
+      } else if (input$pathway_db == "reactome"){
+        if (isTRUE(input$use_permutation_path_gsea)) {
+          gsea <- gsePathway(
+            geneList = geneList,
+            organism = organism_reactome(),
+            minGSSize = 10,
+            maxGSSize = 500,
+            pvalueCutoff = input$pval_path_gsea,
+            pAdjustMethod = input$padjust_method_path_gsea,
+            verbose = FALSE,
+            nPerm = as.numeric(input$nperm_path_gsea)
+          )
+        } else {
+          gsea <- gsePathway(
+            geneList = geneList,
+            organism = organism_reactome(),
+            minGSSize = 10,
+            maxGSSize = 500,
+            pvalueCutoff = input$pval_path_gsea,
+            pAdjustMethod = input$padjust_method_path_gsea,
+            verbose = FALSE
+          )
+        }
       }
       return(gsea)
     })
