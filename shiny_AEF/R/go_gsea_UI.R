@@ -21,11 +21,11 @@ go_gsea_ui <- function(id) {
         fluidRow(
           box(
             title = "Classement des gènes",
-            width = 4,
+            width = 3,
             status = "info",
-            
+            helpText("log2FC (recommandé) : classe les gènes par intensité de régulation. padj : classe par significativité statistique."),
             column(
-              width = 6,
+              width = 12,
               radioButtons(
                 ns("rank_type_gsea"), 
                 "Choisir le critère de classement :",
@@ -37,12 +37,12 @@ go_gsea_ui <- function(id) {
           # paramètres statistiques GSEA 
           box(
             title = "Paramètres statistiques GSEA",
-            width = 8,
+            width = 9,
             status = "primary",
             
             fluidRow(
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("ont"),
                   "Ontologie GO",
@@ -63,7 +63,7 @@ go_gsea_ui <- function(id) {
               ),
                 
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("padjust_method_go_gsea"),
                   "Méthode de correction multiple",
@@ -85,6 +85,16 @@ go_gsea_ui <- function(id) {
                   max = 0.1,
                   step = 0.01
                 ) 
+              ),
+              column(
+                width = 4,
+                h5("Redondance des termes GO"),
+                helpText("Les termes GO sont souvent redondants. En cochant cette option, les termes redondants seront éliminés."),
+                checkboxInput(
+                  ns("simplify_gsea_go"),
+                  "Eliminer les termes GO redondants",
+                  value = TRUE
+                )
               )
             )
           ),
@@ -158,8 +168,7 @@ go_gsea_ui <- function(id) {
           height = 900,
           status = "primary",
           solidHeader = TRUE,
-          # selectInput(ns("select_graph_gsea_go2"), "Type de graphique :",
-          #             choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
+          downloadButton(ns("download_table_gsea_go"), "Télécharger le tableau (CSV)"),
           withSpinner(
             dataTableOutput(ns("go_gsea_table_results")),
             image = "loading.GIF"

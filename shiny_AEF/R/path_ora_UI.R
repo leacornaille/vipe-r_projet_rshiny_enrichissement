@@ -59,6 +59,9 @@ path_ora_ui <- function(id) {
                   ),
                   selected = "kegg"
                 ),
+                bsTooltip(ns("pathway_db"),
+                          "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
+                          placement = "bottom"),
                 
                 selectInput(
                   ns("univers_ora_path"),
@@ -201,7 +204,7 @@ path_ora_ui <- function(id) {
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
-        
+        downloadButton(ns("download_table_ora_path"), "Télécharger le tableau (CSV)"),
         DT::dataTableOutput(ns("table_results"))
       )
     )

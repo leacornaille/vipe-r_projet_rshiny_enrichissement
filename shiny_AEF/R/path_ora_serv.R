@@ -215,6 +215,16 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       )
     })
     
+    # Téléchargement du tableau
+    output$download_table_ora_path <- downloadHandler(
+      filename = function() { paste0("Pathway_ORA_", input$pathway_db, "_results.csv") },
+      content = function(file) {
+        req(enrich_res_ora_path())
+        write.csv(as.data.frame(enrich_res_ora_path()), file, row.names = FALSE)
+      }
+    )
+    
+    # nom de l'analyse
     source_label <- reactive({
       req(enrich_res_ora_path())
       db_label <- switch(input$pathway_db,

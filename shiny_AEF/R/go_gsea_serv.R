@@ -8,7 +8,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       deg_data <- deg_data()
       
       df <- build_geneList(deg_data, input$rank_type_gsea)
-      
+      df
     })
     
     # ---- Calcul GSEA ----
@@ -18,16 +18,16 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
       
       gseGO(
-        geneList      = geneList,
-        OrgDb         = OrgDb_selected(),
-        keyType       = "ENTREZID",
-        ont           = input$ont,
-        minGSSize     = 15,
-        maxGSSize     = 500,
+        geneList = geneList,
+        OrgDb = OrgDb_selected(),
+        keyType = "ENTREZID",
+        ont = input$ont,
+        minGSSize = 15,
+        maxGSSize = 500,
         pAdjustMethod = input$padjust_method_go_gsea,
-        pvalueCutoff  = input$padj_thr_gsea,
-        verbose       = FALSE,
-        nPerm         = as.numeric(input$nperm_go_gsea)
+        pvalueCutoff = input$padj_thr_gsea,
+        verbose = FALSE,
+        nPerm = as.numeric(input$nperm_go_gsea)
       )
     })
     
@@ -41,26 +41,26 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       
       # récupérer le GO choisi dans le tableau des résultats GSEA (ID + description)
       sel_go_id <- selected_go_id()
-
+      
       # Calcul de la matrice de distance des termes pour certains plots
       sim <- pairwise_termsim(res)
       
       switch(
         choice,
         "gseaplot" = gseaplot2(
-                      x         = res, 
-                      geneSetID = sel_go_id, 
-                      title     = if (length(sel_go_id) == 1) {
-                        paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", res@result$Description[res@result$ID == sel_go_id][1], ")")}
-                      else {input$plot_title_gsea_go}
-                     ),
+          x = res, 
+          geneSetID = sel_go_id, 
+          title = if (length(sel_go_id) == 1) {
+            paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", res@result$Description[res@result$ID == sel_go_id][1], ")")}
+          else {input$plot_title_gsea_go}
+        ),
         
         "dotplot" = dotplot(
-                    object = res, 
-                    showCategory = min(input$n_cat_gsea, nrow(res@result)),
-                    title = input$plot_title_gsea_go,
-                    color = 'p.adjust'
-                    ),
+          object = res, 
+          showCategory = min(input$n_cat_gsea, nrow(res@result)),
+          title = input$plot_title_gsea_go,
+          color = 'p.adjust'
+        ),
         
         "emapplot" = {
           validate(
@@ -74,9 +74,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
         
         
         "ridgeplot" = ridgeplot(
-                      x = res,
-                      showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))),
-                      ),
+          x = res,
+          showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result))),
+        ),
         
         "treeplot" =  {
           validate(
@@ -84,16 +84,16 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
                  "Pas assez de termes enrichis pour emapplot")
           )
           treeplot(
-                    x = sim,
-                    showCategory = min(input$n_cat_gsea, nrow(res@result)),
-                    )
-          },
+            x = sim,
+            showCategory = min(input$n_cat_gsea, nrow(res@result)),
+          )
+        },
         
         "goplot" = goplot(
-                    x = res,
-                    showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result)))
-                  )
+          x = res,
+          showCategory = as.numeric(min(input$n_cat_gsea, nrow(res@result)))
         )
+      )
     }
     
     # Afficher les plots
@@ -112,7 +112,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       req(res)
       df <- as.data.frame(res@result)
     },
-
+    
     options = list(pageLength = 10, scrollX = TRUE, order = list(list(5, "asc")) ))
     
     # Sélection d'un terme GO du tableau pour les plots
@@ -135,6 +135,16 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       req(gsea_res())
       paste0("GO GSEA (", input$ont, ")")
     })
+    
+    # Téléchargement du tableau
+    output$download_table_gsea_go <- downloadHandler(
+      filename = function() { paste0("GO_GSEA_", input$ont, "_results.csv") },
+      content = function(file) {
+        res <- gsea_res()
+        req(res)
+        write.csv(as.data.frame(res@result), file, row.names = FALSE)
+      }
+    )
     
     
     # Renvoi résultats pour table du Manhattan Plot

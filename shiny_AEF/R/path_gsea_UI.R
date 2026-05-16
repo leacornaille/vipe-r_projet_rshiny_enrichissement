@@ -48,6 +48,9 @@ path_gsea_ui <- function(id) {
                   value = 1000,
                   step = 50.0
                 )
+                bsTooltip(ns("pathway_db"),
+                          "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
+                          placement = "bottom")
               ),
               column(
                 width = 4,
@@ -164,6 +167,7 @@ path_gsea_ui <- function(id) {
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
+        downloadButton(ns("download_table_gsea_path"), "Télécharger le tableau (CSV)"),
         withSpinner(
           DT::dataTableOutput(ns("path_gsea_table_results")),
           image = "loading.GIF"

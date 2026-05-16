@@ -10,7 +10,7 @@ go_ora_ui <- function(id) {
     h2("Enrichissement (GO term)"),
     h3("Méthode ORA"),
     
-    #------------------ Paramètres de l'ORA GO term -------------------
+    #------------------ Paramètres de l'ORA GO term ----------------------------
     fluidRow(
       box(
         title = "Paramètre ORA",
@@ -44,14 +44,14 @@ go_ora_ui <- function(id) {
             )
           ),
           
-          # paramètre statistiques ORA
+          # ------ paramètre statistiques ORA ------------------------------------
           box(
             title = "Paramètres statistiques ORA",
             width = 8,
             status = "primary",
             fluidRow(
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("ont"),
                   "Ontologie GO",
@@ -72,7 +72,7 @@ go_ora_ui <- function(id) {
                 )
               ),
               column(
-                width = 6,
+                width = 4,
                 selectInput(
                   ns("padjust_method_go_ora"),
                   "Méthode de correction multiple",
@@ -85,7 +85,6 @@ go_ora_ui <- function(id) {
                   ),
                   selected = "BH"
                 ),
-                
                 numericInput(
                   ns("pval_ora_go"),
                   "Seuil p-value ORA",
@@ -94,14 +93,23 @@ go_ora_ui <- function(id) {
                   max = 0.1,
                   step = 0.01
                 )
+              ),
+              column(
+                width = 4,
+                h5("Redondance des termes GO"),
+                helpText("Les termes GO sont souvent redondants. En cochant cette option, les termes redondants seront éliminés."),
+                checkboxInput(
+                  ns("simplify_ora_go"),
+                  "Eliminer les termes GO redondants",
+                  value = TRUE
+                )
               )
             )
           ),
           
           fluidRow(
             column(12, align = "center",
-                   actionButton(ns("runGO"), "Lancer ORA",
-                                icon = icon("play"))
+                   actionButton(ns("runGO"), "Lancer ORA", icon = icon("play"))
             )
           )
         )
@@ -139,12 +147,14 @@ go_ora_ui <- function(id) {
         status = "warning",
         collapsible = TRUE,
         
+        # ------ titre du plot -------------------------------------------------
         textInput(
           ns("plot_title_ora_go"),
           "Titre du graphique",
           value = "ORA - Enrichissement des GoTerm"
         ),
         
+        # ------ nombre de go termes -------------------------------------------
         sliderInput(
           ns("n_cat_go_ora"),
           "Nombre de GO terms affichés",
@@ -154,14 +164,13 @@ go_ora_ui <- function(id) {
           step = 1
         ),
         
+        # ------ choix des couleurs du graphe --------------------------------------
         selectInput(
           ns("color_palette_go_ora"),
           "Palette des couleurs (p.adjust)", 
           choices = c(
             "Viridis" = "viridis",
             "Plasma" = "plasma",
-            "Magma" = "magma",
-            "Inferno" = "inferno",
             "Mako" = "mako",
             "Rocket" = "rocket",
             "Cividis" = "cividis",
@@ -174,6 +183,7 @@ go_ora_ui <- function(id) {
         )
       ),
       
+      # ------ tableau de résultats --------------------------------------------
       box(
         title = "Tableau résultats ORA GO term",
         width = 12,
@@ -181,6 +191,8 @@ go_ora_ui <- function(id) {
         solidHeader = TRUE,
         collapsible = TRUE,
         
+        downloadButton(ns("download_table_ora_go"), "Télécharger le tableau (CSV)"),
+        br(), br(),
         DT::dataTableOutput(ns("ora_go_table"))
         
       )
