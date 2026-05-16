@@ -47,7 +47,7 @@ path_gsea_ui <- function(id) {
                   "Nombre de permutations",
                   value = 1000,
                   step = 50.0
-                )
+                ),
                 bsTooltip(ns("pathway_db"),
                           "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
                           placement = "bottom")
