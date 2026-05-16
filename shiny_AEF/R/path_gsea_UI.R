@@ -41,6 +41,12 @@ path_gsea_ui <- function(id) {
                   "Base de données Pathway",
                   choices  = c("KEGG" = "kegg", "Reactome" = "reactome"),
                   selected = "kegg"
+                ),
+                numericInput(
+                  ns("nperm_go_gsea"),
+                  "Nombre de permutations",
+                  value = 1000,
+                  step = 50.0
                 )
               ),
               column(
@@ -63,7 +69,7 @@ path_gsea_ui <- function(id) {
                 numericInput(
                   ns("pval_path_gsea"), "Seuil p-value GSEA",
                   value = 0.05, min = 0, max = 1, step = 0.01
-                )
+                ),
               )
             )
           ),

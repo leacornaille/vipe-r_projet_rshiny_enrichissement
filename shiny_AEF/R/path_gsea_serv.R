@@ -27,7 +27,8 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
           maxGSSize = 500,
           pvalueCutoff = input$pval_path_gsea,
           pAdjustMethod = input$padjust_method_path_gsea,
-          verbose = FALSE
+          verbose = FALSE,
+          nPerm = as.numeric(input$nperm_go_gsea)
         )
       } else if (input$pathway_db == "reactome") {
         gsea <- gsePathway(
@@ -37,7 +38,8 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
           maxGSSize = 500,
           pvalueCutoff = input$pval_path_gsea,
           pAdjustMethod = input$padjust_method_path_gsea,
-          verbose = FALSE
+          verbose = FALSE,
+          nPerm = as.numeric(input$nperm_go_gsea)
         )
       }
       return(gsea)
