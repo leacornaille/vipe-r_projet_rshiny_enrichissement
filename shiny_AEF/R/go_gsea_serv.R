@@ -17,18 +17,32 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       geneList <- ranked_genes()
       validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
       
-      gseGO(
-        geneList = geneList,
-        OrgDb = OrgDb_selected(),
-        keyType = "ENTREZID",
-        ont = input$ont,
-        minGSSize = 15,
-        maxGSSize = 500,
-        pAdjustMethod = input$padjust_method_go_gsea,
-        pvalueCutoff = input$padj_thr_gsea,
-        verbose = FALSE,
-        nPerm = as.numeric(input$nperm_go_gsea)
-      )
+      if (isTRUE(input$use_permutation_gsea)) {
+        gseGO(
+          geneList = geneList,
+          OrgDb = OrgDb_selected(),
+          keyType = "ENTREZID",
+          ont = input$ont,
+          minGSSize = 15,
+          maxGSSize = 500,
+          pAdjustMethod = input$padjust_method_go_gsea,
+          pvalueCutoff = input$padj_thr_gsea,
+          verbose = FALSE,
+          nPerm = as.numeric(input$nperm_go_gsea)
+        )
+      } else {
+        gseGO(
+          geneList = geneList,
+          OrgDb = OrgDb_selected(),
+          keyType = "ENTREZID",
+          ont = input$ont,
+          minGSSize = 15,
+          maxGSSize = 500,
+          pAdjustMethod = input$padjust_method_go_gsea,
+          pvalueCutoff = input$padj_thr_gsea,
+          verbose = FALSE
+        )
+      }
     })
     
     # ---- Génération du plot ----
@@ -100,7 +114,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     output$gsea_go_plot1 <- renderPlot({
       p <- render_gsea_plot(input$select_graph_gsea_go1)
       # Ajouter palette seulement au dotplot, ridgeplot, empalot
-      if (input$select_graph_gsea_go1 %in% c("dotplot", "emapplot", "ridgeplot")) {
+      if (input$select_graph_gsea_go1 %in% c("dotplot", "emapplot", "ridgeplot", "goplot")) {
         p <- p + color_palette(input$color_palette_go_gsea)
       }
       p

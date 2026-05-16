@@ -53,7 +53,17 @@ go_gsea_ui <- function(id) {
                   ),
                   selected = "BP"
                 ),
-                
+                checkboxInput(
+                  "use_permutation_gsea",
+                  "Faire des permutations (à indiquer ci-dessous)",
+                  value = FALSE
+                ),
+                bsTooltip(
+                  id = "use_permutation_gsea",
+                  title = "Réordonnement aléatoire des gènes afin d’estimer la significativité statistique de l’enrichissement observé.",
+                  placement = "right",
+                  trigger = "hover"
+                ),
                 numericInput(
                   ns("nperm_go_gsea"),
                   "Nombre de permutations",
