@@ -87,6 +87,9 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       req(enrich_res_ora())
       res <- enrich_res_ora()
       req(res)
+      
+      res@result <- res@result[!is.na(res@result$core_enrichment) & nchar(res@result$core_enrichment) > 0, ]
+      validate(need(nrow(res@result) > 0, "Aucun terme GO enrichi"))
 
       # # Pour treeplot et netplot : calcul des similarités entre termes
       res_sim <- tryCatch(
@@ -148,6 +151,16 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       req(enrich_res_ora())
       paste0("GO ORA (", input$ont, ")")
     })
+    
+    # Téléchargement du tableau
+    output$download_table_ora_go <- downloadHandler(
+      filename = function() { paste0("GO_ORA_", input$ont, "_results.csv") },
+      content = function(file) {
+        res <- enrich_res_ora()
+        req(res)
+        write.csv(as.data.frame(res), file, row.names = FALSE)
+      }
+    )
     
 
     # Renvoi résultats pour table

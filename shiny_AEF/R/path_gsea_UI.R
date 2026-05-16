@@ -158,6 +158,7 @@ path_gsea_ui <- function(id) {
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
+        downloadButton(ns("download_table_gsea_path"), "Télécharger le tableau (CSV)"),
         withSpinner(
           DT::dataTableOutput(ns("path_gsea_table_results")),
           image = "loading.GIF"

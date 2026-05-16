@@ -8,7 +8,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       deg_data <- deg_data()
       
       df <- build_geneList(deg_data, input$rank_type_gsea)
-      
+      df
     })
     
     # ---- Calcul GSEA ----
@@ -18,16 +18,16 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
       
       gseGO(
-        geneList      = geneList,
-        OrgDb         = OrgDb_selected(),
-        keyType       = "ENTREZID",
-        ont           = input$ont,
-        minGSSize     = 15,
-        maxGSSize     = 500,
+        geneList = geneList,
+        OrgDb = OrgDb_selected(),
+        keyType = "ENTREZID",
+        ont = input$ont,
+        minGSSize = 15,
+        maxGSSize = 500,
         pAdjustMethod = input$padjust_method_go_gsea,
-        pvalueCutoff  = input$padj_thr_gsea,
-        verbose       = FALSE,
-        nPerm         = as.numeric(input$nperm_go_gsea)
+        pvalueCutoff = input$padj_thr_gsea,
+        verbose = FALSE,
+        nPerm = as.numeric(input$nperm_go_gsea)
       )
     })
     
@@ -48,9 +48,9 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       switch(
         choice,
         "gseaplot" = gseaplot2(
-          x         = res, 
+          x = res, 
           geneSetID = sel_go_id, 
-          title     = if (length(sel_go_id) == 1) {
+          title = if (length(sel_go_id) == 1) {
             paste0(input$plot_title_gsea_go, " ", "(", sel_go_id, " - ", res@result$Description[res@result$ID == sel_go_id][1], ")")}
           else {input$plot_title_gsea_go}
         ),
@@ -135,6 +135,16 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       req(gsea_res())
       paste0("GO GSEA (", input$ont, ")")
     })
+    
+    # Téléchargement du tableau
+    output$download_table_gsea_go <- downloadHandler(
+      filename = function() { paste0("GO_GSEA_", input$ont, "_results.csv") },
+      content = function(file) {
+        res <- gsea_res()
+        req(res)
+        write.csv(as.data.frame(res@result), file, row.names = FALSE)
+      }
+    )
     
     
     # Renvoi résultats pour table du Manhattan Plot

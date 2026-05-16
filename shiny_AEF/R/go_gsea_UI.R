@@ -168,8 +168,7 @@ go_gsea_ui <- function(id) {
           height = 900,
           status = "primary",
           solidHeader = TRUE,
-          # selectInput(ns("select_graph_gsea_go2"), "Type de graphique :",
-          #             choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot")),
+          downloadButton(ns("download_table_gsea_go"), "Télécharger le tableau (CSV)"),
           withSpinner(
             dataTableOutput(ns("go_gsea_table_results")),
             image = "loading.GIF"

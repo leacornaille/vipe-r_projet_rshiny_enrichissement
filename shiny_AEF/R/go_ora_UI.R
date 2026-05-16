@@ -191,6 +191,8 @@ go_ora_ui <- function(id) {
         solidHeader = TRUE,
         collapsible = TRUE,
         
+        downloadButton(ns("download_table_ora_go"), "Télécharger le tableau (CSV)"),
+        br(), br(),
         DT::dataTableOutput(ns("ora_go_table"))
         
       )

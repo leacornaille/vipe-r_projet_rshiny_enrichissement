@@ -201,7 +201,7 @@ path_ora_ui <- function(id) {
         status = "info",
         solidHeader = TRUE,
         collapsible = TRUE,
-        
+        downloadButton(ns("download_table_ora_path"), "Télécharger le tableau (CSV)"),
         DT::dataTableOutput(ns("table_results"))
       )
     )
