@@ -84,6 +84,9 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
       if (!input$select_graph_gsea_path %in% c("gseaplot")) {
         p <- p + ggtitle(input$plot_title_gsea_path)
       }
+      if (input$select_graph_gsea_path %in% c("dotplot", "emapplot", "ridgeplot")) {
+        p <- p + color_palette(input$color_palette_path_gsea)
+      }
       p
     })
     
