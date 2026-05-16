@@ -41,7 +41,10 @@ path_gsea_ui <- function(id) {
                   "Base de données Pathway",
                   choices  = c("KEGG" = "kegg", "Reactome" = "reactome"),
                   selected = "kegg"
-                )
+                ),
+                bsTooltip(ns("pathway_db"),
+                          "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
+                          placement = "bottom")
               ),
               column(
                 width = 4,

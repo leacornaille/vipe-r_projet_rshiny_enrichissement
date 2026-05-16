@@ -87,9 +87,6 @@ go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_thres
       req(enrich_res_ora())
       res <- enrich_res_ora()
       req(res)
-      
-      res@result <- res@result[!is.na(res@result$core_enrichment) & nchar(res@result$core_enrichment) > 0, ]
-      validate(need(nrow(res@result) > 0, "Aucun terme GO enrichi"))
 
       # # Pour treeplot et netplot : calcul des similarités entre termes
       res_sim <- tryCatch(

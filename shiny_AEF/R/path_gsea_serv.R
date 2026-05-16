@@ -172,7 +172,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
                       selection = "single"))
     
     # Téléchargement du tableau
-    output$download_Table_gsea_path <- downloadHandler(
+    output$download_table_gsea_path <- downloadHandler(
       filename = function() { paste0("Pathway_GSEA_", input$pathway_db, "_results.csv") },
       content = function(file) {
         req(gsea_res())

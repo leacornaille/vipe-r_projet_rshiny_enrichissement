@@ -23,7 +23,7 @@ go_gsea_ui <- function(id) {
             title = "Classement des gènes",
             width = 3,
             status = "info",
-            
+            helpText("log2FC (recommandé) : classe les gènes par intensité de régulation. padj : classe par significativité statistique."),
             column(
               width = 12,
               radioButtons(

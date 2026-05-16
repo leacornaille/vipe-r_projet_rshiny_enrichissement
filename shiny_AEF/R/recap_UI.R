@@ -25,13 +25,14 @@ recap_ui <- function(id) {
         uiOutput(ns("source_checkboxes")),
         
         hr(),
-        
+        helpText("1.30 correspond à p.adjust = 0.05 | 2.00 correspond à p.adjust = 0.01"),
         sliderInput(
           ns("pval_threshold"),
           label   = HTML("Seuil &minus;log<sub>10</sub>(p.adjust)"),
           min = 0, max = 10, value = 1.30, step = 0.05,
           ticks = FALSE
         ),
+        
         
         numericInput(
           ns("n_labels"),
@@ -55,6 +56,9 @@ recap_ui <- function(id) {
           ),
           selected = "count"
         ),
+        helpText("Count et GeneRatio s'appliquent aux résultats ORA. 
+        NES (Normalized Enrichment Score) s'applique aux résultats GSEA. 
+        Uniforme est valable dans tous les cas."),
         
         hr(),
         
