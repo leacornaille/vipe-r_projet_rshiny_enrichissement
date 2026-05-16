@@ -77,7 +77,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
           sim <- pairwise_termsim(res)
           emapplot(sim, showCategory = input$n_cat_path_gsea)
         },
-        "ridgeplot" = ridgeplot(res, showCategory = input$n_cat_path_gsea),
+        "ridgeplot" = ridgeplot(res, showCategory = as.numeric(input$n_cat_path_gsea)),
         "cnetplot" = cnetplot(res, showCategory = input$n_cat_path_gsea)
       )
       
