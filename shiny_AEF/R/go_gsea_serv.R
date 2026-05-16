@@ -17,7 +17,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       geneList <- ranked_genes()
       validate(need(length(geneList) > 0, "Aucun gène valide pour la GSEA."))
       
-      if (isTRUE(input$use_permutation_gsea)) {
+      if (isTRUE(input$use_permutation_go_gsea)) {
         gseGO(
           geneList = geneList,
           OrgDb = OrgDb_selected(),
