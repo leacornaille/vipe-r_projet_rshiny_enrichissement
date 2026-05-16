@@ -68,14 +68,17 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
       
       p <- switch(
         input$select_graph_gsea_path,
-        "gseaplot" = gseaplot2(res, geneSetID = selected_pathway_id()),
+        "gseaplot" = gseaplot2(res, geneSetID = selected_pathway_id(),
+                               title = if (length(selected_pathway_id()) == 1) {
+                                 paste0(input$plot_title_gsea_path, " ", "(", selected_pathway_id(), " - ", res@result$Description[res@result$ID == selected_pathway_id()][1], ")")}
+                               else {input$plot_title_gsea_path}),
         "dotplot" = dotplot(res, showCategory = input$n_cat_path_gsea),
         "emapplot"  = {
           sim <- pairwise_termsim(res)
-          emapplot(sim)
+          emapplot(sim, showCategory = input$n_cat_path_gsea)
         },
-        "ridgeplot" = ridgeplot(res),
-        "cnetplot" = cnetplot(res)
+        "ridgeplot" = ridgeplot(res, showCategory = input$n_cat_path_gsea),
+        "cnetplot" = cnetplot(res, showCategory = input$n_cat_path_gsea)
       )
       
       if (!input$select_graph_gsea_path %in% c("gseaplot")) {
