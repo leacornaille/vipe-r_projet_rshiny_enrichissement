@@ -124,10 +124,7 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       req(enrich_res_ora_path())
       res <- enrich_res_ora_path()
       
-      voie_ids_ora <- setNames(
-        res$ID,
-        res$Description
-      )
+      voie_ids_ora <- setNames(res$ID, res$Description)
       updateSelectInput(
         session,
         "pathview_kegg_id",
@@ -135,47 +132,39 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
       )
     })
     
-    output$pathview_plot <- renderImage({
-      req(enrich_res_ora_path(), input$pathview_kegg_id)
+    observeEvent(input$run_pathview, {
+      req(input$pathview_kegg_id)
       
-      geneList   <- setNames(deg_data()$log2FC, deg_data()$ENTREZID)
       pathway_id <- input$pathview_kegg_id
-      file_png   <- paste0(pathway_id, ".pathview.png")
+      file_png <- paste0(pathway_id, ".pathview.png")
       
-      if (!file.exists(file_png)) {
-        withProgress(message = "Chargement Pathview...", value = 0, {
-          
-          incProgress(0.2, detail = "Préparation des données...")
-          Sys.sleep(0.1)
-          
-          incProgress(0.3, detail = "Connexion KEGG...")
+      withProgress(message = "Génération Pathview...", value = 0, {
+        incProgress(0.2, detail = "Préparation des données...")
+        geneList <- setNames(deg_data()$log2FC, deg_data()$ENTREZID)
+        
+        incProgress(0.3, detail = "Connexion KEGG...")
+        if (!file.exists(file_png)) {
           tryCatch({
             pathview(
               gene.data  = geneList,
               pathway.id = pathway_id,
-              species    = organism_kegg(),
-              limit      = list(gene = max(abs(geneList)), cpd = 1)
+              species = organism_kegg(),
+              out.suffix = "pathview",
+              kegg.dir   = ".",
+              limit = list(gene = max(abs(geneList)), cpd = 1)
             )
           }, error = function(e) {
             showNotification(paste("Erreur Pathview :", e$message), type = "error", duration = 10)
           })
-          
-          incProgress(0.5, detail = "Génération de l'image...")
-        })
-      }
+        }
+        incProgress(0.5, detail = "Affichage...")
+      })
+      
+      pathway_id <- input$pathview_kegg_id
+      file_png <- paste0(pathway_id, ".pathview.png")
       
       req(file.exists(file_png))
-      list(
-        src = file_png,
-        contentType = "image/png",
-        width = "100%",
-        height = "100%",
-        deleteFile  = FALSE
-      )
-    }, deleteFile = FALSE)
-    
-    observeEvent(input$run_pathview, {
-      req(input$pathview_kegg_id)
+      
       showModal(modalDialog(
         title = "Pathview",
         size = "xl",
@@ -190,6 +179,20 @@ path_ora_server <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_t
         )
       ))
     })
+    
+    output$pathview_plot <- renderImage({
+      req(input$pathview_kegg_id)
+      pathway_id <- input$pathview_kegg_id
+      file_png <- paste0(pathway_id, ".pathview.png")
+      
+      list(
+        src = file_png,
+        contentType = "image/png",
+        width = "100%",
+        height = "100%",
+        deleteFile = FALSE
+      )
+    }, deleteFile = FALSE)
     
     # Fermeture
     observeEvent(input$close_pathview_ora, {

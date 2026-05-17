@@ -187,20 +187,16 @@ path_ora_ui <- function(id) {
           status = "primary",
           collapsible = TRUE,
           
-          selectInput(
-            ns("pathview_kegg_id"),
-            "Voie métabolique",
-            choices = NULL
-          ),
+          selectInput(ns("pathview_kegg_id"), "Voie métabolique", choices = NULL),
           
           actionButton(
             ns("run_pathview"),
             "Afficher la voie dans Pathview",
-            icon = icon("play"),
+            icon  = icon("play"),
             width = "100%"
           )
         )
-      ),  
+      ),
       # tableau des résultats ORA
       box(
         title = "Tableau résultats ORA",
