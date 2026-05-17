@@ -1,3 +1,5 @@
+# Ce module gère la création du volcano plot à partir des données de DEG, avec des options de filtrage basées sur les seuils de p-value et de log2FC. 
+# Il permet également à l'utilisateur de sélectionner des points sur le volcano plot pour afficher les détails dans un tableau, et offre la possibilité de télécharger les gènes sélectionnés.
 volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold, reset_all) {
   moduleServer(id, function(input, output, session) {
     

@@ -1,3 +1,5 @@
+# Ce module correspond à la partie "Enrichissement (Pathway) - Méthode ORA" de l'application.
+# Il correspond à la partie UI 
 path_ora_ui <- function(id) {
   ns <- NS(id)
   
@@ -176,6 +178,7 @@ path_ora_ui <- function(id) {
           selected = "viridis"
         )
       ),
+      # si la base est kegg alors la box pathview s'affiche
       conditionalPanel(
         condition = paste0("input['", ns("pathway_db"), "'] == 'kegg'"),
         box(
@@ -197,7 +200,8 @@ path_ora_ui <- function(id) {
             width = "100%"
           )
         )
-      ),   
+      ),  
+      # tableau des résultats ORA
       box(
         title = "Tableau résultats ORA",
         width = 12,

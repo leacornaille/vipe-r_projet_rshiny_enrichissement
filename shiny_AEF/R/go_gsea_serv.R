@@ -1,4 +1,6 @@
-# Fonction pour générer les plots de l'onglet GO term GSEA
+# Ce module gère la partie GSEA pour les termes GO, avec différents types de plots (dotplot, emapplot, gseaplot, ridgeplot, treeplot, goplot) 
+# et un tableau interactif des résultats. 
+# Il prend en entrée les données de DEGs et l'OrgDb sélectionné pour effectuer l'enrichissement.
 
 go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
   moduleServer(id, function(input, output, session) {

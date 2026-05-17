@@ -1,3 +1,6 @@
+# Ce module correspond à la partie "Volcano plot" de l'application.
+# Il correspond à la partie UI de ce module, qui permet à l'utilisateur de visualiser les résultats de l'analyse différentielle à travers un volcano plot interactif, 
+#et d'explorer les gènes spécifiques en fonction de leurs caractéristiques (log2FC, p-value, etc.).
 volcano_plot_ui <- function(id){
   vplotly_ns = NS(id) # Regarde les sortie du module 
   

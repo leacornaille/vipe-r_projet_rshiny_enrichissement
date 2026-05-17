@@ -1,5 +1,6 @@
-
-# Fonction pour générer les plots de l'onglet Go term ORA 
+# Ce module gère l'onglet GO term ORA : calcul de l'enrichissement via enrichGO, génération des plots et du tableau de résultats, 
+# affichage des critères actifs, et téléchargement du tableau.
+# Il prend en entrée les données de DEGs, les gènes filtrés selon les critères de p-value et log2FC, l'OrgDb sélectionné, et les seuils de filtrage.
 go_ora_plot <- function(id, deg_data, filtered_genes, OrgDb_selected, pval_threshold, fc_threshold){
   moduleServer(id, function(input, output, session){
 

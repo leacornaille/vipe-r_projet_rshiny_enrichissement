@@ -1,15 +1,9 @@
-# ------------------------------------------------------------------------------
-# recap_serv.R
 # Module serveur — Manhattan plot style g:Profiler
-#
-# Un reactiveVal `accumulated_results` stocke une LISTE NOMMÉE par label.
-# Chaque fois qu'un module enfant lance un nouveau run (son eventReactive se
-# déclenche), un observeEvent le détecte et met à jour l'entrée correspondante.
-# Deux runs avec le même label : remplacement (ex : deux BP consécutifs).
-# Deux labels différent : coexistence dans le Manhattan plot (ex : BP + MF).
-# 
-# Chaque module d'enrichissement renvoie :
-#   list(enrich_res = <eventReactive>, source_label = <reactive character>)
+# Ce module permet de faire un récapitulatif de toutes les analyses d'enrichissement lancées (GO ORA, GO GSEA, Pathway ORA, Pathway GSEA) 
+# et de les visualiser dans un plot de type Manhattan plot inspiré du style de g:Profiler.
+# Il permet de comparer les différentes analyses entre elles, d'identifier les termes les plus significatifs, 
+#et d'explorer les détails de chaque terme en cliquant sur les points du graphique.
+# Les résultats de chacun des modules sont stockés dans une liste reactive afin de pouvoir afficher toutes les analyses différentes réalisé
 # -----------------------------------------------------------------------------
 
 recap_server <- function(id,

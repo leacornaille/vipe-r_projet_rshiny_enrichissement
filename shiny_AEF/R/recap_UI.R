@@ -1,3 +1,5 @@
+# Ce module correspond à la partie "Récapitulatif" de l'application. 
+#Il permet à l'utilisateur d'avoir une vue d'ensemble de toutes les analyses d'enrichissement réalisées  et d'explorer les détails des termes enrichis.
 recap_ui <- function(id) {
   ns <- NS(id)
   
@@ -33,19 +35,21 @@ recap_ui <- function(id) {
           ticks = FALSE
         ),
         
-        
+        # nombre de termes annotés à afficher
         numericInput(
           ns("n_labels"),
           label = "Top N termes annotés",
           value = 10, min = 0, max = 50, step = 1
         ),
         
+        # nombre de points à afficher
         numericInput(
           ns("nbr_points"),
           label = "Nbr de points à afficher par analyse",
           value = 10, min = 1, max = 50, step = 1
         ),
         
+        # critère de taille des points
         radioButtons(
           ns("size_metric"),
           label = "Taille des points",

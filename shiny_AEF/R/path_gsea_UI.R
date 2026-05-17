@@ -1,3 +1,5 @@
+# Ce module UI est dédié à l'analyse d'enrichissement de type GSEA pour les pathways. 
+# Il permet à l'utilisateur de sélectionner les paramètres de l'analyse, de visualiser les résultats à travers différents types de graphiques, et d'explorer les voies métaboliques spécifiques via Pathview (pour KEGG).
 path_gsea_ui <- function(id) {
   ns <- NS(id)
   
@@ -63,6 +65,7 @@ path_gsea_ui <- function(id) {
                           "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
                           placement = "bottom")
               ),
+              # méthode ajustement pvalue
               column(
                 width = 4,
                 selectInput(
@@ -78,6 +81,7 @@ path_gsea_ui <- function(id) {
                   selected = "BH"
                 )
               ),
+              # seuil de p-value pour filtrer les résultats à afficher
               column(
                 width = 4,
                 numericInput(
@@ -107,6 +111,7 @@ path_gsea_ui <- function(id) {
         solidHeader = TRUE,
         collapsible = TRUE,
         
+        # choix type de graphe à afficher
         selectInput(
           ns("select_graph_gsea_path"),
           "Type de graphique :",
@@ -118,6 +123,7 @@ path_gsea_ui <- function(id) {
             "Cnetplot" = "cnetplot"
           )
         ),
+        # plot gsea
         withSpinner(
           jqui_resizable(plotOutput(ns("gsea_path_plot")), options = list(handles = "se")),
           image = "loading.GIF"
@@ -134,9 +140,11 @@ path_gsea_ui <- function(id) {
         textInput(ns("plot_title_gsea_path"), "Titre du graphique",
                   value = "GSEA – Enrichissement Pathway"),
         
+        # nombre de pathways à afficher (pour les dotplot, emaplot, ridgeplot et cnetplot)
         sliderInput(ns("n_cat_path_gsea"), "Nombre de pathways affichés",
                     min = 1, max = 50, value = 20, step = 1),
         
+        # choix de la couleur
         selectInput(
           ns("color_palette_path_gsea"),
           "Palette de couleurs",

@@ -1,4 +1,5 @@
-#---------------------------------- GO GSEA UI ----------------------------------#
+# Ce module correspond à la partie "Enrichissement (GO terms) - Méthode GSEA" de l'application. 
+# Il correspond à la partie UI de ce module, qui permet à l'utilisateur de sélectionner les paramètres de l'analyse, de visualiser les résultats à travers différents types de graphiques, et d'explorer les termes GO spécifiques.
 
 # Fonction ui pour l'onglet GO term de GSEA 
 go_gsea_ui <- function(id) {

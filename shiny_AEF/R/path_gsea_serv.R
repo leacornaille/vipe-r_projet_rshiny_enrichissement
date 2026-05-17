@@ -1,3 +1,6 @@
+# Ce module gère l'analyse GSEA pour les voies, avec les options de base (permutation, p-value, etc.) et les graphiques standards (dotplot, emapplot, ridgeplot, cnetplot).
+#Il intègre également la fonctionnalité Pathview pour les voies KEGG, avec une interface utilisateur pour sélectionner la voie à visualiser et une barre de progression pendant la génération du graphique. 
+#Les résultats sont affichés dans un tableau interactif avec possibilité de téléchargement.
 path_gsea_server <- function(id, deg_data, OrgDb_selected) {
   moduleServer(id, function(input, output, session) {
     

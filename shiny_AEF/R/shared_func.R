@@ -37,20 +37,6 @@ build_geneList <- function(deg_data, rank_type){
     return(gene_list)
 }
 
-organism_reactome <- function(OrgDb_selected){
-  req(OrgDb_selected())
-  if (identical(OrgDb_selected(), org.Mm.eg.db)) "mouse"
-  else if (identical(OrgDb_selected(), org.Hs.eg.db)) "human"
-  else NULL
-}
-
-organism_kegg <- function(OrgDb_selected){
-  req(OrgDb_selected())
-  if (identical(OrgDb_selected(), org.Mm.eg.db)) "mmu"
-  else if (identical(OrgDb_selected(), org.Hs.eg.db)) "hsa"
-  else NULL
-}
-
 # Palettes de couleurs pour laisser le choix à l'utilisateur
 color_palette <- function(palette) {
   list(
