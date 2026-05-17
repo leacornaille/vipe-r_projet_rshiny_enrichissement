@@ -16,14 +16,14 @@ L'application supporte deux organismes : *Homo sapiens*, *Mus musculus*.
 ---  
 
 ## Installation  
-Dans un premier temps il faut télécharger le répertoire github. Par défaut, 
+Dans un premier temps, il faut télécharger le répertoire github. Par défaut, 
 le répertoire va être copié dans le répertoire courant.
 ```bash
 git clone https://github.com/leacornaille/vipe-r_projet_rshiny_enrichissement.git
 cd vipe-r_projet_rshiny_enrichissement
 ```
 ### Locale   
-Il est possible de lancer en l'application en local depuis R et les 
+Il est possible de lancer l'application en local depuis R et les 
 packages manquant s'installeront si nécessaires. Vérifiez que le répertoire
 de travail R est bien la racine du projet.
 ```R
@@ -89,8 +89,8 @@ chargement.
 menu déroulant :
    - `homo sapiens` → base de données `org.Hs.eg.db`
    - `mus musculus` → base de données `org.Mm.eg.db`
-4. Une fois le fichier chargé, tous les onglets de l'application peuvent être 
-utilisé.
+4. Une fois le fichier chargé, allez dans l'onglet visualisation pour filtrer les données via la pvalue et le log2FC
+5. Les analyses d'enrichissement peuvent être lancées
 
 > Le chargement du fichier **ne déclenche pas automatiquement** les analyses d'enrichissement. Vous devrez vous rendre dans l'onglet souhaité et cliquer sur le bouton **« Lancer »**.
 
