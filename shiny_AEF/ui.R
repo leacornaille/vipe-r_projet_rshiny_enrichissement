@@ -155,8 +155,13 @@ body <- dashboardBody(
         ),
         tabPanel(
           "Interprétation des figures",
-          includeMarkdown("www/analyse_figures.md")
-        )
+          tags$iframe(
+            src = "analyse_figures.html",
+            style = "border: none; display: block;",
+            width = "70%",
+            height = "800px"
+          )
+        ),
       )
     ),
     

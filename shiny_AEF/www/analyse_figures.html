@@ -1245,7 +1245,7 @@ pre[class*="language-"] {
 
 /*# sourceURL=webpack://./src/muya/lib/assets/styles/exportStyle.css */
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9tdXlhL2xpYi9hc3NldHMvc3R5bGVzL2V4cG9ydFN0eWxlLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLGdCQUFnQjtFQUNoQixXQUFXO0FBQ2I7O0FBRUE7RUFDRSxrQkFBa0I7QUFDcEI7O0FBRUE7RUFDRSxrQkFBa0I7RUFDbEIsb0JBQW9CO0VBQ3BCLFNBQVM7RUFDVCxVQUFVO0VBQ1YscUJBQXFCO0FBQ3ZCOztBQUVBOztFQUVFLHlCQUF5QjtBQUMzQjs7QUFFQTtFQUNFLFdBQVc7QUFDYjs7QUFFQTtFQUNFLGdCQUFnQjtFQUNoQixnQkFBZ0I7RUFDaEIsZ0JBQWdCO0FBQ2xCOztBQUVBOzs7RUFHRSwyQkFBMkI7QUFDN0I7O0FBRUE7RUFDRSxlQUFlO0FBQ2pCOztBQUVBO0VBQ0UsY0FBYztBQUNoQjs7QUFFQTtFQUNFLGNBQWM7RUFDZCxxQkFBcUI7QUFDdkI7QUFDQTtFQUNFLGNBQWM7RUFDZCxxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxPQUFPO0VBQ1AsY0FBYztFQUNkLGNBQWM7RUFDZCwrQkFBK0I7QUFDakMiLCJzb3VyY2VSb290IjoiIn0= */</style>
-  <style>.markdown-body{font-size:16px;line-height:1.3;}pre.front-matter{display:none!important;}</style>
+  <style>.markdown-body{font-size:14px;line-height:1.5;}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
   <article class="markdown-body"><h1 class="atx" id="guide-dand39interpretation-des-figures--vipe-r">Guide d'interprétation des figures — VIPE-R</h1>
@@ -1253,7 +1253,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="1-volcano-plot">1. Volcano Plot</h2>
 <h3 class="atx" id="description">Description</h3>
 <p>Le volcano plot est la figure principale de l'analyse DEG. Il donne une vue d'ensemble immédiate de l'ensemble des gènes mesurés.</p>
-<p><img alt="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-14-15-image.png"></p>
+<p><img alt="" src="volcano.png"></p>
 <h3 class="atx" id="lecture-axe-par-axe">Lecture axe par axe</h3>
 <p><strong>Axe X — Log2 Fold Change (Log2FC)</strong>  </p>
 <ul>
@@ -1303,7 +1303,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="2-figures-ora--dotplot">2. Figures ORA — Dotplot</h2>
 <h3 class="atx" id="description-1">Description</h3>
 <p>Le dotplot est la <strong>visualisation recommandée en première intention</strong> pour l'ORA. Chaque point représente un terme GO ou un pathway enrichi. </p>
-<img width="608" alt="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-18-10-image.png" title="">
+<img width="608" alt="" src="dotplot.png" title="">
 
 <table>
 <thead>
@@ -1335,7 +1335,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="3-figures-ora--barplot">3. Figures ORA — Barplot</h2>
 <h3 class="atx" id="description-2">Description</h3>
 <p>Le barplot représente les termes enrichis sous forme de barres horizontales, classées par Count ou par GeneRatio.</p>
-<img width="603" alt="" title="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-20-06-image.png">
+<img width="603" alt="" title="" src="barplot.png">
 
 <h3 class="atx" id="lecture">Lecture</h3>
 <ul>
@@ -1348,7 +1348,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="4-figures-ora--cnetplot">4. Figures ORA — Cnetplot</h2>
 <h3 class="atx" id="description-3">Description</h3>
 <p>Le cnetplot est un <strong>réseau bipartite</strong> reliant les gènes (DEG) aux termes GO/pathways dans lesquels ils sont annotés. C'est la figure la plus informative pour comprendre quels gènes "portent" l'enrichissement.</p>
-<img width="583" alt="" title="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-22-20-image.png">
+<img width="583" alt="" title="" src="cnetplot.png">
 
 <ul>
 <li><p><strong>Grands nœuds colorés</strong> : termes GO ou pathways</p>
@@ -1370,7 +1370,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="5-figures-ora--treeplot">5. Figures ORA — Treeplot</h2>
 <h3 class="atx" id="description-4">Description</h3>
 <p>Le treeplot regroupe les termes enrichis selon leur <strong>similarité sémantique</strong> dans la hiérarchie GO, sous forme d'arbre ou de dendrogramme. Il permet de réduire la redondance visuelle.</p>
-<img width="614" alt="" title="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-23-48-image.png">
+<img width="614" alt="" title="" src="treeplot.png">
 
 <h3 class="atx" id="lecture-1">Lecture</h3>
 <ul>
@@ -1387,7 +1387,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="6-figures-ora--emapplot-netplot">6. Figures ORA — Emapplot (Netplot)</h2>
 <h3 class="atx" id="description-5">Description</h3>
 <p>L'emapplot (Enrichment MAP plot) est un réseau de <strong>termes GO uniquement</strong>, où les liens représentent leur similarité (gènes partagés). Contrairement au cnetplot, les gènes individuels ne sont pas affichés.</p>
-<p><img alt="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-25-28-image.png"></p>
+<p><img alt="" src="netplot.png"></p>
 <h3 class="atx" id="lecture-2">Lecture</h3>
 <ul>
 <li><strong>Nœuds</strong> : termes GO/pathways enrichis</li>
@@ -1404,7 +1404,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="7-figures-ora--goplot">7. Figures ORA — Goplot</h2>
 <h3 class="atx" id="description-6">Description</h3>
 <p>Le goplot est propre à l'analyse GO. Il affiche les termes enrichis dans leur <strong>contexte hiérarchique</strong> au sein du DAG GO, en indiquant leur significativité.</p>
-<p><img alt="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-26-25-image.png"></p>
+<p><img alt="" src="goplot.png"></p>
 <h3 class="atx" id="lecture-3">Lecture</h3>
 <ul>
 <li>Les termes parents (généraux) sont en haut, les termes fils (spécifiques) en bas</li>
@@ -1417,7 +1417,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="8-figures-gsea--gsea-plot-enrichissement">8. Figures GSEA — GSEA Plot (Enrichissement)</h2>
 <h3 class="atx" id="description-7">Description</h3>
 <p>C'est la <strong>figure canonique de la GSEA</strong>, indispensable pour valider et interpréter un terme enrichi. Elle se décompose en trois panneaux superposés.</p>
-<p><img alt="" src="file:///home/cornalea/snap/marktext/9/.config/marktext/images/2026-05-05-23-27-33-image.png"></p>
+<p><img alt="" src="gsea.png"></p>
 <h3 class="atx" id="lecture-4">Lecture</h3>
 <p><strong>Panneau 1 - Running Enrichment Score</strong></p>
 <ul>
@@ -1472,7 +1472,7 @@ pre[class*="language-"] {
 <h2 class="atx" id="9-figures-gsea--ridgeplot">9. Figures GSEA — Ridgeplot</h2>
 <h3 class="atx" id="description-8">Description</h3>
 <p>Le ridgeplot (graphique en crêtes) affiche la <strong>distribution des scores de classement</strong> (log2FC) pour les gènes de chaque terme enrichi, sous forme de courbes de densité superposées.</p>
-<p>insérer figure</p>
+<p><img alt="" src="ridgeplot.png"></p>
 <h3 class="atx" id="lecture-5">Lecture</h3>
 <ul>
 <li>Un pic de densité <strong>à droite (log2FC &gt; 0)</strong> → le terme est globalement <strong>activé</strong></li>
