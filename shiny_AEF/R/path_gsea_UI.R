@@ -44,22 +44,22 @@ path_gsea_ui <- function(id) {
                   choices  = c("KEGG" = "kegg", "Reactome" = "reactome"),
                   selected = "kegg"
                 ),
+                numericInput(
+                  ns("nperm_path_gsea"),
+                  "Permutations",
+                  value = 1000,
+                  step = 50.0
+                ),
                  checkboxInput(
                   ns("use_permutation_path_gsea"),
-                  "Faire des permutations (à indiquer ci-dessous)",
+                  "Faire des permutations",
                   value = FALSE
                 ),
                 bsTooltip(
                   id = ns("use_permutation_path_gsea"),
-                  title = "Réordonnement aléatoire des gènes afin d’estimer la significativité statistique de l’enrichissement observé.",
+                  title = "clusterProfiler déconseille de faire des permutations. Il est conseillé d'estimer les pvalues par convergence.",
                   placement = "right",
                   trigger = "hover"
-                ),
-                numericInput(
-                  ns("nperm_path_gsea"),
-                  "Nombre de permutations",
-                  value = 1000,
-                  step = 50.0
                 ),
                 bsTooltip(ns("pathway_db"),
                           "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",

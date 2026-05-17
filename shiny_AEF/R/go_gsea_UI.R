@@ -54,23 +54,23 @@ go_gsea_ui <- function(id) {
                   ),
                   selected = "BP"
                 ),
-                checkboxInput(
-                  ns("use_permutation_go_gsea"),
-                  "Faire des permutations (à indiquer ci-dessous)",
-                  value = FALSE
-                ),
                 bsTooltip(
                   ns(id = "use_permutation_go_gsea"),
-                  title = "Réordonnement aléatoire des gènes afin d’estimer la significativité statistique de l’enrichissement observé.",
+                  title = "clusterProfiler déconseille de faire des permutations. Il est conseillé d'estimer les pvalues par convergence.",
                   placement = "right",
                   trigger = "hover"
                 ),
                 numericInput(
                   ns("nperm_go_gsea"),
-                  "Nombre de permutations",
+                  "Permutations",
                   value = 1000,
                   step = 50.0
-                )
+                ),
+                checkboxInput(
+                  ns("use_permutation_go_gsea"),
+                  "Faire des permutations",
+                  value = FALSE
+                ),
               ),
                 
               column(
