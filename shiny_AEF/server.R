@@ -5,13 +5,12 @@
 # Date: 10-2025
 
 # Description: Ce script permet de créer une interface en Rshiny. 
-# Il contient pour l'instant la mise en forme de l'application 
-# et le premier volet qui permet de visualiser et télécharger les données de DEG
-# Il intégrera par la suite des fonctions permettant l'analyse d'enrichissement
+# Il centralise les différents modules de l'application et gère les interactions entre eux.
+# Il contient notamment la lecture du fichier de données, le filtrage des gènes en fonction des seuils de log2FC et p-value,
+# ainsi que la gestion de l'affichage des résultats et des graphiques.
 # ce script server.R correspond au côté serveur et ne fonctionne que si il y a 
 # également un script ui.R
 #--------------------------------------------------------------------------
-# TODO : ajouter org selected en parallèle de org db selected pour gseKEGG
 
 
 # Define server
@@ -198,20 +197,8 @@ function(input, output, session) {
   
   # version des packages utilisés
   get_package_versions <- function() {
-    pkgs <- c(
-      "DT",
-      "data.table",
-      "fresh",
-      "plotly",
-      "shiny",
-      "shinyBS",
-      "shinyWidgets",
-      "shinydashboard",
-      "shinydashboardPlus",
-      "waiter"
-    )
-    versions <- sapply(pkgs, function(p) as.character(packageVersion(p)))
-    data.frame(Package = pkgs, Version = versions, row.names = NULL)
+    versions <- sapply(list_packages, function(p) as.character(packageVersion(p)))
+    data.frame(Package = list_packages, Version = versions, row.names = NULL)
   }
   
   # Affiche les informations sur l'application
@@ -220,12 +207,12 @@ function(input, output, session) {
       modalDialog(
         title = "À propos de VIPE-R",
         HTML(
-          "<p><b>Auteur :</b> Léa Cornaille</p>
+          "<p><b>Auteurs :</b> Julien Chevreau, Léa Cornaille, Christine Lin, Miquel Moli</p>
          <p><b>Email :</b> lea.cornaille@hotmail.com</p>
          <p><b>Affiliation :</b> Université de Rouen</p>
          <p><b>Projet :</b> Analyse d'enrichissement fonctionnel</p>
-         <p><b>Date :</b> 11-2025</p>
-         <p><b>Version de VIPE-R :</b> 0.2 </p>"
+         <p><b>Date :</b> 05-2026</p>
+         <p><b>Version de VIPE-R :</b> 1.0 </p>"
         ),
         DT::renderDataTable({
           datatable(get_package_versions(), options = list(dom='t', paging=FALSE))

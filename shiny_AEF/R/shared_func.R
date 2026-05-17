@@ -41,30 +41,30 @@ build_geneList <- function(deg_data, rank_type){
 color_palette <- function(palette) {
   list(
     switch(palette,
-           "viridis" = scale_fill_viridis_c(option = "D", name = "p.adjust"),
-           "plasma" = scale_fill_viridis_c(option = "plasma", name = "p.adjust"),
-           "magma" = scale_fill_viridis_c(option = "magma", name = "p.adjust"),
-           "inferno" = scale_fill_viridis_c(option = "inferno", name = "p.adjust"),
-           "mako" = scale_fill_viridis_c(option = "mako", name = "p.adjust"),
-           "rocket" = scale_fill_viridis_c(option = "rocket", name = "p.adjust"),
-           "cividis" = scale_fill_viridis_c(option = "cividis", name = "p.adjust"),
-           "turbo" = scale_fill_viridis_c(option = "turbo", name = "p.adjust"),
-           "YlOrRd" = scale_fill_distiller(palette = "YlOrRd", name = "p.adjust", direction = 1),
-           "blue_red" = scale_fill_gradient(low = "blue", high = "red", name = "p.adjust"),
-           "green_orange" = scale_fill_gradient(low = "limegreen", high = "darkorange2", name = "p.adjust")
+           "viridis" = scale_fill_viridis_c(option = "D"),
+           "plasma" = scale_fill_viridis_c(option = "plasma"),
+           "magma" = scale_fill_viridis_c(option = "magma"),
+           "inferno" = scale_fill_viridis_c(option = "inferno"),
+           "mako" = scale_fill_viridis_c(option = "mako"),
+           "rocket" = scale_fill_viridis_c(option = "rocket"),
+           "cividis" = scale_fill_viridis_c(option = "cividis"),
+           "turbo" = scale_fill_viridis_c(option = "turbo"),
+           "YlOrRd" = scale_fill_distiller(palette = "YlOrRd", direction = 1),
+           "blue_red" = scale_fill_gradient(low = "blue", high = "red"),
+           "green_orange" = scale_fill_gradient(low = "limegreen", high = "darkorange2")
     ),
     switch(palette,
-           "viridis" = scale_color_viridis_c(option = "D", name = "p.adjust"),
-           "plasma" = scale_color_viridis_c(option = "plasma", name = "p.adjust"),
-           "magma" = scale_color_viridis_c(option = "magma", name = "p.adjust"),
-           "inferno" = scale_color_viridis_c(option = "inferno", name = "p.adjust"),
-           "mako"  = scale_color_viridis_c(option = "mako", name = "p.adjust"),
-           "rocket" = scale_color_viridis_c(option = "rocket", name = "p.adjust"),
-           "cividis" = scale_color_viridis_c(option = "cividis", name = "p.adjust"),
-           "turbo" = scale_color_viridis_c(option = "turbo", name = "p.adjust"),
-           "YlOrRd" = scale_color_distiller(palette = "YlOrRd",  name = "p.adjust", direction = 1),
-           "blue_red" = scale_color_gradient(low = "blue", high = "red", name = "p.adjust"),
-           "green_orange" = scale_color_gradient(low = "limegreen", high = "darkorange2", name = "p.adjust")
+           "viridis" = scale_color_viridis_c(option = "D"),
+           "plasma" = scale_color_viridis_c(option = "plasma"),
+           "magma" = scale_color_viridis_c(option = "magma"),
+           "inferno" = scale_color_viridis_c(option = "inferno"),
+           "mako"  = scale_color_viridis_c(option = "mako"),
+           "rocket" = scale_color_viridis_c(option = "rocket"),
+           "cividis" = scale_color_viridis_c(option = "cividis"),
+           "turbo" = scale_color_viridis_c(option = "turbo"),
+           "YlOrRd" = scale_color_distiller(palette = "YlOrRd", direction = 1),
+           "blue_red" = scale_color_gradient(low = "blue", high = "red"),
+           "green_orange" = scale_color_gradient(low = "limegreen", high = "darkorange2")
     )
   )
 }
