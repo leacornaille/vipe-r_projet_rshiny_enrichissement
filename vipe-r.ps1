@@ -1,5 +1,5 @@
 # Lancer le conteneur Docker en arrière-plan
-docker run -d -p 3838:3838 mon-app-shiny
+docker run -d -p 3838:3838 vipe-r
 
 # Attendre que le conteneur soit prêt
 Start-Sleep -Seconds 3
