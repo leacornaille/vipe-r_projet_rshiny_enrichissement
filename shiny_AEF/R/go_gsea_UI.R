@@ -56,7 +56,7 @@ go_gsea_ui <- function(id) {
                 ),
                 bsTooltip(
                   ns(id = "use_permutation_go_gsea"),
-                  title = "clusterProfiler déconseille de faire des permutations. Il est conseillé d'estimer les pvalues par convergence.",
+                  title = "clusterProfiler déconseille de faire des permutations. Par défaut, il estime les pvalues par convergence.",
                   placement = "right",
                   trigger = "hover"
                 ),

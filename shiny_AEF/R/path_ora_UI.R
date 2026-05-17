@@ -62,14 +62,14 @@ path_ora_ui <- function(id) {
                   selected = "kegg"
                 ),
                 bsTooltip(ns("pathway_db"),
-                          "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
+                          "KEGG : base généraliste, couvre métabolisme et signalisation.<br> Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
                           placement = "bottom"),
                 
                 selectInput(
                   ns("univers_ora_path"),
                   "Choix de l'univers",
                   choices = c(
-                    "Génome de référence (recommandé)" = "gen_ref",
+                    "Génome de référence" = "gen_ref",
                     "Gène de l'analyse RNA-seq" = "gene_list"
                   )
                 )

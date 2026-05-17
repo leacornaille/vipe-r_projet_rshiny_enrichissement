@@ -57,12 +57,12 @@ path_gsea_ui <- function(id) {
                 ),
                 bsTooltip(
                   id = ns("use_permutation_path_gsea"),
-                  title = "clusterProfiler déconseille de faire des permutations. Il est conseillé d'estimer les pvalues par convergence.",
+                  title = "clusterProfiler déconseille de faire des permutations. Par défaut, il estime les pvalues par convergence.",
                   placement = "right",
                   trigger = "hover"
                 ),
                 bsTooltip(ns("pathway_db"),
-                          "KEGG : base généraliste, couvre métabolisme et signalisation. Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
+                          "KEGG : base généraliste, couvre métabolisme et signalisation.<br> Reactome : plus détaillée, orientée voies humaines. Les deux sont complémentaires.",
                           placement = "bottom")
               ),
               # méthode ajustement pvalue
