@@ -1,6 +1,6 @@
 # Ce module gère l'analyse GSEA pour les voies, avec les options de base (permutation, p-value, etc.) et les graphiques standards (dotplot, emapplot, ridgeplot, cnetplot).
-#Il intègre également la fonctionnalité Pathview pour les voies KEGG, avec une interface utilisateur pour sélectionner la voie à visualiser et une barre de progression pendant la génération du graphique. 
-#Les résultats sont affichés dans un tableau interactif avec possibilité de téléchargement.
+# Il intègre également la fonctionnalité Pathview pour les voies KEGG, avec une interface utilisateur pour sélectionner la voie à visualiser et une barre de progression pendant la génération du graphique. 
+# Les résultats sont affichés dans un tableau interactif avec possibilité de téléchargement.
 path_gsea_server <- function(id, deg_data, OrgDb_selected) {
   moduleServer(id, function(input, output, session) {
     
@@ -20,7 +20,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
     
     # ---- Calcul GSEA ----
     gsea_res <- eventReactive(input$runGSEA, {
-      geneList <- build_geneList(deg_data(), input$rank_type_gsea)
+      geneList <- build_gene_list(deg_data(), input$rank_type_gsea)
       if (input$pathway_db == "kegg") {
         if (isTRUE(input$use_permutation_path_gsea)) {
           gsea <- gseKEGG(
@@ -137,7 +137,7 @@ path_gsea_server <- function(id, deg_data, OrgDb_selected) {
       
       withProgress(message = "Génération Pathview...", value = 0, {
         incProgress(0.2, detail = "Préparation des données...")
-        geneList <- build_geneList(deg_data(), input$rank_type_gsea)
+        geneList <- build_gene_list(deg_data(), input$rank_type_gsea)
         
         incProgress(0.3, detail = "Connexion KEGG...")
         if (!file.exists(file_png)) {

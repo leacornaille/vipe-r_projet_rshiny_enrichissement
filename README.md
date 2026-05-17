@@ -10,22 +10,24 @@ complémentaires : ORA et GSEA
 - **Explorer** les termes GO (Gene Ontology) et les voies métaboliques 
 (KEGG, Reactome)
 - **Exporter** les graphiques et tableaux pour intégration dans des rapports ou 
-publications
+publications  
+L'application supporte deux organismes : *Homo sapiens*, *Mus musculus*. 
 
-L'application supporte deux organismes : *Homo sapiens*, *Mus musculus*.  
----
+---  
+
 ## Installation  
-Dans un premier temps il faut télécharger le répertoire github. Par défaut, 
+Dans un premier temps, il faut télécharger le répertoire github. Par défaut, 
 le répertoire va être copié dans le répertoire courant.
 ```bash
 git clone https://github.com/leacornaille/vipe-r_projet_rshiny_enrichissement.git
 cd vipe-r_projet_rshiny_enrichissement
 ```
-### Locale  
-Pour pourvoir utiliser l'application, il est possible de lancer en local
-le projet depuis R et les packages manquant s'installeront si nécessaires.
-```bash
-Rscript --shiny_AEF/server.R
+### Locale   
+Il est possible de lancer l'application en local depuis R et les 
+packages manquant s'installeront si nécessaires. Vérifiez que le répertoire
+de travail R est bien la racine du projet.
+```R
+shiny::runApp('./shiny_AEF')
 ```
 
 ### Conteneur  
@@ -35,7 +37,7 @@ une image à même d'exécuter l'application. Pour cela :
 ```bash
 docker build -t vipe-r .
 ```  
-Ce procédé peut être long (10 à 20 minutes).  
+Ce procédé peut être long (10 à 20 minutes).    
 2. Lancer l'image Docker *OU* passer à la section Bonus qui vous 
 correspond (ci-dessous) :
 ```bash
@@ -45,6 +47,7 @@ Après cette étape, l'application tourne sur le port 3838 de votre ordinateur. 
 faut maintenant accéder à ce port.
 3. Accéder à l'application :  
 Ouvrir l'adresse http://localhost:3838 dans votre navigateur.  
+
 #### Bonus Unix (Linux/MacOS)  
 Le script `vipe-r.sh` permet de lancer directement l'application une fois
 le conteneur construit. Cela suppose que l'image Docker porte le nom `vipe-r`.  
@@ -86,8 +89,9 @@ chargement.
 menu déroulant :
    - `homo sapiens` → base de données `org.Hs.eg.db`
    - `mus musculus` → base de données `org.Mm.eg.db`
-4. Une fois le fichier chargé, tous les onglets de l'application peuvent être 
-utilisé.
+4. Une fois le fichier chargé, allez dans l'onglet visualisation pour filtrer les données via la pvalue et le log2FC
+5. Les analyses d'enrichissement peuvent être lancées
 
 > Le chargement du fichier **ne déclenche pas automatiquement** les analyses d'enrichissement. Vous devrez vous rendre dans l'onglet souhaité et cliquer sur le bouton **« Lancer »**.
+
 ## Citations
