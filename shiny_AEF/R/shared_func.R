@@ -1,28 +1,5 @@
-
-# Gene mapping to perform ORA and GSEA on EntrezID
-map_genes <- function(deg_data, OrgDb_selected){
-  validate(need(nrow(deg_data) > 0, "Aucun gène ne passe les filtres !"))
-
-  # ---- Mapping ENSEMBL -> ENTREZID ----
-  mapped <- bitr(
-    deg_data$ID,
-    fromType = "ENSEMBL",
-    toType = "ENTREZID",
-    OrgDb = OrgDb_selected
-  )
-  
-  if (nrow(mapped) == 0) {
-    showNotification("Aucun gène mappé à l'OrgDb !", type = "error")
-    return(NULL)
-  }
-  
-  # Merge avant ranking
-  deg_data <- merge(deg_data, mapped, by.x = "ID", by.y = "ENSEMBL")
-  return(deg_data)
-}
-
 # création d'un vecteur nommé pour GSEA
-build_geneList <- function(deg_data, rank_type){
+build_gene_list <- function(deg_data, rank_type){
     # req(deg_data)
     # deg_data <- deg_data()
     

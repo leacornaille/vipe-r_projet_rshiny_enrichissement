@@ -9,7 +9,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
     ranked_genes <- reactive({
       deg_data <- deg_data()
       
-      df <- build_geneList(deg_data, input$rank_type_gsea)
+      df <- build_gene_list(deg_data, input$rank_type_gsea)
       df
     })
     
