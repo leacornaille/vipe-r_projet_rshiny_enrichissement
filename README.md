@@ -57,12 +57,16 @@ l'avant-dernière pour que le navigateur puisse se lancer.
 ```
 ./vipe-r.sh
 ```
+**Note :** Il est possible qu'il faille recharger la page internet
 #### Bonus Windows  
 Le script `vipe-r.sh` permet de lancer directement l'application une fois
 le conteneur construit. Cela suppose que l'image Docker porte le nom `vipe-r`.
+Vérifiez que vous avez le droit d'éxecution de scripts PowerShell.
 ```powershell
 .\vipe-r.ps1
 ```  
+**Note :** Il est possible qu'il faille recharger la page internet
+
 ---
 ## Utilisation
 ### 1. Format des données
