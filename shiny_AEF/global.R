@@ -21,7 +21,8 @@ for (package in list_of_dependencies){
 
 
 bioconductor_dependencies = c("clusterProfiler","GO.db", "org.Mm.eg.db", "DOSE", 
-                              "pathview", "enrichplot","org.Hs.eg.db","ReactomePA")
+                              "pathview", "enrichplot","org.Hs.eg.db","reactome.db",
+                              "ReactomePA")
 for (package in bioconductor_dependencies){
   if (!require(package, character.only = T)){
     BiocManager::install(package)
