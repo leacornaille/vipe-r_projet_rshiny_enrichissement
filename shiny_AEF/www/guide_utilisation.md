@@ -4,15 +4,20 @@
 
 ## 1. Présentation générale
 
-VIPE-R est une interface Shiny conçue pour accompagner l'analyse de données transcriptomiques issues d'expériences RNA-seq. À partir d'un tableau de gènes différentiellement exprimés (DEG), l'application permet de :
+VIPE-R est une interface Shiny conçue pour accompagner l'analyse de données 
+transcriptomiques issues d'expériences RNA-seq. À partir d'un tableau de gènes 
+différentiellement exprimés (DEG), l'application permet de :
 
 - **Visualiser** les DEG sous forme de volcano plot interactif
 - **Filtrer** les gènes selon des seuils de Log2FC et de p-value ajustée
-- **Réaliser des analyses d'enrichissement fonctionnel** via deux méthodes complémentaires : ORA et GSEA
-- **Explorer** les termes GO (Gene Ontology) et les voies métaboliques (KEGG, Reactome)
-- **Exporter** les graphiques et tableaux pour intégration dans des rapports ou publications
+- **Réaliser des analyses d'enrichissement fonctionnel** via deux méthodes 
+complémentaires : ORA et GSEA
+- **Explorer** les termes GO (Gene Ontology) et les voies métaboliques 
+(KEGG, Reactome)
+- **Exporter** les graphiques et tableaux pour intégration dans des rapports ou 
+publications
 
-L'application supporte trois organismes : *Homo sapiens*, *Mus musculus* et *Gallus gallus*.
+L'application supporte deux organismes : *Homo sapiens*, *Mus musculus*.
 
 ---
 
@@ -20,7 +25,8 @@ L'application supporte trois organismes : *Homo sapiens*, *Mus musculus* et *Gal
 
 ### Format attendu
 
-Le fichier d'entrée doit être un tableau tabulé (`.csv`, `.tsv` ou `.txt`) avec **obligatoirement** les colonnes suivantes :
+Le fichier d'entrée doit être un tableau tabulé (`.csv`, `.tsv` ou `.txt`) avec 
+**obligatoirement** les colonnes suivantes :
 
 | Colonne    | Description                    | Exemple        |
 | ---------- | ------------------------------ | -------------- |
