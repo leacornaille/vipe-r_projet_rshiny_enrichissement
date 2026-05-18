@@ -79,7 +79,10 @@ Le bouton **« Réinitialiser »** remet les seuils à leurs valeurs par défaut
 
 ### Sélection interactive de gènes
 
-Le volcano plot est **interactif** : vous pouvez sélectionner des gènes directement en dessinant un rectangle sur le graphique (box select) ou en cliquant sur des points individuels. Les gènes sélectionnés apparaissent dans l'onglet **« Données sélectionnées »** du tableau en bas de page.
+Le volcano plot est **interactif** : vous pouvez sélectionner des gènes 
+directement en dessinant un rectangle sur le graphique (box select) ou en 
+cliquant sur des points individuels. Les gènes sélectionnés apparaissent dans 
+l'onglet **« Données sélectionnées »** du tableau en bas de page.
 
 ### Tableaux disponibles
 
@@ -91,7 +94,8 @@ La boîte *Tableaux* contient trois sous-onglets :
 | **Données DEG filtrées (Up/Down)** | Gènes filtrés selon les seuils et le sens de régulation |
 | **Données sélectionnées**          | Gènes sélectionnés manuellement sur le volcano plot     |
 
-Pour les données filtrées, utilisez les **cases à cocher** *Up* / *Down* pour afficher les gènes sur-exprimés, sous-exprimés, ou les deux.
+Pour les données filtrées, utilisez les **cases à cocher** *Up* / *Down* pour 
+afficher les gènes sur-exprimés, sous-exprimés, ou les deux.
 
 ---
 
@@ -119,8 +123,10 @@ Sélectionnez l'une des trois branches :
 
 **3. Univers de référence**  
 
-- `Génome de référence` : utilise l'ensemble des gènes annotés de l'organisme. pratique courante, facilite la comparaison entre études
-- `Gènes de l'analyse RNA-seq` : restreint l'univers aux gènes effectivement détectés dans votre expérience
+- `Génome de référence` : utilise l'ensemble des gènes annotés de l'organisme. 
+Pratique courante, facilite la comparaison entre études
+- `Gènes de l'analyse RNA-seq` : restreint l'univers aux gènes effectivement 
+détectés dans votre expérience
 
 > Voir le document *Bases théoriques* pour le détail du débat méthodologique. **Quel que soit votre choix, mentionnez-le dans vos méthodes.**
 
@@ -145,7 +151,8 @@ Cliquez sur **« Lancer ORA »**. Un indicateur de chargement s'affiche pendant 
 | `netplot`  | Réseau d'interactions entre termes                                                       |
 | `goplot`   | Vue hiérarchique de l'ontologie GO                                                       |
 
-Ajustez le **nombre de GO terms affichés** (5 à 50) et la **palette de couleurs** dans la boîte *Paramètre visuel*.
+Ajustez le **nombre de GO terms affichés** (5 à 50) et 
+la **palette de couleurs** dans la boîte *Paramètre visuel*.
 
 ---
 
@@ -193,9 +200,11 @@ Menu latéral → **Enrichissement (Pathway)** → **ORA**
 **Base de données Pathway**  
 
 - `KEGG` : voies KEGG — annotations métaboliques et de signalisation bien établies
-- `Reactome` : voies Reactome — annotations plus détaillées, notamment pour les processus cellulaires humains
+- `Reactome` : voies Reactome — annotations plus détaillées, notamment pour 
+les processus cellulaires humains
 
-Le reste du workflow est identique à l'ORA GO term (sélection des gènes, univers, correction, seuil, visualisations).
+Le reste du workflow est identique à l'ORA GO term (sélection des gènes, 
+univers, correction, seuil, visualisations).
 
 ### Visualisations disponibles
 
@@ -205,14 +214,21 @@ Le reste du workflow est identique à l'ORA GO term (sélection des gènes, univ
 | `Barplot`  | Classement par nombre de gènes        |
 | `Cnetplot` | Réseau gènes ↔ pathways               |
 | `Emaplot`  | Carte d'enrichissement par similarité |
-
+| `pathview` | Carte du réseau métabolique choisi    |
 ---
 
 ## 8. Paramètres communs et bonnes pratiques
 
 ### Choix de l'univers
 
-Le choix de l'univers de référence est l'un des paramètres les plus impactants en ORA, et il n'existe pas de consensus absolu. Le **génome complet** est plus répandu dans la littérature et facilite la comparaison entre études. Les **gènes détectés** sont statistiquement plus rigoureux pour du RNA-seq, car un gène non exprimé ne pouvait pas être différentiellement exprimé. La bonne pratique est avant tout de **justifier son choix et de le mentionner dans les méthodes**. En cas de doute, lancez l'analyse avec les deux options et comparez : des résultats très divergents signalent une instabilité à investiguer.
+Le choix de l'univers de référence est l'un des paramètres les plus impactants 
+en ORA, et il n'existe pas de consensus absolu. Le **génome complet** est plus 
+répandu dans la littérature et facilite la comparaison entre études. Les 
+**gènes détectés** sont statistiquement plus rigoureux pour du RNA-seq, car 
+un gène non exprimé ne pouvait pas être différentiellement exprimé. La bonne 
+pratique est avant tout de **justifier son choix et de le mentionner dans les méthodes**. 
+En cas de doute, lancez l'analyse avec les deux options et comparez : des résultats 
+très divergents signalent une instabilité à investiguer.
 
 ### Correction pour tests multiples
 

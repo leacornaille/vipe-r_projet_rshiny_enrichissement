@@ -2,7 +2,10 @@
 
 ## 1.  L'enrichissement fonctionnel
 
-Une analyse RNA-seq typique produit des centaines à des milliers de gènes différentiellement exprimés (DEG). Interpréter cette liste gène par gène est fastidieux et ne permet pas d'identifier les **processus biologiques** sous-jacents à la condition étudiée.
+Une analyse RNA-seq typique produit des centaines à des milliers de gènes 
+différentiellement exprimés (DEG). Interpréter cette liste gène par gène est 
+fastidieux et ne permet pas d'identifier les **processus biologiques** 
+sous-jacents à la condition étudiée.
 
 L'**enrichissement fonctionnel** répond à la question :
 
@@ -22,7 +25,8 @@ Ces méthodes permettent :
 
 ### Structure
 
-La Gene Ontology est un vocabulaire contrôlé et hiérarchique qui décrit les fonctions des gènes selon trois branches indépendantes :
+La Gene Ontology est un vocabulaire contrôlé et hiérarchique qui décrit les 
+fonctions des gènes selon trois branches indépendantes :
 
 | Branche            | Abréviation | Description                                                                      |
 | ------------------ | ----------- | -------------------------------------------------------------------------------- |
@@ -30,11 +34,14 @@ La Gene Ontology est un vocabulaire contrôlé et hiérarchique qui décrit les 
 | Molecular Function | **MF**      | Activité moléculaire du produit génique (ex. *kinase activity*, *DNA binding*)   |
 | Cellular Component | **CC**      | Localisation subcellulaire (ex. *nucleus*, *mitochondrion*)                      |
 
-Chaque branche forme un **graphe acyclique dirigé (DAG)** : un terme plus spécifique hérite des annotations de ses termes parents. Ainsi, un gène annoté *"regulation of apoptotic process"* est aussi implicitement annoté *"apoptotic process"* et *"biological_process"*.
+Chaque branche forme un **graphe acyclique dirigé (DAG)** : un terme plus spécifique 
+hérite des annotations de ses termes parents. Ainsi, un gène annoté
+*"regulation of apoptotic process"* est aussi implicitement annoté *"apoptotic process"* et *"biological_process"*.
 
 ### Recommandations d'utilisation dans VIPE-R
 
-- **BP** est la branche la plus couramment analysée — elle relie directement les gènes à des phénomènes cellulaires interprétables.
+- **BP** est la branche la plus couramment analysée — elle relie directement les
+gènes à des phénomènes cellulaires interprétables.
 - **MF** est utile pour comprendre les activités enzymatiques ou de liaison affectées.
 - **CC** aide à identifier des réorganisations de compartiments cellulaires.
 
@@ -44,14 +51,21 @@ Chaque branche forme un **graphe acyclique dirigé (DAG)** : un terme plus spéc
 
 ### KEGG (Kyoto Encyclopedia of Genes and Genomes)
 
-KEGG recense des **voies métaboliques et de signalisation** sous forme de graphes biologiques. Chaque voie KEGG est une carte visuelle reliant enzymes, métabolites et réactions. Les voies KEGG couvrent le métabolisme, la transduction du signal, le cycle cellulaire, les maladies, etc.
+KEGG recense des **voies métaboliques et de signalisation** sous forme de 
+graphes biologiques. Chaque voie KEGG est une carte visuelle reliant enzymes, 
+métabolites et réactions. Les voies KEGG couvrent le métabolisme, la 
+transduction du signal, le cycle cellulaire, les maladies, etc.
 
-**Avantages** : couverture étendue, très bien référencée dans la littérature, disponible pour de nombreux organismes.  
+**Avantages** : couverture étendue, très bien référencée dans la littérature, 
+disponible pour de nombreux organismes.  
 **Limites** : mise à jour manuelle, certaines voies sont génériques et peu spécifiques.
 
 ### Reactome
 
-Reactome est une base de données **open source** focalisée sur les réactions biochimiques et les voies biologiques humaines (avec inférence pour d'autres organismes). Les voies Reactome sont organisées hiérarchiquement, des grands processus jusqu'aux réactions élémentaires.
+Reactome est une base de données **open source** focalisée sur les réactions 
+biochimiques et les voies biologiques humaines (avec inférence pour d'autres 
+organismes). Les voies Reactome sont organisées hiérarchiquement, des grands 
+processus jusqu'aux réactions élémentaires.
 
 **Avantages** : très granulaire, curation experte, idéal pour *Homo sapiens*.  
 **Limites** : moins exhaustif que KEGG pour les organismes non-humains.
@@ -62,18 +76,24 @@ Reactome est une base de données **open source** focalisée sur les réactions 
 
 ### Principe
 
-L'ORA est la méthode d'enrichissement la plus ancienne et la plus répandue. Elle teste si un terme fonctionnel (GO term ou pathway) contient **plus de gènes d'intérêt que prévu par hasard** dans une liste de DEG.
+L'ORA est la méthode d'enrichissement la plus ancienne et la plus répandue. 
+Elle teste si un terme fonctionnel (GO term ou pathway) contient 
+**plus de gènes d'intérêt que prévu par hasard** dans une liste de DEG.
 
 ### Entrée
 
 L'ORA nécessite deux listes :
 
-1. **Liste de gènes d'intérêt** : les DEG sélectionnés après application des seuils (Log2FC, p-value ajustée)
-2. **Univers de référence** : l'ensemble des gènes pouvant potentiellement être différentiellement exprimés
+1. **Liste de gènes d'intérêt** : les DEG sélectionnés après application 
+des seuils (Log2FC, p-value ajustée)
+2. **Univers de référence** : l'ensemble des gènes pouvant potentiellement 
+être différentiellement exprimés
 
 ### Test statistique
 
-L'ORA repose sur le **test exact de Fisher** (ou le test hypergéométrique, mathématiquement équivalent). Pour chaque terme fonctionnel, on construit une table de contingence 2×2 :
+L'ORA repose sur le **test exact de Fisher** (ou le test hypergéométrique, 
+mathématiquement équivalent). Pour chaque terme fonctionnel, on construit une 
+table de contingence 2×2 :
 
 |             | Dans le terme | Hors du terme |
 | ----------- |:-------------:|:-------------:|
@@ -103,9 +123,12 @@ $$P(X \geq k) = \sum_{i=k}^{\min(n,K)} \frac{\binom{K}{i}\binom{N-K}{n-i}}{\bino
 
 ### Limites de l'ORA
 
-- **Sensibilité au seuil** : les résultats dépendent fortement des seuils de Log2FC et p-value choisis
-- **Biais vers les grands termes** : les termes avec beaucoup de gènes annotés ont mécaniquement plus de chances d'être enrichis
-- **Indépendance supposée** : le test hypergéométrique suppose que les gènes sont tirés indépendamment, ce qui n'est pas biologiquement réaliste
+- **Sensibilité au seuil** : les résultats dépendent fortement des seuils de 
+Log2FC et p-value choisis
+- **Biais vers les grands termes** : les termes avec beaucoup de gènes annotés 
+ont mécaniquement plus de chances d'être enrichis
+- **Indépendance supposée** : le test hypergéométrique suppose que les gènes 
+sont tirés indépendamment, ce qui n'est pas biologiquement réaliste
 
 ---
 
@@ -113,13 +136,19 @@ $$P(X \geq k) = \sum_{i=k}^{\min(n,K)} \frac{\binom{K}{i}\binom{N-K}{n-i}}{\bino
 
 ### Principe
 
-Introduite par Subramanian et al. (2005), la GSEA dépasse les limitations de l'ORA en travaillant sur **la totalité des gènes mesurés**, sans seuil de significativité. Elle teste si les membres d'un ensemble fonctionnel (gene set) tendent à se retrouver en **tête ou en queue** d'une liste de gènes classée par un score continu.
+Introduite par Subramanian et al. (2005), la GSEA dépasse les limitations de 
+l'ORA en travaillant sur **la totalité des gènes mesurés**, sans seuil de 
+significativité. Elle teste si les membres d'un ensemble fonctionnel (gene set) 
+tendent à se retrouver en **tête ou en queue** d'une liste de gènes classée 
+par un score continu.
 
 ### Entrée
 
 La GSEA nécessite :
 
-1. **Une liste classée de tous les gènes mesurés** : classés par Log2FC (du plus sur-exprimé au plus sous-exprimé) ou par un score de pertinence (ex. −log₁₀(padj) × signe(log2FC))
+1. **Une liste classée de tous les gènes mesurés** : classés par Log2FC (du plus 
+sur-exprimé au plus sous-exprimé) ou par un score de pertinence 
+(ex. −log₁₀(padj) × signe(log2FC))
 2. **Des gene sets** : ensembles de gènes correspondant à des termes GO ou des pathways
 
 ### Algorithme
@@ -130,15 +159,19 @@ La GSEA "marche" le long de la liste classée de haut en bas. À chaque gène :
 - Si le gène appartient au gene set → le score monte (d'une valeur proportionnelle à son rang)
 - Si le gène n'appartient pas au gene set → le score descend légèrement
 
-L'**ES (Enrichment Score)** est la déviation maximale par rapport à zéro observée pendant cette marche.
+L'**ES (Enrichment Score)** est la déviation maximale par rapport à zéro 
+observée pendant cette marche.
 
 **Étape 2 — Normalisation (NES)**  
-L'ES est normalisé par la taille du gene set pour obtenir le **NES (Normalized Enrichment Score)**, qui permet la comparaison entre termes de tailles différentes.
+L'ES est normalisé par la taille du gene set pour obtenir le **NES (Normalized Enrichment Score)**, 
+qui permet la comparaison entre termes de tailles différentes.
 
 $$NES = \frac{ES_{observé}}{ES_{moyen \ des \ permutations}}$$
 
 **Étape 3 — Calcul de la p-value par permutation**  
-La significativité est estimée empiriquement : la liste de gènes est **permutée aléatoirement** (1 000 à 10 000 fois), et l'ES est recalculé à chaque permutation. La p-value correspond à la fraction de permutations donnant un ES ≥ ES observé.
+La significativité est estimée empiriquement : la liste de gènes est **permutée aléatoirement** 
+(1 000 à 10 000 fois), et l'ES est recalculé à chaque permutation. La p-value correspond à la 
+fraction de permutations donnant un ES ≥ ES observé.
 
 ### Interprétation du NES
 
@@ -150,16 +183,20 @@ La significativité est estimée empiriquement : la liste de gènes est **permut
 
 ### Avantages par rapport à l'ORA
 
-- **Aucun seuil arbitraire** : tous les gènes contribuent, les gènes modérément régulés sont pris en compte
-- **Détection de signaux subtils** : un terme avec de nombreux gènes faiblement mais cohéremment régulés sera détecté
+- **Aucun seuil arbitraire** : tous les gènes contribuent, les gènes modérément 
+régulés sont pris en compte
+- **Détection de signaux subtils** : un terme avec de nombreux gènes faiblement 
+mais cohéremment régulés sera détecté
 - **Sens de la régulation** : le NES indique si le terme est activé ou réprimé
 - **Moins sensible à la taille des gene sets**
 
 ### Limites de la GSEA
 
 - **Plus lente** à calculer (permutations)
-- **Sensible au critère de classement** : le choix entre Log2FC, padj ou un score composite influence les résultats
-- **Interprétation plus complexe** : la courbe d'enrichissement et les core genes nécessitent une lecture attentive
+- **Sensible au critère de classement** : le choix entre Log2FC, padj ou un 
+score composite influence les résultats
+- **Interprétation plus complexe** : la courbe d'enrichissement et les core 
+genes nécessitent une lecture attentive
 
 ---
 
@@ -194,49 +231,70 @@ La significativité est estimée empiriquement : la liste de gènes est **permut
 
 ## 6. Correction pour tests multiples
 
-Lorsque l'on teste simultanément des centaines ou milliers de termes GO, le risque de faux positifs (erreurs de type I) augmente. Si le seuil de significativité est α = 0.05, on s'attend à 5 % de termes faussement significatifs par hasard.
+Lorsque l'on teste simultanément des centaines ou milliers de termes GO, le 
+risque de faux positifs (erreurs de type I) augmente. Si le seuil de 
+significativité est α = 0.05, on s'attend à 5 % de termes faussement significatifs par hasard.
 
 ### Méthodes disponibles dans VIPE-R
 
 **Benjamini-Hochberg (BH / FDR)** *(recommandé)*  
-Contrôle le **False Discovery Rate** (FDR) — la proportion attendue de faux positifs parmi les résultats significatifs. Offre le meilleur équilibre sensibilité/spécificité.
+Contrôle le **False Discovery Rate** (FDR) — la proportion attendue de faux 
+positifs parmi les résultats significatifs. Offre le meilleur équilibre sensibilité/spécificité.
 
 $$p_{adj}^{(i)} = \frac{p_{(i)} \times m}{i}$$
 
 Où m est le nombre total de tests et i le rang de la p-value.
 
 **Bonferroni**  
-Contrôle le **Family-Wise Error Rate** (FWER) — la probabilité de commettre *au moins* un faux positif. Très conservateur : `p_adj = p × m`. À réserver aux contextes où tout faux positif est inacceptable.
+Contrôle le **Family-Wise Error Rate** (FWER) — la probabilité de commettre 
+*au moins* un faux positif. Très conservateur : `p_adj = p × m`. À réserver aux 
+contextes où tout faux positif est inacceptable.
 
 **Holm**  
 Version séquentielle de Bonferroni, légèrement moins conservative tout en contrôlant le FWER.
 
 **Benjamini-Yekutieli (BY)**  
-Extension du BH valable même lorsque les tests ne sont pas indépendants (ce qui est souvent le cas avec des gènes corrélés). Plus conservateur que BH.
+Extension du BH valable même lorsque les tests ne sont pas indépendants (ce qui
+est souvent le cas avec des gènes corrélés). Plus conservateur que BH.
 
 ### Seuil de significativité recommandé
 
-Le seuil standard est **p.adjust < 0.05**. Dans certains contextes exploratoires, un seuil de 0.10 peut être toléré, à condition de le mentionner explicitement.
+Le seuil standard est **p.adjust < 0.05**. Dans certains contextes exploratoires,
+un seuil de 0.10 peut être toléré, à condition de le mentionner explicitement.
 
 ---
 
 ## 7. Univers de référence
 
-L'**univers** (ou background) est l'ensemble de tous les gènes qui *auraient pu* être différentiellement exprimés dans votre expérience. Ce choix affecte directement le calcul du test hypergéométrique et fait l'objet d'un **débat méthodologique actif** dans la communauté bioinformatique — il n'existe pas de consensus absolu.
+L'**univers** (ou background) est l'ensemble de tous les gènes qui *auraient pu*
+être différentiellement exprimés dans votre expérience. Ce choix affecte directement 
+le calcul du test hypergéométrique et fait l'objet d'un **débat méthodologique actif** 
+dans la communauté bioinformatique — il n'existe pas de consensus absolu.
 
 ### Génome de référence complet
 
-Utilise l'ensemble des gènes annotés de l'organisme (ex. ~20 000 pour *H. sapiens*), qu'ils soient détectés ou non dans votre expérience.
+Utilise l'ensemble des gènes annotés de l'organisme (ex. ~20 000 pour *H. sapiens*), 
+qu'ils soient détectés ou non dans votre expérience.
 
-**Arguments pour** : pratique courante dans la littérature, facilite la reproductibilité et la comparaison entre études, comportement par défaut de nombreux outils.  
-**Arguments contre** : biologiquement discutable — un gène non exprimé dans votre tissu *ne pouvait pas* être détecté comme différentiellement exprimé. L'inclure dans l'univers gonfle artificiellement le dénominateur N, ce qui peut produire des p-values artificiellement basses et biaise les résultats selon le profil d'expression du tissu étudié.
+**Arguments pour** : pratique courante dans la littérature, facilite la 
+reproductibilité et la comparaison entre études, comportement par défaut de nombreux outils.  
+**Arguments contre** : biologiquement discutable — un gène non exprimé dans 
+votre tissu *ne pouvait pas* être détecté comme différentiellement exprimé. 
+L'inclure dans l'univers gonfle artificiellement le dénominateur N, ce qui peut 
+produire des p-values artificiellement basses et biaise les résultats selon le 
+profil d'expression du tissu étudié.
 
 ### Gènes détectés dans l'analyse RNA-seq
 
-Restreint l'univers aux gènes effectivement exprimés (avec un count > seuil) dans votre expérience.
+Restreint l'univers aux gènes effectivement exprimés (avec un count > seuil) 
+dans votre expérience.
 
-**Arguments pour** : statistiquement plus rigoureux pour du RNA-seq — la question posée devient *"parmi les gènes qui pouvaient être DE dans ce tissu, mes DEG sont-ils enrichis ?"*. Recommandé par plusieurs méthodologistes (Wijesooriya et al., 2022 ; Timmons et al., 2015) et mentionné comme option valide par les auteurs de clusterProfiler.  
-**Arguments contre** : moins standard dans la littérature publiée, résultats moins directement comparables entre expériences sur des tissus différents.
+**Arguments pour** : statistiquement plus rigoureux pour du RNA-seq — la 
+question posée devient *"parmi les gènes qui pouvaient être DE dans ce tissu, mes DEG sont-ils enrichis ?"*. 
+Recommandé par plusieurs méthodologistes (Wijesooriya et al., 2022 ; Timmons et al., 2015) et mentionné 
+comme option valide par les auteurs de clusterProfiler.  
+**Arguments contre** : moins standard dans la littérature publiée, résultats moins 
+directement comparables entre expériences sur des tissus différents.
 
 ---
 
