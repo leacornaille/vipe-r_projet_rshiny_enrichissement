@@ -117,7 +117,7 @@ go_gsea_plot <- function(id, deg_data, OrgDb_selected) { # filtered_genes
       p <- render_gsea_plot(input$select_graph_gsea_go1)
       # Ajouter palette seulement au dotplot, ridgeplot, empalot
       if (input$select_graph_gsea_go1 %in% c("dotplot", "emapplot", "ridgeplot", "goplot")) {
-        p <- p + color_palette(input$color_palette_go_gsea)
+        p <- p + color_palette(input$color_palette_go_gsea) + ggtitle(input$plot_title_gsea_go)
       }
       p
     })

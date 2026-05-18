@@ -134,7 +134,7 @@ go_gsea_ui <- function(id) {
           status = "primary",
           solidHeader = TRUE,
           selectInput(ns("select_graph_gsea_go1"), "Type de graphique :",
-                      choices = c("GSEA plot", "dotplot", "emapplot", "ridgeplot", "treeplot", "goplot")),
+                      choices = c("gseaplot", "dotplot", "emapplot", "ridgeplot", "treeplot", "goplot")),
           withSpinner(
             jqui_resizable(plotOutput(ns("gsea_go_plot1")), options = list(handles = "se")),
                            image = "loading.GIF"
