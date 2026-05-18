@@ -89,8 +89,8 @@ barre est longue, plus de gènes de votre liste appartiennent à ce terme
 
 ### Avantage / Inconvénient
 
- Très lisible, idéal pour identifier rapidement le 
- **top des termes les plus peuplés**.  
+Très lisible, idéal pour identifier rapidement le 
+**top des termes les plus peuplés**.  
 Ne montre pas le ratio (un terme peut avoir 50 gènes mais appartenir à un terme 
 qui en contient 5000 → faible enrichissement relatif).  
 

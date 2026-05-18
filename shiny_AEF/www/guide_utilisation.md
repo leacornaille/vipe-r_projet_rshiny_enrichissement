@@ -214,10 +214,40 @@ univers, correction, seuil, visualisations).
 | `Barplot`  | Classement par nombre de gènes        |
 | `Cnetplot` | Réseau gènes ↔ pathways               |
 | `Emaplot`  | Carte d'enrichissement par similarité |
-| `pathview` | Carte du réseau métabolique choisi    |
+| `pathview` | Carte du réseau métabolique choisi    |  
+
 ---
 
-## 8. Paramètres communs et bonnes pratiques
+## 8. Onglets — Enrichissement Pathway (GSEA)
+
+### Accès
+
+Menu latéral → **Enrichissement (Pathway)** → **GSEA**
+
+### Spécificités
+
+**Base de données Pathway**  
+
+- `KEGG` : voies KEGG — annotations métaboliques et de signalisation bien établies
+- `Reactome` : voies Reactome — annotations plus détaillées, notamment pour 
+les processus cellulaires humains
+
+Le reste du workflow est identique à la GSEA Go term (tri de la liste de gène 
+par Padjust ou Log2FC, permutations, correction, seuil, visualisations).
+
+### Visualisations disponibles
+
+| Type       | Description                                         |
+| ---------- | --------------------------------------------------- |
+| `gseaplot` | Courbe d'enrichissement de la voie sélectionnée     |
+| `Dotplot`  | Vue d'ensemble des pathways enrichis                |
+| `Barplot`  | Classement par nombre de gènes                      |
+| `Cnetplot` | Réseau gènes ↔ pathways                             |
+| `Emaplot`  | Carte d'enrichissement par similarité               |
+| `pathview` | Carte du réseau métabolique choisi                  |
+---
+
+## 9. Paramètres communs et bonnes pratiques
 
 ### Choix de l'univers
 
@@ -246,7 +276,7 @@ Choisissez à l'aide du slider le nombre de termes à afficher sur les graphes
 
 ---
 
-## 9. Télécharger les résultats
+## 10. Télécharger les résultats
 
 | Élément                     | Comment télécharger                                                                 |
 | --------------------------- | ----------------------------------------------------------------------------------- |
