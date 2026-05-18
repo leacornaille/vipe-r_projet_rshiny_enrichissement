@@ -70,7 +70,7 @@ path_ora_ui <- function(id) {
                   "Choix de l'univers",
                   choices = c(
                     "Génome de référence" = "gen_ref",
-                    "Gène de l'analyse RNA-seq" = "gene_list"
+                    "Gènes de l'analyse RNA-seq" = "gene_list"
                   )
                 )
               ),

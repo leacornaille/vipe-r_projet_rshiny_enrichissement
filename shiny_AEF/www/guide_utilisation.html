@@ -1245,25 +1245,31 @@ pre[class*="language-"] {
 
 /*# sourceURL=webpack://./src/muya/lib/assets/styles/exportStyle.css */
 /*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8uL3NyYy9tdXlhL2xpYi9hc3NldHMvc3R5bGVzL2V4cG9ydFN0eWxlLmNzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTtFQUNFLHFCQUFxQjtBQUN2Qjs7QUFFQTtFQUNFLGdCQUFnQjtFQUNoQixXQUFXO0FBQ2I7O0FBRUE7RUFDRSxrQkFBa0I7QUFDcEI7O0FBRUE7RUFDRSxrQkFBa0I7RUFDbEIsb0JBQW9CO0VBQ3BCLFNBQVM7RUFDVCxVQUFVO0VBQ1YscUJBQXFCO0FBQ3ZCOztBQUVBOztFQUVFLHlCQUF5QjtBQUMzQjs7QUFFQTtFQUNFLFdBQVc7QUFDYjs7QUFFQTtFQUNFLGdCQUFnQjtFQUNoQixnQkFBZ0I7RUFDaEIsZ0JBQWdCO0FBQ2xCOztBQUVBOzs7RUFHRSwyQkFBMkI7QUFDN0I7O0FBRUE7RUFDRSxlQUFlO0FBQ2pCOztBQUVBO0VBQ0UsY0FBYztBQUNoQjs7QUFFQTtFQUNFLGNBQWM7RUFDZCxxQkFBcUI7QUFDdkI7QUFDQTtFQUNFLGNBQWM7RUFDZCxxQkFBcUI7QUFDdkI7O0FBRUE7RUFDRSxPQUFPO0VBQ1AsY0FBYztFQUNkLGNBQWM7RUFDZCwrQkFBK0I7QUFDakMiLCJzb3VyY2VSb290IjoiIn0= */</style>
-  <style>.markdown-body{font-size:16px;line-height:1.3;}pre.front-matter{display:none!important;}</style>
+  <style>.markdown-body{font-size:14px;line-height:1.5;}pre.front-matter{display:none!important;}</style>
 </head>
 <body>
   <article class="markdown-body"><h1 class="atx" id="guide-dand39utilisation--vipe-r">Guide d'utilisation — VIPE-R</h1>
 <hr>
 <h2 class="atx" id="1-presentation-generale">1. Présentation générale</h2>
-<p>VIPE-R est une interface Shiny conçue pour accompagner l'analyse de données transcriptomiques issues d'expériences RNA-seq. À partir d'un tableau de gènes différentiellement exprimés (DEG), l'application permet de :</p>
+<p>VIPE-R est une interface Shiny conçue pour accompagner l'analyse de données 
+transcriptomiques issues d'expériences RNA-seq. À partir d'un tableau de gènes 
+différentiellement exprimés (DEG), l'application permet de :</p>
 <ul>
 <li><strong>Visualiser</strong> les DEG sous forme de volcano plot interactif</li>
 <li><strong>Filtrer</strong> les gènes selon des seuils de Log2FC et de p-value ajustée</li>
-<li><strong>Réaliser des analyses d'enrichissement fonctionnel</strong> via deux méthodes complémentaires : ORA et GSEA</li>
-<li><strong>Explorer</strong> les termes GO (Gene Ontology) et les voies métaboliques (KEGG, Reactome)</li>
-<li><strong>Exporter</strong> les graphiques et tableaux pour intégration dans des rapports ou publications</li>
+<li><strong>Réaliser des analyses d'enrichissement fonctionnel</strong> via deux méthodes 
+complémentaires : ORA et GSEA</li>
+<li><strong>Explorer</strong> les termes GO (Gene Ontology) et les voies métaboliques 
+(KEGG, Reactome)</li>
+<li><strong>Exporter</strong> les graphiques et tableaux pour intégration dans des rapports ou 
+publications</li>
 </ul>
-<p>L'application supporte trois organismes : <em>Homo sapiens</em>, <em>Mus musculus</em> et <em>Gallus gallus</em>.</p>
+<p>L'application supporte deux organismes : <em>Homo sapiens</em>, <em>Mus musculus</em>.</p>
 <hr>
 <h2 class="atx" id="2-prerequis-et-format-des-donnees">2. Prérequis et format des données</h2>
 <h3 class="atx" id="format-attendu">Format attendu</h3>
-<p>Le fichier d'entrée doit être un tableau tabulé (<code>.csv</code>, <code>.tsv</code> ou <code>.txt</code>) avec <strong>obligatoirement</strong> les colonnes suivantes :</p>
+<p>Le fichier d'entrée doit être un tableau tabulé (<code>.csv</code>, <code>.tsv</code> ou <code>.txt</code>) avec 
+<strong>obligatoirement</strong> les colonnes suivantes :</p>
 <table>
 <thead>
 <tr>
@@ -1309,16 +1315,18 @@ pre[class*="language-"] {
 <hr>
 <h2 class="atx" id="3-importer-ses-donnees">3. Importer ses données</h2>
 <ol>
-<li>Dans la <strong>barre latérale gauche</strong>, repérez le bouton <strong>« Choisissez un fichier csv »</strong>.</li>
-<li>Cliquez sur ce bouton et sélectionnez votre fichier (<code>.csv</code>, <code>.tsv</code> ou <code>.txt</code>).</li>
-<li>Sélectionnez ensuite l'<strong>organisme</strong> correspondant à votre expérience dans le menu déroulant :<ul>
+<li><p>Dans la <strong>barre latérale gauche</strong>, repérez le bouton <strong>« Choisissez un fichier csv »</strong>.</p>
+</li>
+<li><p>Cliquez sur ce bouton et sélectionnez votre fichier (<code>.csv</code>, <code>.tsv</code> ou <code>.txt</code>).</p>
+</li>
+<li><p>Sélectionnez ensuite l'<strong>organisme</strong> correspondant à votre expérience dans le menu déroulant :</p>
+<ul>
 <li><code>homo sapiens</code> → base de données <code>org.Hs.eg.db</code></li>
 <li><code>mus musculus</code> → base de données <code>org.Mm.eg.db</code></li>
 </ul>
 </li>
-</ol>
-<ol start="4">
-<li>Une fois le fichier chargé, tous les onglets de l'application peuvent être utiliser.</li>
+<li><p>Une fois le fichier chargé, tous les onglets de l'application peuvent être utiliser.</p>
+</li>
 </ol>
 <blockquote>
 <p>Le chargement du fichier <strong>ne déclenche pas automatiquement</strong> les analyses d'enrichissement. Vous devrez vous rendre dans l'onglet souhaité et cliquer sur le bouton <strong>« Lancer »</strong>.</p>
@@ -1341,7 +1349,10 @@ pre[class*="language-"] {
 </ul>
 <p>Le bouton <strong>« Réinitialiser »</strong> remet les seuils à leurs valeurs par défaut.</p>
 <h3 class="atx" id="selection-interactive-de-genes">Sélection interactive de gènes</h3>
-<p>Le volcano plot est <strong>interactif</strong> : vous pouvez sélectionner des gènes directement en dessinant un rectangle sur le graphique (box select) ou en cliquant sur des points individuels. Les gènes sélectionnés apparaissent dans l'onglet <strong>« Données sélectionnées »</strong> du tableau en bas de page.</p>
+<p>Le volcano plot est <strong>interactif</strong> : vous pouvez sélectionner des gènes 
+directement en dessinant un rectangle sur le graphique (box select) ou en 
+cliquant sur des points individuels. Les gènes sélectionnés apparaissent dans 
+l'onglet <strong>« Données sélectionnées »</strong> du tableau en bas de page.</p>
 <h3 class="atx" id="tableaux-disponibles">Tableaux disponibles</h3>
 <p>La boîte <em>Tableaux</em> contient trois sous-onglets :</p>
 <table>
@@ -1364,7 +1375,8 @@ pre[class*="language-"] {
 <td>Gènes sélectionnés manuellement sur le volcano plot</td>
 </tr>
 </tbody></table>
-<p>Pour les données filtrées, utilisez les <strong>cases à cocher</strong> <em>Up</em> / <em>Down</em> pour afficher les gènes sur-exprimés, sous-exprimés, ou les deux.</p>
+<p>Pour les données filtrées, utilisez les <strong>cases à cocher</strong> <em>Up</em> / <em>Down</em> pour 
+afficher les gènes sur-exprimés, sous-exprimés, ou les deux.</p>
 <hr>
 <h2 class="atx" id="5-onglet--enrichissement-go-term-ora">5. Onglet — Enrichissement GO term (ORA)</h2>
 <h3 class="atx" id="acces-1">Accès</h3>
@@ -1384,8 +1396,10 @@ pre[class*="language-"] {
 </ul>
 <p><strong>3. Univers de référence</strong>  </p>
 <ul>
-<li><code>Génome de référence</code> : utilise l'ensemble des gènes annotés de l'organisme. pratique courante, facilite la comparaison entre études</li>
-<li><code>Gènes de l'analyse RNA-seq</code> : restreint l'univers aux gènes effectivement détectés dans votre expérience</li>
+<li><code>Génome de référence</code> : utilise l'ensemble des gènes annotés de l'organisme. 
+Pratique courante, facilite la comparaison entre études</li>
+<li><code>Gènes de l'analyse RNA-seq</code> : restreint l'univers aux gènes effectivement 
+détectés dans votre expérience</li>
 </ul>
 <blockquote>
 <p>Voir le document <em>Bases théoriques</em> pour le détail du débat méthodologique. <strong>Quel que soit votre choix, mentionnez-le dans vos méthodes.</strong></p>
@@ -1427,7 +1441,8 @@ pre[class*="language-"] {
 <td>Vue hiérarchique de l'ontologie GO</td>
 </tr>
 </tbody></table>
-<p>Ajustez le <strong>nombre de GO terms affichés</strong> (5 à 50) et la <strong>palette de couleurs</strong> dans la boîte <em>Paramètre visuel</em>.</p>
+<p>Ajustez le <strong>nombre de GO terms affichés</strong> (5 à 50) et 
+la <strong>palette de couleurs</strong> dans la boîte <em>Paramètre visuel</em>.</p>
 <hr>
 <h2 class="atx" id="6-onglet--enrichissement-go-term-gsea">6. Onglet — Enrichissement GO term (GSEA)</h2>
 <h3 class="atx" id="acces-2">Accès</h3>
@@ -1477,9 +1492,11 @@ pre[class*="language-"] {
 <p><strong>Base de données Pathway</strong>  </p>
 <ul>
 <li><code>KEGG</code> : voies KEGG — annotations métaboliques et de signalisation bien établies</li>
-<li><code>Reactome</code> : voies Reactome — annotations plus détaillées, notamment pour les processus cellulaires humains</li>
+<li><code>Reactome</code> : voies Reactome — annotations plus détaillées, notamment pour 
+les processus cellulaires humains</li>
 </ul>
-<p>Le reste du workflow est identique à l'ORA GO term (sélection des gènes, univers, correction, seuil, visualisations).</p>
+<p>Le reste du workflow est identique à l'ORA GO term (sélection des gènes, 
+univers, correction, seuil, visualisations).</p>
 <h3 class="atx" id="visualisations-disponibles-2">Visualisations disponibles</h3>
 <table>
 <thead>
@@ -1504,11 +1521,68 @@ pre[class*="language-"] {
 <td><code>Emaplot</code></td>
 <td>Carte d'enrichissement par similarité</td>
 </tr>
+<tr>
+<td><code>pathview</code></td>
+<td>Carte du réseau métabolique choisi</td>
+</tr>
 </tbody></table>
 <hr>
-<h2 class="atx" id="8-parametres-communs-et-bonnes-pratiques">8. Paramètres communs et bonnes pratiques</h2>
+<h2 class="atx" id="8-onglets--enrichissement-pathway-gsea">8. Onglets — Enrichissement Pathway (GSEA)</h2>
+<h3 class="atx" id="acces-4">Accès</h3>
+<p>Menu latéral → <strong>Enrichissement (Pathway)</strong> → <strong>GSEA</strong></p>
+<h3 class="atx" id="specificites-1">Spécificités</h3>
+<p><strong>Base de données Pathway</strong>  </p>
+<ul>
+<li><code>KEGG</code> : voies KEGG — annotations métaboliques et de signalisation bien établies</li>
+<li><code>Reactome</code> : voies Reactome — annotations plus détaillées, notamment pour 
+les processus cellulaires humains</li>
+</ul>
+<p>Le reste du workflow est identique à la GSEA Go term (tri de la liste de gène 
+par Padjust ou Log2FC, permutations, correction, seuil, visualisations).</p>
+<h3 class="atx" id="visualisations-disponibles-3">Visualisations disponibles</h3>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>gseaplot</code></td>
+<td>Courbe d'enrichissement de la voie sélectionnée</td>
+</tr>
+<tr>
+<td><code>Dotplot</code></td>
+<td>Vue d'ensemble des pathways enrichis</td>
+</tr>
+<tr>
+<td><code>Barplot</code></td>
+<td>Classement par nombre de gènes</td>
+</tr>
+<tr>
+<td><code>Cnetplot</code></td>
+<td>Réseau gènes ↔ pathways</td>
+</tr>
+<tr>
+<td><code>Emaplot</code></td>
+<td>Carte d'enrichissement par similarité</td>
+</tr>
+<tr>
+<td><code>pathview</code></td>
+<td>Carte du réseau métabolique choisi</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 class="atx" id="9-parametres-communs-et-bonnes-pratiques">9. Paramètres communs et bonnes pratiques</h2>
 <h3 class="atx" id="choix-de-land39univers">Choix de l'univers</h3>
-<p>Le choix de l'univers de référence est l'un des paramètres les plus impactants en ORA, et il n'existe pas de consensus absolu. Le <strong>génome complet</strong> est plus répandu dans la littérature et facilite la comparaison entre études. Les <strong>gènes détectés</strong> sont statistiquement plus rigoureux pour du RNA-seq, car un gène non exprimé ne pouvait pas être différentiellement exprimé. La bonne pratique est avant tout de <strong>justifier son choix et de le mentionner dans les méthodes</strong>. En cas de doute, lancez l'analyse avec les deux options et comparez : des résultats très divergents signalent une instabilité à investiguer.</p>
+<p>Le choix de l'univers de référence est l'un des paramètres les plus impactants 
+en ORA, et il n'existe pas de consensus absolu. Le <strong>génome complet</strong> est plus 
+répandu dans la littérature et facilite la comparaison entre études. Les 
+<strong>gènes détectés</strong> sont statistiquement plus rigoureux pour du RNA-seq, car 
+un gène non exprimé ne pouvait pas être différentiellement exprimé. La bonne 
+pratique est avant tout de <strong>justifier son choix et de le mentionner dans les méthodes</strong>. 
+En cas de doute, lancez l'analyse avec les deux options et comparez : des résultats 
+très divergents signalent une instabilité à investiguer.</p>
 <h3 class="atx" id="correction-pour-tests-multiples">Correction pour tests multiples</h3>
 <table>
 <thead>
@@ -1541,7 +1615,7 @@ pre[class*="language-"] {
 <h3 class="atx" id="nombre-de-termes-affiches">Nombre de termes affichés</h3>
 <p>Choisissez à l'aide du slider le nombre de termes à afficher sur les graphes</p>
 <hr>
-<h2 class="atx" id="9-telecharger-les-resultats">9. Télécharger les résultats</h2>
+<h2 class="atx" id="10-telecharger-les-resultats">10. Télécharger les résultats</h2>
 <table>
 <thead>
 <tr>
