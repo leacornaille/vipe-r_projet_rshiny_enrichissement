@@ -13,14 +13,14 @@ volcano_plot <- function(id, deg_data, pval_threshold, fc_threshold, reset_all) 
       padj_deg <- as.numeric(df_deg$padj)
       
       # Calculer -log10(padj) avec protection contre valeurs nulles
-      padj_log <- -log10(padj_deg)
+      padj_log <- -log10(pmax(as.numeric(df_deg$padj), 1e-300))
       
       # Colore en rouge les gènes sur-régulés et en vert les sous-régulés significatif
       colors <- ifelse(
-        padj_log >= -log10(pval_threshold()) & log2fc_deg >= fc_threshold(), 
+        padj_log >= -log10(as.numeric(pval_threshold())) & log2fc_deg >= as.numeric(fc_threshold()), 
         "#74c69d",
         ifelse(
-          padj_log >= -log10(pval_threshold()) & log2fc_deg <= -fc_threshold(),
+          padj_log >= -log10(as.numeric(pval_threshold())) & log2fc_deg <= as.numeric(-fc_threshold()),
           "#FF6B6B",
           "lightgrey"
         )
