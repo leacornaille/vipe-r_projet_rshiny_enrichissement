@@ -17,6 +17,6 @@ selected_table_ui <- function(id){
   tabPanel(
     "Données sélectionnées",
     DTOutput(selected_table_ns("selected_points_table")),
-    downloadButton("downloadSelected", "Télécharger")
+    downloadButton(selected_table_ns("downloadSelected"), "Télécharger")
   )
 }

@@ -30,10 +30,11 @@ go_gsea_ui <- function(id) {
               radioButtons(
                 ns("rank_type_gsea"), 
                 "Choisir le critère de classement :",
-                choices = c("log2FC" = "log2FC", "padj"  = "padj")),
-              selected = "log2FC"
+                choices = c("log2FC" = "log2FC", "padj"  = "padj"),
+                selected = "log2FC"
               )
-            ),
+            )
+          ),
            
           # paramètres statistiques GSEA 
           box(
